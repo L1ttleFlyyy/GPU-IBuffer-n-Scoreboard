@@ -27,27 +27,32 @@ module barrel_shifter # (
     ) (
         input [WIDTH-1: 0] shamt, // NOTE: this shamt should be one-hot encoded
         input [WIDTH-1: 0] data,
-        output [WIDTH-1: 0] data_shifted
+        output reg [WIDTH-1: 0] data_shifted
     );
-    localparam LOGWIDTH = $clog2(WIDTH);
-    reg [LOGWIDTH-1: 0] shamt_decoded;
-    integer i;
-    always@ (shamt) begin
-        shamt_decoded = 0;
-        for (i = 0; i < WIDTH; i = i + 1) begin: decoder
-            if (shamt[i]) 
-                shamt_decoded = i;
-        end
-    end
-
-    wire [LOGWIDTH-1: 0] shamt_off = shamt_decoded + OFF;
-
+    // WIDTH-to-1 mux (one-hot encoded) 
+    wire [WIDTH-1: 0] data_array [0:WIDTH-1];
+    wire [WIDTH-1: 0] shamt_off = (OFF == 0)? shamt : {shamt[WIDTH-OFF-1: 0], shamt[WIDTH-1: WIDTH-OFF]};
+    genvar i;
     generate 
         if (DIR) begin // left shift
-            assign data_shifted = (data << shamt_off) | (data >> (WIDTH - shamt_off));
+            assign data_array[0] = shamt_off[0]? data : 0;
+            for (i = 1; i < WIDTH; i = i + 1) begin: mux_input_left
+                assign data_array[i] = shamt_off[i]? {data[WIDTH-i-1: 0], data[WIDTH-1: WIDTH-i]}: 0;
+            end
         end else begin // right shift
-            assign data_shifted = (data << (WIDTH - shamt_off)) | (data >> shamt_off);
+            assign data_array[0] = shamt_off[0]? data : 0;
+            for (i = 1; i < WIDTH; i = i + 1) begin: mux_input_right
+                assign data_array[i] = shamt_off[i]? {data[i-1: 0], data[WIDTH-1: i]}: 0;
+            end
         end
     endgenerate
+    // all cases ORed together
+    integer j;
+    always@(*)begin
+        data_shifted = data_array[0];
+        for (j = 1; j < WIDTH; j = j + 1) begin: output_or
+            data_shifted = data_shifted | data_array[j];
+        end
+    end
 
 endmodule
