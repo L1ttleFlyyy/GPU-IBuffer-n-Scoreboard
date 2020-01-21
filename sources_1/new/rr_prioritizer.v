@@ -25,8 +25,8 @@ module rr_prioritizer #(
     ) (
     input clk,
     input rst,
-    input [WIDTH - 1: 0] req,
-    output [WIDTH - 1: 0] grt
+    input [WIDTH-1: 0] req,
+    output [WIDTH-1: 0] grt
     );
 
     // NOTE: the requesters should subpress their requests if they cannot untilize the grant within clock

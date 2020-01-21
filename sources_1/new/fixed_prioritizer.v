@@ -29,8 +29,9 @@ module fixed_prioritizer #( // NOTE: give LSB the highest priority
     integer i;
     always@(*) begin
         grt = 0;
-        for (i = WIDTH - 1; i >= 0; i = i-1) begin: forloop
-            if (req[i]) grt = 1 << i;
+        for (i = WIDTH-1; i >= 0; i = i-1) begin: forloop
+            if (req[i]) 
+                grt = 1<<i;
         end
     end
     
