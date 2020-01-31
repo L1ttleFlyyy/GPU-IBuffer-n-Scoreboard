@@ -27,7 +27,7 @@ parameter WIDTH  = 8;
 
 // rr_prioritizer Inputs
 reg   clk                                  = 0 ;
-reg   rst                                  = 1 ;
+reg   rst                                  = 0 ;
 reg   [WIDTH - 1: 0]  req                  = 0 ;
 
 // rr_prioritizer Outputs
@@ -41,7 +41,7 @@ end
 
 initial
 begin
-    #(PERIOD*2) rst  =  0;
+    #(PERIOD*2) rst  =  1;
 end
 
 rr_prioritizer #(
