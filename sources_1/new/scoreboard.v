@@ -20,99 +20,102 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module scoreboard_inner#(
-    parameter NUM_ENTRIES = 4
+module scoreboard_per_warp#(
+    parameter NUM_ENTRIES = 4, 
+    parameter LOG_NUM_ENTRIES = $clog2(NUM_ENTRIES)
     ) (
-    // TODO: RegID is actually 5-bit (R8 is thrID, R16 is warpID)
-    // to ID stage: Decoding unit should treat R8/R16 as NON-Valid registers
     input clk,
-    input rst, // TODO: rst/rst_n
-    input [2:0] Src1,
-    input [2:0] Src2,
-    input [2:0] Dst,
-    input ValidSrc1,
-    input ValidSrc2,
-    input ValidDst,
-    input IssueGrant,
-    // TODO: to all the backend: should we use one-hot encoded IDs everywhere to save the extra codec logic?
-    // If so, we do not need Valid signal for the IDs, since all-zero means invalid
-    // parameter LOG_NUM_ENTRIES = $clog2(NUM_ENTRIES)
-    // input [LOG_NUM_ENTRIES-1: 0] Clear_ScoreboardID_Mem_Scoreboard,
-    // output [LOG_NUM_ENTRIES-1: 0] ScoreboardID_Scoreboard_OperandCollector
-    input [NUM_ENTRIES-1: 0] Clear_ScoreboardID_Mem_Scoreboard,
-    // TODO: naming WB: Write-back stage?
-    input [NUM_ENTRIES-1: 0] Clear_ScoreboardID_WB_Scoreboard,
-    output Full,
-    output Dependent,
-    // TODO: name too long, needs abbreviation
-    output [NUM_ENTRIES-1: 0] ScoreboardID_Scoreboard_OperandCollector
+    input rst,
+    input [4:0] src1, // RegID is 5-bit (R8: thrID, R16: warpID)
+    input [4:0] src2,
+    input [4:0] dst,
+    input src1_valid,
+    input src2_valid,
+    input dst_valid,
+    input issue_grant,
+    input [LOG_NUM_ENTRIES-1: 0] ScbID_MEM_Scb, // clear signal from MEM (SW only)
+    input [LOG_NUM_ENTRIES-1: 0] ScbID_ALU_Scb, // clear signal from ALU (branch only)
+    input [LOG_NUM_ENTRIES-1: 0] ScbID_CDB_Scb, // clear signal from CDB (for all regwrite)
+    input ScbID_valid_MEM_Scb,
+    input ScbID_valid_ALU_Scb,
+    input ScbID_valid_CDB_Scb,
+    output full,
+    output dependent,
+    output [LOG_NUM_ENTRIES-1: 0] ScbID_Scb_OC // ScbID passed to Operand Collector (for future clearing)
     );
-    reg [2:0] Src1_Array [NUM_ENTRIES-1: 0];
-    reg [2:0] Src2_Array [NUM_ENTRIES-1: 0];
-    reg [2:0] Dst_Array [NUM_ENTRIES-1: 0];
-    reg [NUM_ENTRIES-1: 0] ValidSrc1_Array;
-    reg [NUM_ENTRIES-1: 0] ValidSrc2_Array;
-    reg [NUM_ENTRIES-1: 0] ValidDst_Array;
-    reg [NUM_ENTRIES-1: 0] Valid_Array;
+    reg [4:0] src1_array [NUM_ENTRIES-1: 0];
+    reg [4:0] src2_array [NUM_ENTRIES-1: 0];
+    reg [4:0] dst_array [NUM_ENTRIES-1: 0];
+    reg [NUM_ENTRIES-1: 0] src1_valid_array;
+    reg [NUM_ENTRIES-1: 0] src2_valid_array;
+    reg [NUM_ENTRIES-1: 0] dst_valid_array;
+    reg [NUM_ENTRIES-1: 0] valid_array;
 
-    // TODO: clear signal received from Mem, Write-back any other stages?
-    wire [NUM_ENTRIES-1: 0] Valid_Array_cleared = Valid_Array & (~Clear_ScoreboardID_Mem_Scoreboard) & (~Clear_ScoreboardID_WB_Scoreboard);
-    wire [NUM_ENTRIES-1: 0] empty_Array = ~Valid_Array_cleared;
-    wire [NUM_ENTRIES-1: 0] next_empty; 
-    // one-hot encoded next empty slot
-    fixed_prioritizer#(.WIDTH(NUM_ENTRIES)) fp ( 
-        .req(empty_Array),
-        .grt(next_empty)
-    );
-
-    always@(posedge clk or posedge rst) begin
-        if (rst) begin
-            Valid_Array <= 0;
-        end else if (IssueGrant) begin
-                Valid_Array <= Valid_Array_cleared | next_empty;
-        end else begin
-                Valid_Array <= Valid_Array_cleared;         
-        end
+    // clear signal received from Mem/ALU/CDB?
+    reg [NUM_ENTRIES-1: 0] valid_array_cleared;
+    always@(*) begin
+        valid_array_cleared = valid_array;
+        if (ScbID_valid_MEM_Scb) valid_array_cleared[ScbID_MEM_Scb] = 0;
+        if (ScbID_valid_ALU_Scb) valid_array_cleared[ScbID_ALU_Scb] = 0;
+        if (ScbID_valid_CDB_Scb) valid_array_cleared[ScbID_CDB_Scb] = 0;
     end
+    assign full = &valid_array_cleared;
 
-    // storage maintaining
+    // find empty slot for a new instruction
+    wire [NUM_ENTRIES-1: 0] empty_array = ~valid_array_cleared;
+    reg [LOG_NUM_ENTRIES-1: 0] next_empty;
     integer i;
+    always@(*) begin
+        next_empty = 0;
+        for (i = NUM_ENTRIES-1; i>=0; i = i-1) begin: empty_loop
+            if(empty_array[i])
+                next_empty = i;
+        end
+    end
+    assign ScbID_Scb_OC = next_empty;
+
+    // store a new instruction if granted by Issue unit
+    always@(posedge clk or negedge rst) begin
+        if (!rst) begin
+            valid_array <= 0;
+        end else begin
+            valid_array <= valid_array_cleared;
+            if (issue_grant)
+                valid_array[next_empty] <= 1;      
+        end
+    end
     always@(posedge clk) begin
-        for (i = 0; i < NUM_ENTRIES; i = i+1) begin: deposit_content_loop
-            if (IssueGrant & ScoreboardID_Scoreboard_OperandCollector[i]) begin
-                Src1_Array[i] <= Src1;
-                Src2_Array[i] <= Src2;
-                Dst_Array[i] <= Dst;
-                ValidSrc1_Array[i] <= ValidSrc1;
-                ValidSrc2_Array[i] <= ValidSrc2;
-                ValidDst_Array[i] <= ValidDst;
-            end
+        if (issue_grant) begin
+            src1_array[next_empty] <= src1;
+            src2_array[next_empty] <= src2;
+            dst_array[next_empty] <= dst;
+            src1_valid_array[next_empty] <= src1_valid;
+            src2_valid_array[next_empty] <= src2_valid;
+            dst_valid_array[next_empty] <= dst_valid;
         end
     end
 
-    // generate output
-    reg [NUM_ENTRIES-1: 0] Dependent_Array;
+    // check all possible data hazards
+    reg [NUM_ENTRIES-1: 0] dependent_array;
     always@(*) begin
         // for each of the pending instructions, check RAW, WAW, WAR
         for (i = 0; i < NUM_ENTRIES; i = i+1) begin: dependent_loop
             // RAW:
-            Dependent_Array[i] = 
-                (ValidSrc1 && ValidDst_Array[i] && (Src1 == Dst_Array[i])) | 
-                (ValidSrc2 && ValidDst_Array[i] && (Src2 == Dst_Array[i]));
+            dependent_array[i] = 
+                (src1_valid && src1_valid_array[i] && (src1 == dst_array[i])) | 
+                (src2_valid && src2_valid_array[i] && (src2 == dst_array[i]));
             // WAW:
-            Dependent_Array[i] = Dependent_Array[i] |
-                (ValidDst && ValidDst_Array[i] && (Dst == Dst_Array[i]));
+            dependent_array[i] = dependent_array[i] |
+                (dst_valid && dst_valid_array[i] && (dst == dst_array[i]));
             // WAR:
-            Dependent_Array[i] = Dependent_Array[i] |
-                (ValidDst && ValidSrc1_Array[i] && (Dst == Src1_Array[i])) |
-                (ValidDst && ValidSrc2_Array[i] && (Dst == Src2_Array[i]));
-            Dependent_Array[i] = Dependent_Array[i] & Valid_Array_cleared[i]; // Note here use Valid_next to possibly save one clock
+            dependent_array[i] = dependent_array[i] |
+                (dst_valid && src1_valid_array[i] && (dst == src1_array[i])) |
+                (dst_valid && src2_valid_array[i] && (dst == src2_array[i])); 
         end
+        dependent_array = dependent_array & valid_array_cleared; // Note here use valid_cleared to save one clock
     end
-
-    assign Dependent = |Dependent_Array;
-    assign Full = (empty_Array == 0); // all not empty
-    assign ScoreboardID_Scoreboard_OperandCollector = next_empty;
+    // overall dependent bit:
+    assign dependent = |dependent_array;
 
 endmodule // scoreboard_inner
 
