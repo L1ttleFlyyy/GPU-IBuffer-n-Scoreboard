@@ -30,7 +30,7 @@ module scoreboard_warp(
     input src1_valid,
     input src2_valid,
     input dst_valid,
-    input RP_grant, // only create Scb entry for RP_grant (avoid duplicate entry for replay instructions)
+    input RP_grt, // only create Scb entry for RP_grt (avoid duplicate entry for replay instructions)
     input replayable, // if it is LW/SW, the Scb entry will be marked as "incomplete"
     //signal for clearing
     input [1:0] replay_complete_ScbID, // mark the Scb entry as complete
@@ -86,13 +86,13 @@ module scoreboard_warp(
             valid_array <= 0;
         end else begin
             valid_array <= valid_array_cleared;
-            if (RP_grant)
+            if (RP_grt)
                 valid_array[next_empty] <= 1'b1;      
         end
     end
 
     always@(posedge clk) begin
-        if (RP_grant) begin
+        if (RP_grt) begin
             src1_array[next_empty] <= src1;
             src2_array[next_empty] <= src2;
             dst_array[next_empty] <= dst;
@@ -149,7 +149,7 @@ module scoreboard#(
 
     // warp specific signals
     // from IBuffer when depositing
-    input [NUM_WARPS-1:0] RP_grant_IB_Scb,
+    input [NUM_WARPS-1:0] RP_grt_IB_Scb,
     input [5*NUM_WARPS-1:0] src1_flattened_IB_Scb, // flattened RegID: 5 bit regID * 8 warps
     input [5*NUM_WARPS-1:0] src2_flattened_IB_Scb,
     input [5*NUM_WARPS-1:0] dst_flattened_IB_Scb,
@@ -161,7 +161,7 @@ module scoreboard#(
     input [2*NUM_WARPS-1:0] replay_complete_ScbID_flattened_IB_Scb,
     input [NUM_WARPS-1:0] replay_complete_IB_Scb,
     input [NUM_WARPS-1:0] replay_SW_LWbar_IB_Scb,
-    // to IBuffer when 
+    // to IBuffer when issuing
     output [NUM_WARPS-1:0] full_Scb_IB,
     output [NUM_WARPS-1:0] dependent_Scb_IB,
     output [2*NUM_WARPS-1:0] ScbID_flattened_Scb_IB
@@ -201,7 +201,7 @@ module scoreboard#(
             .src1_valid(src1_valid_IB_Scb[i]),
             .src2_valid(src2_valid_IB_Scb[i]),
             .dst_valid(dst_valid_IB_Scb[i]),
-            .RP_grant(RP_grant_IB_Scb[i]), // only create Scb entry for RP_grant (avoid duplicate entry for replay instructions)
+            .RP_grt(RP_grt_IB_Scb[i]), // only create Scb entry for RP_grt (avoid duplicate entry for replay instructions)
             .replayable(replayable_IB_Scb[i]), // if it is LW, the Scb entry will be marked as "incomplete"
             // signal from IBuffer when clearing
             .replay_complete_ScbID(replay_complete_ScbID_IB_Scb[i]), // mark the Scb entry as complete
