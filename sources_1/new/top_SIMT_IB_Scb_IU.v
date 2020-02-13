@@ -141,8 +141,9 @@ module top_SIMT_IB_Scb_IU#(
     input Valid_CDB_Scb,
     input [1:0] Scb_CDB_Scb,
     input [LOGNUM_WARPS-1: 0]WarpID_CDB_Scb,
-    output [LOGNUM_WARPS-1: 0]ScbID_Scb_OC
+    output [LOGNUM_WARPS-1: 0]ScbID_Scb_OC,
     /*** end: signals for Scoreboard ***/
+    input [NUM_THREADS-1: 0] ActiveMask_SIMT_IB____[0:NUM_WARPS]
 
     );
     
