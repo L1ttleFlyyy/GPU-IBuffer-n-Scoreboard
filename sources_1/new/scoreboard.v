@@ -42,6 +42,7 @@ module scoreboard_warp(
     input clear_valid_Br,
     input clear_valid_regwr,
     output full,
+    output empty, // for exit
     output dependent,
     output [1:0] ScbID_Scb_IB // ScbID passed to IBuffer (for future clearing)
     );
@@ -69,6 +70,7 @@ module scoreboard_warp(
 
     // find empty slot for a new instruction
     wire [3:0] empty_array = ~valid_array_cleared;
+    assign empty = &empty_array;
     reg [1:0] next_empty;
     integer i;
     always@(*) begin
@@ -163,6 +165,7 @@ module scoreboard#(
     input [NUM_WARPS-1:0] replay_SW_LWbar_IB_Scb,
     // to IBuffer when issuing
     output [NUM_WARPS-1:0] full_Scb_IB,
+    output [NUM_WARPS-1:0] empty_Scb_IB,
     output [NUM_WARPS-1:0] dependent_Scb_IB,
     output [2*NUM_WARPS-1:0] ScbID_flattened_Scb_IB
     );
@@ -213,6 +216,7 @@ module scoreboard#(
             .clear_valid_Br(clear_valid_ALU_Scb_array[i]), // after demux
             .clear_valid_regwr(clear_valid_CDB_Scb_array[i]),
             .full(full_Scb_IB[i]),
+            .empty(empty_Scb_IB[i]),
             .dependent(dependent_Scb_IB[i]),
             .ScbID_Scb_IB(ScbID_Scb_IB[i]) // ScbID passed to Operand Collector (for future clearing)
         ); 
