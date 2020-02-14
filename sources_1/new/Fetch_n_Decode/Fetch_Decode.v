@@ -41,12 +41,13 @@ module Fetch_Decode #(
 	// To SMIT 
 	// FIXME: missing valid signals
 	output [7:0] Valid_IF_IB, // Data-stationary method of control
-	output [7:0] Valid_ID0_IB,
-	output [7:0] Valid_ID1_IB,
 	
+	// FIXME: PCplus4 is missing
+	input [9:0] PCplus4_ID0_SIMT,
+	input [9:0] PCplus4_ID1_SIMT,
 	// TODO: ID0 and ID1 Or combined as array?
-	output S_ID0_SIMT,
-	output S_ID1_SIMT,
+	output DotS_ID0_SIMT,
+	output DotS_ID1_SIMT,
 	output Call_ID0_SIMT,
 	output Call_ID1_SIMT,
 	output Ret_ID0_SIMT,
@@ -89,10 +90,12 @@ module Fetch_Decode #(
 	output Exit_ID0_IB,
 	output Exit_ID1_IB,
 	//To both SMIT&I-buffer
-	output [1:0] BEQ_ID0_IB_SIMT,
-	output [1:0] BEQ_ID1_IB_SIMT,
-	output [1:0] BLT_ID0_IB_SIMT,
-	output [1:0] BLT_ID1_IB_SIMT
+	output BEQ_ID0_IB_SIMT,
+	output BEQ_ID1_IB_SIMT,
+	output BLT_ID0_IB_SIMT,
+	output BLT_ID1_IB_SIMT,
+	output [7:0] Valid_ID0_IB_SIMT,
+	output [7:0] Valid_ID1_IB_SIMT
 );
 
 
