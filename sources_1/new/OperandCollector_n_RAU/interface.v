@@ -10,8 +10,9 @@ module RAU
     input wire TM_RAU_Nreq,
     input wire TM_RAU_SWWarp,
 
-    output reg RAU_TM_Available,
+    output reg RAU_TM_Available
 );
+endmodule
 
 module Parallel_control
 (
@@ -20,12 +21,13 @@ module Parallel_control
     input wire [2:0] IU_OC_HWWarp,
     input wire clk, rst,
 
-    output reg [2:0] rowid_a, [1;0] bankid_a,
+    output reg [2:0] rowid_a, [1:0] bankid_a,
            reg [2:0] rowid_b, [1:0] bankid_b,
            reg [1:0] IU_OC_ocid,
     output wire ReqFIFO_2op_EN
 
 );
+endmodule
 
 module OC_collector_unit 
 #(
@@ -41,10 +43,11 @@ bk_3_data, bk_3_vld, bk_3_ocid, bk_3_bz,
 clk,rst, // inputs
 RDY, bypass_pyld, oc_0_data, oc_1_data   //outputs
 );
+endmodule
 
 module  RF_Controler
 (
-    input wire ReqFIFO_2op_EN，
+    input wire ReqFIFO_2op_EN,
     input wire [2:0] rowid_a, rowid_b,
     input wire [1:0] ocid,
     input wire CDB_RF_RegWrite,
@@ -55,3 +58,4 @@ module  RF_Controler
     output wire RF_WR,
     output wire bank_valid
 );
+endmodule

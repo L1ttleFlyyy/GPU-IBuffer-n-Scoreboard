@@ -1,25 +1,28 @@
 `timescale 1ns / 1ps
 
-module Fetch_Decode(
+module Fetch_Decode #(
 	parameter DATA = 32,
-    parameter ADDR = 12 
+    parameter ADDR = 12  //TODO: These two params are not used?
 ) (
 	input clk, 
-	input rst_n
+	input rst_n,
 	//From TM
-	input [2:0] WarpID_TM_PC,	
-	input UpdataPC_TM_PC,
-	input [31:0] StartingPC_TM_PC,	//???one or eight
+	input [2:0] WarpID_TM_PC,	//TODO: _PC or _IF? pipelined/flow-through
+	input UpdatePC_TM_PC,
+	input [31:0] StartingPC_TM_PC,	//TODO:one or eight
 	//From SIMT
+	// TODO: shall we use flattened I/O? i.e.: 
+	// input [32*8-1:0] TargetAddr_ALU_PC_Flattened,
+	// and internally: wire [31:0] TargetAddr_ALU_PC [0:7];
 	input [7:0] UpdatePC_Qual1_SIMT_PC,
-	input [31:0] TargetAddr_EX_PC_Warp0,
-	input [31:0] TargetAddr_EX_PC_Warp1,
-	input [31:0] TargetAddr_EX_PC_Warp2,
-	input [31:0] TargetAddr_EX_PC_Warp3,
-	input [31:0] TargetAddr_EX_PC_Warp4,
-	input [31:0] TargetAddr_EX_PC_Warp5,
-	input [31:0] TargetAddr_EX_PC_Warp6,
-	input [31:0] TargetAddr_EX_PC_Warp7,
+	input [31:0] TargetAddr_ALU_PC_Warp0, // EX -> ALU follow the naming convention in Short Names.xlsx
+	input [31:0] TargetAddr_ALU_PC_Warp1,
+	input [31:0] TargetAddr_ALU_PC_Warp2,
+	input [31:0] TargetAddr_ALU_PC_Warp3,
+	input [31:0] TargetAddr_ALU_PC_Warp4,
+	input [31:0] TargetAddr_ALU_PC_Warp5,
+	input [31:0] TargetAddr_ALU_PC_Warp6,
+	input [31:0] TargetAddr_ALU_PC_Warp7,
 	input [7:0] UpdatePC_Qual2_SIMT_PC,
 	input [31:0] TargetAddr_SIMT_PC_Warp0,
 	input [31:0] TargetAddr_SIMT_PC_Warp1,
@@ -31,35 +34,65 @@ module Fetch_Decode(
 	input [31:0] TargetAddr_SIMT_PC_Warp7,
 	input [7:0] Stall_SIMT_PC,
 	//From IB
-	input [7:0] REQ_IB_PC,
-	input [7:0] Stall_IB_PC,
+	input [7:0] Req_IB_PC,
+	// input [7:0] Stall_IB_PC, 
+	// TODO:instead of giving a stall signal, IB will simply supress Req internally
 	
-	//To SMIT
-	output [1:0] S_decode_SIMT,
-	output [1:0] Call_decode_SIMT,
-	output [1:0] Ret_decode_SIMT,
-	output [1:0] Jmp_decode_SIMT,
+	// To SMIT 
+	// FIXME: missing valid signals
+	output [7:0] Valid_IF_IB, // Data-stationary method of control
+	output [7:0] Valid_ID0_IB,
+	output [7:0] Valid_ID1_IB,
+	
+	// TODO: ID0 and ID1 Or combined as array?
+	output S_ID0_SIMT,
+	output S_ID1_SIMT,
+	output Call_ID0_SIMT,
+	output Call_ID1_SIMT,
+	output Ret_ID0_SIMT,
+	output Ret_ID1_SIMT,
+	output Jmp_ID0_SIMT,
+	output Jmp_ID1_SIMT,
 	//To I-buffer
-	output [4:0] R1_decode0_Ibuffer,
-	output [4:0] R1_decode1_Ibuffer,
-	output [4:0] R2_decode0_Ibuffer,
-	output [4:0] R2_decode1_Ibuffer,
-	output [4:0] R3_decode0_Ibuffer,
-	output [4:0] R3_decode1_Ibuffer,
-	output [15:0] Offset_decode0_Ibuffer,
-	output [15:0] Offset_decode1_Ibuffer,
-	output [1:0] RegWrite_decode_Ibuffer,
-	output [1:0] MemWrite_decode_Ibuffer,
-	output [1:0] MemRead_decode_Ibuffer,
-	output [1:0] Exit_decode_Ibuffer,
-	output [3:0] ALUop_decode0_Ibuffer,
-	output [3:0] ALUop_decode1_Ibuffer,
-	output [1:0] Shared_Globalbar_decode_Ibuffer,
-	output [1:0] R1_R2_Valid_decode_Ibuffer,
-	output [1:0] R3_Valid_decode_Ibuffer,
+	// FIXME: The orignal instruction should also be passed through the pipeline?
+	// for debugging purpose (reverse assembler)
+	output [31:0] Inst_ID0_IB,
+	output [31:0] Inst_ID1_IB,
+
+	output [4:0] Src1_ID0_IB, // again, follow the naming convention
+	output [4:0] Src1_ID1_IB,
+	output [4:0] Src2_ID0_IB,
+	output [4:0] Src2_ID1_IB,
+	output [4:0] Dst_ID0_IB,
+	output [4:0] Dst_ID1_IB,
+	output [15:0] Offset_ID0_IB, // TODO: Offset or Imme
+	output [15:0] Offset_ID1_IB,
+	output RegWrite_ID0_IB,
+	output RegWrite_ID1_IB,
+	output MemWrite_ID0_IB,
+	output MemWrite_ID1_IB,
+	output MemRead_ID0_IB,
+	output MemRead_ID1_IB,
+	output [1:0] ALUit_decode_IB, // TODO: what is this signal?
+	output [3:0] ALUop_ID0_IB,
+	output [3:0] ALUop_ID1_IB,
+	output Shared_Globalbar_ID0_IB,
+	output Shared_Globalbar_ID1_IB,
+	// FIXME: valid bit attached to each of the registers
+	output Src1_Valid_ID0_IB,
+	output Src1_Valid_ID1_IB,
+	output Src2_Valid_ID0_IB,
+	output Src2_Valid_ID1_IB,
+	output Dst_Valid_ID0_IB,
+	output Dst_Valid_ID1_IB,
+	// FIXME: decoding for exit?
+	output Exit_ID0_IB,
+	output Exit_ID1_IB,
 	//To both SMIT&I-buffer
-	output [1:0] BeanchEQ_decode_Ibuffer_SIMT,
-	output [1:0] BranchLT_decode_Ibuffer_SIMT
+	output [1:0] BEQ_ID0_IB_SIMT,
+	output [1:0] BEQ_ID1_IB_SIMT,
+	output [1:0] BLT_ID0_IB_SIMT,
+	output [1:0] BLT_ID1_IB_SIMT
 );
 
 

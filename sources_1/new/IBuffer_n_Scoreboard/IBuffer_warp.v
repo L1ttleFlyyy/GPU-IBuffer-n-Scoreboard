@@ -27,39 +27,45 @@ module IBuffer_warp#(
     input rst,
 
     // signals to/from IF stage
-    input valid_IF_IB, // data statioinary method of control
-    output req_IB_IF,
+    input Valid_IF_IB, // data statioinary method of control
+    output Req_IB_IF,
 
     // signals from ID stage (dual decoding unit)
-    input valid_Q1_ID_IB,
-    input [31:0] instr_Q1_ID_IB,
-    input [5:0] src1_Q1_ID_IB, // 5-bit RegID with MSB as valid
-    input [5:0] src2_Q1_ID_IB,
-    input [5:0] dst_Q1_ID_IB,
-    input [3:0] ALUop_Q1_ID_IB,
-    input [15:0] imme_Q1_ID_IB,
-    input regwrite_Q1_ID_IB,
-    input memwrite_Q1_ID_IB,
-    input memread_Q1_ID_IB,
-    input shared_globalbar_Q1_ID_IB,
-    input BEQ_Q1_ID_IB_SIMT,
-    input BLT_Q1_ID_IB_SIMT,
-    input exit_Q1_ID_IB,
+    input Valid_ID0_IB,
+    input [31:0] Inst_ID0_IB,
+    input [4:0] Src1_ID0_IB, // 5-bit RegID with MSB as valid
+    input [4:0] Src2_ID0_IB,
+    input [4:0] Dst_ID0_IB,
+    input Src1_Valid_ID0_IB,
+    input Src2_Valid_ID0_IB,
+    input Dst_Valid_ID0_IB,
+    input [3:0] ALUop_ID0_IB,
+    input [15:0] Imme_ID0_IB,
+    input RegWrite_ID0_IB,
+    input MemWrite_ID0_IB,
+    input MemRead_ID0_IB,
+    input Shared_Globalbar_ID0_IB,
+    input BEQ_ID0_IB_SIMT,
+    input BLT_ID0_IB_SIMT,
+    input Exit_ID0_IB,
 
-    input valid_Q2_ID_IB,
-    input [31:0] instr_Q2_ID_IB,
-    input [5:0] src1_Q2_ID_IB, // 5-bit RegID with MSB as valid
-    input [5:0] src2_Q2_ID_IB,
-    input [5:0] dst_Q2_ID_IB,
-    input [3:0] ALUop_Q2_ID_IB,
-    input [15:0] imme_Q2_ID_IB,
-    input regwrite_Q2_ID_IB,
-    input memwrite_Q2_ID_IB,
-    input memread_Q2_ID_IB,
-    input shared_globalbar_Q2_ID_IB,
-    input BEQ_Q2_ID_IB_SIMT,
-    input BLT_Q2_ID_IB_SIMT,
-    input exit_Q2_ID_IB,
+    input Valid_ID1_IB,
+    input [31:0] Inst_ID1_IB,
+    input [4:0] Src1_ID1_IB, // 5-bit RegID with MSB as valid
+    input [4:0] Src2_ID1_IB,
+    input [4:0] Dst_ID1_IB,
+    input Src1_Valid_ID1_IB,
+    input Src2_Valid_ID1_IB,
+    input Dst_Valid_ID1_IB,
+    input [3:0] ALUop_ID1_IB,
+    input [15:0] Imme_ID1_IB,
+    input RegWrite_ID1_IB,
+    input MemWrite_ID1_IB,
+    input MemRead_ID1_IB,
+    input Shared_Globalbar_ID1_IB,
+    input BEQ_ID1_IB_SIMT,
+    input BLT_ID1_IB_SIMT,
+    input Exit_ID1_IB,
 
     // signals from SIMT 
     input drop_SIMT_IB,
@@ -144,7 +150,7 @@ module IBuffer_warp#(
     // clear the Inst[IRP_ind] in the same clock as PosFB is received
 
     // pointer management
-    assign WP_EN = !drop_SIMT_IB & (valid_Q1_ID_IB | valid_Q2_ID_IB);
+    assign WP_EN = !drop_SIMT_IB & (Valid_ID0_IB | Valid_ID1_IB);
     assign WP_next = WP_EN? (WP+1'b1):WP;
     assign RP_EN = RP_grt;
     assign RP_next = RP_EN? (RP+1'b1):RP;
@@ -179,7 +185,7 @@ module IBuffer_warp#(
     end
 
     // TODO: should I supress req_IB_IF when I see an "EXIT"?
-    assign req_IB_IF = (depth + valid_IF_IB + WP_EN) < 3'b100;
+    assign Req_IB_IF = (depth + Valid_IF_IB + WP_EN) < 3'b100;
 
     //similarly, replay_array_set, replay_array_cleared
     reg [3:0] replay_array_next;
@@ -188,8 +194,8 @@ module IBuffer_warp#(
         if (ZeroFB_valid_MEM_IB | (PosFB_valid_MEM_IB & PAM_next!=0)) replay_array_next[IRP_ind] = 1'b1;
         if (IRP_grt) replay_array_next[IRP_ind] = 1'b0;
         if (RP_grt) replay_array_next[RP_ind] = 1'b0;
-        if (valid_Q2_ID_IB) replay_array_next[WP_ind] = memwrite_Q2_ID_IB | memread_Q2_ID_IB;
-        if (valid_Q1_ID_IB) replay_array_next[WP_ind] = memwrite_Q1_ID_IB | memread_Q1_ID_IB;  
+        if (Valid_ID1_IB) replay_array_next[WP_ind] = MemWrite_ID1_IB | MemRead_ID1_IB;
+        if (Valid_ID0_IB) replay_array_next[WP_ind] = MemWrite_ID0_IB | MemRead_ID0_IB;  
     end
 
     always@(posedge clk) begin
@@ -200,43 +206,43 @@ module IBuffer_warp#(
         if (RP_grt) begin
             ScbID_array[RP_ind] <= ScbID_Scb_IB;
         end
-        if (valid_Q1_ID_IB & !drop_SIMT_IB) begin
+        if (Valid_ID0_IB & !drop_SIMT_IB) begin
             PAM_array[WP_ind] <= mask_SIMT_IB;
-            instr_array[WP_ind] <= instr_Q1_ID_IB;
-            src1_valid_array[WP_ind] <= src1_Q1_ID_IB[5];
-            src1_array[WP_ind] <= src1_Q1_ID_IB[4:0];
-            src2_valid_array[WP_ind] <= src2_Q1_ID_IB[5];
-            src2_array[WP_ind] <= src2_Q1_ID_IB[4:0];
-            dst_valid_array[WP_ind] <= dst_Q1_ID_IB[5];
-            dst_array[WP_ind] <= dst_Q1_ID_IB[4:0];
-            ALUop_array[WP_ind] <= ALUop_Q1_ID_IB;
-            imme_array[WP_ind] <= imme_Q1_ID_IB;
-            regwrite_array[WP_ind] <= regwrite_Q1_ID_IB;
-            memread_array[WP_ind] <= memread_Q1_ID_IB;
-            memwrite_array[WP_ind] <= memwrite_Q1_ID_IB;
-            shared_globalbar_array[WP_ind] <= shared_globalbar_Q1_ID_IB;
-            BEQ_array[WP_ind] <= BEQ_Q1_ID_IB_SIMT;
-            BLT_array[WP_ind] <= BLT_Q1_ID_IB_SIMT;
-            exit_array[WP_ind] <= exit_Q1_ID_IB;
+            instr_array[WP_ind] <= Inst_ID0_IB;
+            src1_valid_array[WP_ind] <= Src1_Valid_ID0_IB;
+            src1_array[WP_ind] <= Src1_ID0_IB[4:0];
+            src2_valid_array[WP_ind] <= Src2_Valid_ID0_IB;
+            src2_array[WP_ind] <= Src2_ID0_IB[4:0];
+            dst_valid_array[WP_ind] <= Dst_Valid_ID0_IB;
+            dst_array[WP_ind] <= Dst_ID0_IB[4:0];
+            ALUop_array[WP_ind] <= ALUop_ID0_IB;
+            imme_array[WP_ind] <= Imme_ID0_IB;
+            regwrite_array[WP_ind] <= RegWrite_ID0_IB;
+            memread_array[WP_ind] <= MemRead_ID0_IB;
+            memwrite_array[WP_ind] <= MemWrite_ID0_IB;
+            shared_globalbar_array[WP_ind] <= Shared_Globalbar_ID0_IB;
+            BEQ_array[WP_ind] <= BEQ_ID0_IB_SIMT;
+            BLT_array[WP_ind] <= BLT_ID0_IB_SIMT;
+            exit_array[WP_ind] <= Exit_ID0_IB;
         end
-        if (valid_Q2_ID_IB & !drop_SIMT_IB) begin
+        if (Valid_ID1_IB & !drop_SIMT_IB) begin
             PAM_array[WP_ind] <= mask_SIMT_IB;
-            instr_array[WP_ind] <= instr_Q2_ID_IB;
-            src1_valid_array[WP_ind] <= src1_Q2_ID_IB[5];
-            src1_array[WP_ind] <= src1_Q2_ID_IB[4:0];
-            src2_valid_array[WP_ind] <= src2_Q2_ID_IB[5];
-            src2_array[WP_ind] <= src2_Q2_ID_IB[4:0];
-            dst_valid_array[WP_ind] <= dst_Q2_ID_IB[5];
-            dst_array[WP_ind] <= dst_Q2_ID_IB[4:0];
-            ALUop_array[WP_ind] <= ALUop_Q2_ID_IB;
-            imme_array[WP_ind] <= imme_Q2_ID_IB;
-            regwrite_array[WP_ind] <= regwrite_Q2_ID_IB;
-            memread_array[WP_ind] <= memread_Q2_ID_IB;
-            memwrite_array[WP_ind] <= memwrite_Q2_ID_IB;
-            shared_globalbar_array[WP_ind] <= shared_globalbar_Q2_ID_IB;
-            BEQ_array[WP_ind] <= BEQ_Q2_ID_IB_SIMT;
-            BLT_array[WP_ind] <= BLT_Q2_ID_IB_SIMT;
-            exit_array[WP_ind] <= exit_Q2_ID_IB;
+            instr_array[WP_ind] <= Inst_ID1_IB;
+            src1_valid_array[WP_ind] <= Src1_Valid_ID1_IB;
+            src1_array[WP_ind] <= Src1_ID1_IB[4:0];
+            src2_valid_array[WP_ind] <= Src2_Valid_ID1_IB;
+            src2_array[WP_ind] <= Src2_ID1_IB[4:0];
+            dst_valid_array[WP_ind] <= Dst_Valid_ID1_IB;
+            dst_array[WP_ind] <= Dst_ID1_IB[4:0];
+            ALUop_array[WP_ind] <= ALUop_ID1_IB;
+            imme_array[WP_ind] <= Imme_ID1_IB;
+            regwrite_array[WP_ind] <= RegWrite_ID1_IB;
+            memread_array[WP_ind] <= MemRead_ID1_IB;
+            memwrite_array[WP_ind] <= MemWrite_ID1_IB;
+            shared_globalbar_array[WP_ind] <= Shared_Globalbar_ID1_IB;
+            BEQ_array[WP_ind] <= BEQ_ID1_IB_SIMT;
+            BLT_array[WP_ind] <= BLT_ID1_IB_SIMT;
+            exit_array[WP_ind] <= Exit_ID1_IB;
         end
     end
 
