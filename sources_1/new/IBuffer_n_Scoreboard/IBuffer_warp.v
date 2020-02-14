@@ -68,8 +68,8 @@ module IBuffer_warp#(
     input Exit_ID1_IB,
 
     // signals from SIMT 
-    input drop_SIMT_IB,
-    input [NUM_THREADS-1: 0]mask_SIMT_IB,
+    input DropInstr_SIMT_IB,
+    input [NUM_THREADS-1: 0]AM_SIMT_IB,
 
     // signals to/from IU
     output req_IB_IU,
@@ -122,7 +122,7 @@ module IBuffer_warp#(
 
     reg [31:0] instr_array[0:3]; // binary code
     reg [3:0] valid_array, replay_array;
-    reg [NUM_THREADS-1:0] PAM_array[0:3]; // private active mask for each instruction
+    reg [NUM_THREADS-1:0] PAM_array[0:3]; // private active AM for each instruction
     reg [4:0] src1_array[0:3], src2_array[0:3], dst_array[0:3];
     reg [3:0] src1_valid_array, src2_valid_array, dst_valid_array;
     reg [3:0] ALUop_array[0:3];
@@ -150,7 +150,7 @@ module IBuffer_warp#(
     // clear the Inst[IRP_ind] in the same clock as PosFB is received
 
     // pointer management
-    assign WP_EN = !drop_SIMT_IB & (Valid_ID0_IB | Valid_ID1_IB);
+    assign WP_EN = !DropInstr_SIMT_IB & (Valid_ID0_IB | Valid_ID1_IB);
     assign WP_next = WP_EN? (WP+1'b1):WP;
     assign RP_EN = RP_grt;
     assign RP_next = RP_EN? (RP+1'b1):RP;
@@ -206,8 +206,8 @@ module IBuffer_warp#(
         if (RP_grt) begin
             ScbID_array[RP_ind] <= ScbID_Scb_IB;
         end
-        if (Valid_ID0_IB & !drop_SIMT_IB) begin
-            PAM_array[WP_ind] <= mask_SIMT_IB;
+        if (Valid_ID0_IB & !DropInstr_SIMT_IB) begin
+            PAM_array[WP_ind] <= AM_SIMT_IB;
             instr_array[WP_ind] <= Inst_ID0_IB;
             src1_valid_array[WP_ind] <= Src1_Valid_ID0_IB;
             src1_array[WP_ind] <= Src1_ID0_IB[4:0];
@@ -225,8 +225,8 @@ module IBuffer_warp#(
             BLT_array[WP_ind] <= BLT_ID0_IB_SIMT;
             exit_array[WP_ind] <= Exit_ID0_IB;
         end
-        if (Valid_ID1_IB & !drop_SIMT_IB) begin
-            PAM_array[WP_ind] <= mask_SIMT_IB;
+        if (Valid_ID1_IB & !DropInstr_SIMT_IB) begin
+            PAM_array[WP_ind] <= AM_SIMT_IB;
             instr_array[WP_ind] <= Inst_ID1_IB;
             src1_valid_array[WP_ind] <= Src1_Valid_ID1_IB;
             src1_array[WP_ind] <= Src1_ID1_IB[4:0];
