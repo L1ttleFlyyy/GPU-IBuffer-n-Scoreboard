@@ -116,8 +116,8 @@ module IBuffer#(
     output reg [1:0] ScbID_IB_OC,
 
     // signals to RAU
-    output Exit_IB_RAU,
-    output reg [LOGNUM_WARPS-1:0] Exit_WarpID_IB_RAU,
+    output Exit_IB_RAU_TM,
+    output reg [LOGNUM_WARPS-1:0] Exit_WarpID_IB_RAU_TM,
 
     // feedback from MEM
     input [NUM_THREADS-1:0] PosFB_MEM_IB,
@@ -150,13 +150,13 @@ module IBuffer#(
 
     // output mux
     assign valid_IB_OC = grt_IU_IB != 0;
-    assign Exit_IB_RAU = exit_grt_IU_IB != 0;
+    assign Exit_IB_RAU_TM = exit_grt_IU_IB != 0;
     always@(*) begin
         warpID_IB_OC = 0;
-        Exit_WarpID_IB_RAU = 0;
+        Exit_WarpID_IB_RAU_TM = 0;
         for (j=1; j<NUM_WARPS; j=j+1) begin: exit_mux
             if (exit_grt_IU_IB[j])
-                Exit_WarpID_IB_RAU = j;
+                Exit_WarpID_IB_RAU_TM = j;
             if (grt_IU_IB[j]) 
                 warpID_IB_OC = j;
         end

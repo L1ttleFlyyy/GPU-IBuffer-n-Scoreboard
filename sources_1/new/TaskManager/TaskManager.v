@@ -14,8 +14,8 @@ output reg [2:0] WarpID_TM_IF,
 output reg [9:0] PC_TM_IF,
 
 //interface with Issue Unit
-input Exit_IU_SIMT,
-input [2:0] WarpID_IU_TM,
+input Exit_IB_RAU_TM,
+input [2:0] Exit_WarpID_IB_RAU_TM,
 
 //interface with Register File Allocation Unit
 input alloc_busyBar_RAU_TM,
