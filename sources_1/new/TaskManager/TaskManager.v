@@ -25,8 +25,8 @@ output [2:0] WarpID_TM_RAU,
 
 //interface with Operand Collector
 output Update_TM_OC,
-output [2:0] HWwarpID_TM_OC,
-output [7:0] SWwarpID_TM_OC
+output [2:0] HWWarpID_TM_OC,
+output [7:0] SWWarpID_TM_OC // FIXME: interface with RAU vs OC?
 
 );
 

@@ -5,7 +5,7 @@ module RAU
 
     input wire [2:0]Exit_WarpID_IB_RAU,
     input wire Exit_IB_RAU,
-    input wire TM_RAU_HWWarp,
+    input wire HWWarpID_TM_RAU, // TODO: naming convention
     input wire TM_RAU_AlloEN,
     input wire TM_RAU_Nreq,
     input wire TM_RAU_SWWarp,
