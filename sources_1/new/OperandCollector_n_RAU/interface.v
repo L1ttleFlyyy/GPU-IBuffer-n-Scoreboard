@@ -3,8 +3,8 @@ module RAU
     input wire rst,
     input wire clk,
 
-    input wire IB_Exit_WarpID,
-    input wire IB_RAU_ExitEN,
+    input wire [2:0]Exit_WarpID_IB_RAU,
+    input wire Exit_IB_RAU,
     input wire TM_RAU_HWWarp,
     input wire TM_RAU_AlloEN,
     input wire TM_RAU_Nreq,
