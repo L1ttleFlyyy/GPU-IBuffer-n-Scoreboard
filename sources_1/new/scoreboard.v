@@ -174,10 +174,10 @@ module scoreboard#(
     wire [4:0] dst_IB_Scb [0:NUM_WARPS-1];
     wire [1:0] ScbID_Scb_IB [0:NUM_WARPS-1];
     wire [1:0] replay_complete_ScbID_IB_Scb [0:NUM_WARPS-1];
+
+    // demux for the common signals    
     reg [NUM_WARPS-1:0]clear_valid_ALU_Scb_array;
     reg [NUM_WARPS-1:0]clear_valid_CDB_Scb_array;
-
-    // demux for the common signals
     always@(*) begin
         clear_valid_ALU_Scb_array = 0;
         clear_valid_ALU_Scb_array[clear_warpID_ALU_Scb] = clear_valid_ALU_Scb;
