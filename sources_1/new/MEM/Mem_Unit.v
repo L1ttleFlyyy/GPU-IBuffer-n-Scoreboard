@@ -7,8 +7,8 @@ module mem_unit(clk, rst, Instr_valid, MemRead, MemWrite, shared_global_bar, PAM
 	input [7:0] offset;
 	input [4:0] reg_addr;
 	
-	output ZeroFB_valid_MEM_IB, PosFB_valid_MEM_IB, RegWrite_MEM_CDB;
-	output [2:0] ZeroFB_warpID_MEM_IB, PosFB_warpID_MEM_IB;
+	output ZeroFB_Valid_MEM_IB, PosFB_Valid_MEM_IB, RegWrite_MEM_CDB;
+	output [2:0] ZeroFB_WarpID_MEM_IB, PosFB_WarpID_MEM_IB;
 	// output [1:0] neg_feedback_scbID_o, pos_feedback_scbID_o; no longer need this
 	output [7:0] PosFB_MEM_IB, AM_MEM_CDB;
 	output [255:0] write_data_MEM_CDB;

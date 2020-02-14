@@ -37,7 +37,7 @@ module IBuffer#(
     input [NUM_WARPS*NUM_THREADS-1:0]AM_flattened_SIMT_IB, //TODO: flattened I/O or not?
 
     // signals from ID stage (dual decoding unit)
-    input Valid_ID0_IB,
+    input Valid_ID0_IB_SIMT,
     input [31:0] Inst_ID0_IB,
     input [4:0] Src1_ID0_IB,
     input [4:0] Src2_ID0_IB,
@@ -55,7 +55,7 @@ module IBuffer#(
     input BLT_ID0_IB_SIMT,
     input Exit_ID0_IB,
 
-    input Valid_ID1_IB,
+    input Valid_ID1_IB_SIMT,
     input [31:0] Inst_ID1_IB,
     input [4:0] Src1_ID1_IB,
     input [4:0] Src2_ID1_IB,
@@ -121,10 +121,10 @@ module IBuffer#(
 
     // feedback from MEM
     input [NUM_THREADS-1:0] PosFB_MEM_IB,
-    input PosFB_valid_MEM_IB,
-    input ZeroFB_valid_MEM_IB,
-    input [LOGNUM_WARPS-1:0] PosFB_warpID_MEM_IB,
-    input [LOGNUM_WARPS-1:0] ZeroFB_warpID_MEM_IB
+    input PosFB_Valid_MEM_IB,
+    input ZeroFB_Valid_MEM_IB,
+    input [LOGNUM_WARPS-1:0] PosFB_WarpID_MEM_IB,
+    input [LOGNUM_WARPS-1:0] ZeroFB_WarpID_MEM_IB
     );
     wire [NUM_THREADS-1:0] AM_SIMT_IB[0:NUM_WARPS-1];
 
@@ -143,8 +143,8 @@ module IBuffer#(
     always@(*) begin
         PosFB_valid_array = 0;
         ZeroFB_valid_array = 0;
-        PosFB_valid_array[PosFB_warpID_MEM_IB] = PosFB_valid_MEM_IB;
-        ZeroFB_valid_array[ZeroFB_warpID_MEM_IB] = ZeroFB_valid_MEM_IB;
+        PosFB_valid_array[PosFB_WarpID_MEM_IB] = PosFB_Valid_MEM_IB;
+        ZeroFB_valid_array[ZeroFB_WarpID_MEM_IB] = ZeroFB_Valid_MEM_IB;
     end
 
 
@@ -231,7 +231,7 @@ module IBuffer#(
             .Req_IB_IF(Req_IB_IF[i]),
 
             // signals from ID stage (dual decoding unit)
-            .Valid_ID0_IB(Valid_ID0_IB),
+            .Valid_ID0_IB_SIMT(Valid_ID0_IB_SIMT),
             .Inst_ID0_IB(Inst_ID0_IB),
             .Src1_ID0_IB(Src1_ID0_IB),
             .Src2_ID0_IB(Src2_ID0_IB),
@@ -249,7 +249,7 @@ module IBuffer#(
             .BLT_ID0_IB_SIMT(BLT_ID0_IB_SIMT),
             .Exit_ID0_IB(Exit_ID0_IB),
 
-            .Valid_ID1_IB(Valid_ID1_IB),
+            .Valid_ID1_IB_SIMT(Valid_ID1_IB_SIMT),
             .Inst_ID1_IB(Inst_ID1_IB),
             .Src1_ID1_IB(Src1_ID1_IB),
             .Src2_ID1_IB(Src2_ID1_IB),
@@ -315,9 +315,9 @@ module IBuffer#(
             .replay_SW_LWbar_IB_Scb(replay_SW_LWbar_IB_Scb[i]), // distinguish between SW/LW
 
             // signal from MEM for replay instructions
-            .PosFB_valid_MEM_IB(PosFB_valid_array[i]),
+            .PosFB_Valid_MEM_IB(PosFB_valid_array[i]),
             .PosFB_MEM_IB(PosFB_MEM_IB),
-            .ZeroFB_valid_MEM_IB(ZeroFB_valid_array[i]) // indicating the cache miss has been served
+            .ZeroFB_Valid_MEM_IB(ZeroFB_valid_array[i]) // indicating the cache miss has been served
         );
     end
     endgenerate

@@ -31,7 +31,7 @@ module IBuffer_warp#(
     output Req_IB_IF,
 
     // signals from ID stage (dual decoding unit)
-    input Valid_ID0_IB,
+    input Valid_ID0_IB_SIMT,
     input [31:0] Inst_ID0_IB,
     input [4:0] Src1_ID0_IB, // 5-bit RegID with MSB as valid
     input [4:0] Src2_ID0_IB,
@@ -49,7 +49,7 @@ module IBuffer_warp#(
     input BLT_ID0_IB_SIMT,
     input Exit_ID0_IB,
 
-    input Valid_ID1_IB,
+    input Valid_ID1_IB_SIMT,
     input [31:0] Inst_ID1_IB,
     input [4:0] Src1_ID1_IB, // 5-bit RegID with MSB as valid
     input [4:0] Src2_ID1_IB,
@@ -115,9 +115,9 @@ module IBuffer_warp#(
     output replay_SW_LWbar_IB_Scb, // distinguish between SW/LW
 
     // signal from MEM for replay instructions
-    input PosFB_valid_MEM_IB,
+    input PosFB_Valid_MEM_IB,
     input [NUM_THREADS-1:0] PosFB_MEM_IB,
-    input ZeroFB_valid_MEM_IB // indicating the cache miss has been served
+    input ZeroFB_Valid_MEM_IB // indicating the cache miss has been served
     );
 
     reg [31:0] instr_array[0:3]; // binary code
@@ -146,11 +146,11 @@ module IBuffer_warp#(
     wire full = depth == 3'b100;
 
     // for the instruction currently being replayed
-    wire [NUM_THREADS-1:0] PAM_next = PosFB_valid_MEM_IB? (PAM_array[IRP_ind] & (~PosFB_MEM_IB)): PAM_array[IRP_ind];
+    wire [NUM_THREADS-1:0] PAM_next = PosFB_Valid_MEM_IB? (PAM_array[IRP_ind] & (~PosFB_MEM_IB)): PAM_array[IRP_ind];
     // clear the Inst[IRP_ind] in the same clock as PosFB is received
 
     // pointer management
-    assign WP_EN = !DropInstr_SIMT_IB & (Valid_ID0_IB | Valid_ID1_IB);
+    assign WP_EN = !DropInstr_SIMT_IB & (Valid_ID0_IB_SIMT | Valid_ID1_IB_SIMT);
     assign WP_next = WP_EN? (WP+1'b1):WP;
     assign RP_EN = RP_grt;
     assign RP_next = RP_EN? (RP+1'b1):RP;
@@ -191,11 +191,11 @@ module IBuffer_warp#(
     reg [3:0] replay_array_next;
     always@(*) begin
         replay_array_next = replay_array;
-        if (ZeroFB_valid_MEM_IB | (PosFB_valid_MEM_IB & PAM_next!=0)) replay_array_next[IRP_ind] = 1'b1;
+        if (ZeroFB_Valid_MEM_IB | (PosFB_Valid_MEM_IB & PAM_next!=0)) replay_array_next[IRP_ind] = 1'b1;
         if (IRP_grt) replay_array_next[IRP_ind] = 1'b0;
         if (RP_grt) replay_array_next[RP_ind] = 1'b0;
-        if (Valid_ID1_IB) replay_array_next[WP_ind] = MemWrite_ID1_IB | MemRead_ID1_IB;
-        if (Valid_ID0_IB) replay_array_next[WP_ind] = MemWrite_ID0_IB | MemRead_ID0_IB;  
+        if (Valid_ID1_IB_SIMT) replay_array_next[WP_ind] = MemWrite_ID1_IB | MemRead_ID1_IB;
+        if (Valid_ID0_IB_SIMT) replay_array_next[WP_ind] = MemWrite_ID0_IB | MemRead_ID0_IB;  
     end
 
     always@(posedge clk) begin
@@ -206,7 +206,7 @@ module IBuffer_warp#(
         if (RP_grt) begin
             ScbID_array[RP_ind] <= ScbID_Scb_IB;
         end
-        if (Valid_ID0_IB & !DropInstr_SIMT_IB) begin
+        if (Valid_ID0_IB_SIMT & !DropInstr_SIMT_IB) begin
             PAM_array[WP_ind] <= AM_SIMT_IB;
             instr_array[WP_ind] <= Inst_ID0_IB;
             src1_valid_array[WP_ind] <= Src1_Valid_ID0_IB;
@@ -225,7 +225,7 @@ module IBuffer_warp#(
             BLT_array[WP_ind] <= BLT_ID0_IB_SIMT;
             exit_array[WP_ind] <= Exit_ID0_IB;
         end
-        if (Valid_ID1_IB & !DropInstr_SIMT_IB) begin
+        if (Valid_ID1_IB_SIMT & !DropInstr_SIMT_IB) begin
             PAM_array[WP_ind] <= AM_SIMT_IB;
             instr_array[WP_ind] <= Inst_ID1_IB;
             src1_valid_array[WP_ind] <= Src1_Valid_ID1_IB;
@@ -254,7 +254,7 @@ module IBuffer_warp#(
             RP_req = valid_array[RP_ind] & !exit_array[RP_ind] & !full_Scb_IB & !dependent_Scb_IB;// TODO: DIV stall, Operand collector full
         end else begin // RP != IRP && IRPvalid
             // give priority to the replay instruction
-            if (replay_array[IRP_ind] | ZeroFB_valid_MEM_IB | (PosFB_valid_MEM_IB & PAM_next != 0)) begin
+            if (replay_array[IRP_ind] | ZeroFB_Valid_MEM_IB | (PosFB_Valid_MEM_IB & PAM_next != 0)) begin
                 IRP_req = 1'b1;
             end else if (valid_array[RP_ind] & !replay_array[RP_ind]) begin // RP is valid && RP is not another replayable inst
                 RP_req = !exit_array[RP_ind] & !full_Scb_IB & !dependent_Scb_IB;// TODO: DIV stall, Operand collector full
