@@ -112,7 +112,7 @@ module IBuffer_warp#(
     // signal for clearing
     output [1:0] Replay_Complete_ScbID_IB_Scb, // mark the Scb entry as Complete
     output Replay_Complete_IB_Scb,
-    output Replay_SW_LWbar_IB_Scb, // distinguish between SW/LW
+    output Replay_Complete_SW_LWbar_IB_Scb, // distinguish between SW/LW
 
     // signal from MEM for Replay Instructions
     input PosFB_Valid_MEM_IB,
@@ -290,7 +290,7 @@ module IBuffer_warp#(
     // signal for clearing
     assign Replay_Complete_ScbID_IB_Scb = ScbID_array[IRP_ind]; // mark the Scb entry as Complete
     assign Replay_Complete_IB_Scb = PAM_next == 0;
-    assign Replay_SW_LWbar_IB_Scb = MemWrite_array[IRP_ind]; // distinguish between SW/LW
+    assign Replay_Complete_SW_LWbar_IB_Scb = MemWrite_array[IRP_ind]; // distinguish between SW/LW
     
     // signal to RAU/IU
     assign Exit_Req_IB_IU = Valid_array[RP_ind] & Exit_array[RP_ind] & Empty_Scb_IB;

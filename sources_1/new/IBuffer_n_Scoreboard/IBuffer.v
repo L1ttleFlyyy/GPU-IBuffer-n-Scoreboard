@@ -85,7 +85,7 @@ module IBuffer#(
     // when clearing
     output [2*NUM_WARPS-1:0] Replay_Complete_ScbID_Flattened_IB_Scb,
     output [NUM_WARPS-1:0] Replay_Complete_IB_Scb,
-    output [NUM_WARPS-1:0] Replay_SW_LWbar_IB_Scb,
+    output [NUM_WARPS-1:0] Replay_Complete_SW_LWbar_IB_Scb,
     // when issuing
     input [NUM_WARPS-1:0] Full_Scb_IB,
     input [NUM_WARPS-1:0] Empty_Scb_IB,
@@ -312,7 +312,7 @@ module IBuffer#(
             // signal for clearing
             .Replay_Complete_ScbID_IB_Scb(Replay_Complete_ScbID_IB_Scb[i]), // mark the Scb entry as Complete
             .Replay_Complete_IB_Scb(Replay_Complete_IB_Scb[i]),
-            .Replay_SW_LWbar_IB_Scb(Replay_SW_LWbar_IB_Scb[i]), // distinguish between SW/LW
+            .Replay_Complete_SW_LWbar_IB_Scb(Replay_Complete_SW_LWbar_IB_Scb[i]), // distinguish between SW/LW
 
             // signal from MEM for Replay instructions
             .PosFB_Valid_MEM_IB(PosFB_Valid_array[i]),

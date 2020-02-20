@@ -87,7 +87,7 @@ module gpu_top#(
     // when clearing
     wire [2*NUM_WARPS-1:0] Replay_Complete_ScbID_Flattened_IB_Scb;
     wire [NUM_WARPS-1:0] Replay_Complete_IB_Scb;
-    wire [NUM_WARPS-1:0] Replay_SW_LWbar_IB_Scb;
+    wire [NUM_WARPS-1:0] Replay_Complete_SW_LWbar_IB_Scb;
     // when issuing
     wire [NUM_WARPS-1:0] Full_Scb_IB;
     wire [NUM_WARPS-1:0] Empty_Scb_IB;
@@ -129,10 +129,10 @@ module gpu_top#(
     wire [LOGNUM_WARPS-1:0] ZeroFB_WarpID_MEM_IB;
 
     /* signals to/from Scoreboard*/
-    wire Clear_ScbID_ALU_Scb; // Clear signal from ALU (branch only)
-    wire Clear_ScbID_CDB_Scb; // Clear signal from CDB (for all regwrite)
-    wire Clear_WarpID_ALU_Scb;
-    wire Clear_WarpID_CDB_Scb;
+    wire [1:0] Clear_ScbID_ALU_Scb; // Clear signal from ALU (branch only)
+    wire [1:0] Clear_ScbID_CDB_Scb; // Clear signal from CDB (for all regwrite)
+    wire [LOGNUM_WARPS-1:0] Clear_WarpID_ALU_Scb;
+    wire [LOGNUM_WARPS-1:0] Clear_WarpID_CDB_Scb;
     wire Clear_Valid_ALU_Scb;
     wire Clear_Valid_CDB_Scb;
 
@@ -196,7 +196,7 @@ module gpu_top#(
     // when clearing
     .Replay_Complete_ScbID_Flattened_IB_Scb(Replay_Complete_ScbID_Flattened_IB_Scb),
     .Replay_Complete_IB_Scb(Replay_Complete_IB_Scb),
-    .Replay_SW_LWbar_IB_Scb(Replay_SW_LWbar_IB_Scb),
+    .Replay_Complete_SW_LWbar_IB_Scb(Replay_Complete_SW_LWbar_IB_Scb),
     // when issuing
     .Full_Scb_IB(Full_Scb_IB),
     .Empty_Scb_IB(Empty_Scb_IB),
@@ -241,6 +241,8 @@ module gpu_top#(
     rr_prioritizer#(
         .WIDTH(8)
     ) IU_normal (
+        .clk(clk),
+        .rst(rst),
         .req(Req_IB_IU),
         .grt(Grt_IU_IB)
     );
@@ -253,6 +255,8 @@ module gpu_top#(
     );
 
     scoreboard Scb(
+    .clk(clk),
+    .rst(rst),
     .Clear_ScbID_ALU_Scb(Clear_ScbID_ALU_Scb), // Clear signal from ALU (branch only)
     .Clear_ScbID_CDB_Scb(Clear_ScbID_CDB_Scb), // Clear signal from CDB (for all regwrite)
     .Clear_WarpID_ALU_Scb(Clear_WarpID_ALU_Scb),
