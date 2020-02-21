@@ -37,7 +37,7 @@ module IBuffer#(
     input [NUM_WARPS*NUM_THREADS-1:0]AM_Flattened_SIMT_IB, //TODO: Flattened I/O or not?
 
     // signals from ID stage (dual decoding unit)
-    input Valid_ID0_IB_SIMT,
+    input [NUM_WARPS-1:0] Valid_ID0_IB_SIMT,
     input [31:0] Instr_ID0_IB,
     input [4:0] Src1_ID0_IB,
     input [4:0] Src2_ID0_IB,
@@ -55,7 +55,7 @@ module IBuffer#(
     input BLT_ID0_IB_SIMT,
     input Exit_ID0_IB,
 
-    input Valid_ID1_IB_SIMT,
+    input [NUM_WARPS-1:0] Valid_ID1_IB_SIMT,
     input [31:0] Instr_ID1_IB,
     input [4:0] Src1_ID1_IB,
     input [4:0] Src2_ID1_IB,
@@ -243,7 +243,7 @@ module IBuffer#(
             .Req_IB_IF(Req_IB_IF[i]),
 
             // signals from ID stage (dual decoding unit)
-            .Valid_ID0_IB_SIMT(Valid_ID0_IB_SIMT),
+            .Valid_ID0_IB_SIMT(Valid_ID0_IB_SIMT[i]),
             .Instr_ID0_IB(Instr_ID0_IB),
             .Src1_ID0_IB(Src1_ID0_IB),
             .Src2_ID0_IB(Src2_ID0_IB),
@@ -261,7 +261,7 @@ module IBuffer#(
             .BLT_ID0_IB_SIMT(BLT_ID0_IB_SIMT),
             .Exit_ID0_IB(Exit_ID0_IB),
 
-            .Valid_ID1_IB_SIMT(Valid_ID1_IB_SIMT),
+            .Valid_ID1_IB_SIMT(Valid_ID1_IB_SIMT[i]),
             .Instr_ID1_IB(Instr_ID1_IB),
             .Src1_ID1_IB(Src1_ID1_IB),
             .Src2_ID1_IB(Src2_ID1_IB),

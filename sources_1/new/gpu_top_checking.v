@@ -27,6 +27,32 @@ module gpu_top_checking#(
     )(
     input clk,
     input rst,
+
+    // TM to PC
+    input [2:0] WarpID_TM_PC,
+	input UpdatePC_TM_PC,
+	input [31:0] StartingPC_TM_PC,	
+	// From ALU to ID
+	input [32*8-1:0] TargetAddr_ALU_PC_Flattened, //work with UpdatePC_Qual1_SIMT_PC
+	// From SIMT to ID
+	input [7:0] Stall_SIMT_PC,
+	input [7:0] UpdatePC_Qual1_SIMT_PC,
+	input [7:0] UpdatePC_Qual2_SIMT_PC,
+	input [32*8-1:0] TargetAddr_SIMT_PC_Flattened, //work with UpdatePC_Qual2_SIMT_PC
+	
+	// ID To SMIT
+	output [9:0] PCplus4_ID0_SIMT,
+	output [9:0] PCplus4_ID1_SIMT,
+	output DotS_ID0_SIMT,
+	output DotS_ID1_SIMT,
+	output Call_ID0_SIMT,
+	output Call_ID1_SIMT,
+	output Ret_ID0_SIMT,
+	output Ret_ID1_SIMT,
+	output Jmp_ID0_SIMT,
+	output Jmp_ID1_SIMT,
+
+    // ALU/CDB to Scoreboard
     input [1:0] Clear_ScbID_ALU_Scb, // Clear signal from ALU (branch only)
     input [1:0] Clear_ScbID_CDB_Scb, // Clear signal from CDB (for all regwrite)
     input [LOGNUM_WARPS-1:0] Clear_WarpID_ALU_Scb,
@@ -34,50 +60,10 @@ module gpu_top_checking#(
     input Clear_Valid_ALU_Scb,
     input Clear_Valid_CDB_Scb,
     
-    // signals to/from IF stage (warp specific)
-    input [NUM_WARPS-1:0]Valid_IF_IB, 
-    output [NUM_WARPS-1:0]Req_IB_IF,
-    
     // signals from SIMT (warp specific)
     input [NUM_WARPS-1:0]DropInstr_SIMT_IB,
     input [NUM_WARPS*NUM_THREADS-1:0]AM_Flattened_SIMT_IB, //TODO: Flattened I/O or not?
 
-    // signals from ID stage (dual decoding unit)
-    input Valid_ID0_IB_SIMT,
-    input [31:0] Instr_ID0_IB,
-    input [4:0] Src1_ID0_IB,
-    input [4:0] Src2_ID0_IB,
-    input [4:0] Dst_ID0_IB,
-	input Src1_Valid_ID0_IB,
-	input Src2_Valid_ID0_IB,
-    input [3:0] ALUop_ID0_IB,
-    input [15:0] Imme_ID0_IB,
-    input Imme_Valid_ID0_IB,
-    input RegWrite_ID0_IB,
-    input MemWrite_ID0_IB,
-    input MemRead_ID0_IB,
-    input Shared_Globalbar_ID0_IB,
-    input BEQ_ID0_IB_SIMT,
-    input BLT_ID0_IB_SIMT,
-    input Exit_ID0_IB,
-
-    input Valid_ID1_IB_SIMT,
-    input [31:0] Instr_ID1_IB,
-    input [4:0] Src1_ID1_IB,
-    input [4:0] Src2_ID1_IB,
-    input [4:0] Dst_ID1_IB,
-	input Src1_Valid_ID1_IB,
-	input Src2_Valid_ID1_IB,
-    input [3:0] ALUop_ID1_IB,
-    input [15:0] Imme_ID1_IB,
-    input Imme_Valid_ID1_IB,
-    input RegWrite_ID1_IB,
-    input MemWrite_ID1_IB,
-    input MemRead_ID1_IB,
-    input Shared_Globalbar_ID1_IB,
-    input BEQ_ID1_IB_SIMT,
-    input BLT_ID1_IB_SIMT,
-    input Exit_ID1_IB,
 
     // signal to/from Operand Collector // TODO: OC_Full
     output Valid_IB_OC,
@@ -110,7 +96,47 @@ module gpu_top_checking#(
     input [LOGNUM_WARPS-1:0] PosFB_WarpID_MEM_IB,
     input [LOGNUM_WARPS-1:0] ZeroFB_WarpID_MEM_IB
     );
-    wire [NUM_THREADS-1:0] AM_SIMT_IB[0:NUM_WARPS-1];
+
+	//From IB to PC
+	wire [7:0] Req_IB_IF;
+
+    // ID to IB
+	wire [7:0] Valid_IF_IB; // Data-stationary method of control
+	wire [4:0] Src1_ID0_IB; 
+	wire [4:0] Src1_ID1_IB;
+	wire [4:0] Src2_ID0_IB;
+	wire [4:0] Src2_ID1_IB;
+	wire [4:0] Dst_ID0_IB;
+	wire [4:0] Dst_ID1_IB;
+	wire [15:0] Imme_ID0_IB; 
+	wire [15:0] Imme_ID1_IB;
+	wire RegWrite_ID0_IB;
+	wire RegWrite_ID1_IB;
+	wire MemWrite_ID0_IB;
+	wire MemWrite_ID1_IB;
+	wire MemRead_ID0_IB;
+	wire MemRead_ID1_IB;
+	wire Exit_ID0_IB;
+	wire Exit_ID1_IB;
+	wire [3:0] ALUop_ID0_IB;
+	wire [3:0] ALUop_ID1_IB;
+	wire Shared_Globalbar_ID0_IB;
+	wire Shared_Globalbar_ID1_IB;
+	wire Src1_Valid_ID0_IB;
+	wire Src1_Valid_ID1_IB;
+	wire Src2_Valid_ID0_IB;
+	wire Src2_Valid_ID1_IB;
+	wire Imme_Valid_ID0_IB;
+	wire Imme_Valid_ID1_IB;
+	wire [31:0] Instr_ID0_IB;
+	wire [31:0] Instr_ID1_IB;
+	//To both SMIT&I-buffer
+	wire BEQ_ID0_IB_SIMT;
+	wire BEQ_ID1_IB_SIMT;
+	wire BLT_ID0_IB_SIMT;
+	wire BLT_ID1_IB_SIMT;
+	wire [7:0] Valid_ID0_IB_SIMT;	//one-hot warpID
+	wire [7:0] Valid_ID1_IB_SIMT;
 
     // signals to/from scoreboard (warp specific)
     wire [NUM_WARPS-1:0] RP_Grt_IB_Scb;
@@ -136,6 +162,73 @@ module gpu_top_checking#(
     wire [NUM_WARPS-1:0] Grt_IU_IB;
     wire [NUM_WARPS-1:0] Exit_Req_IB_IU;
     wire [NUM_WARPS-1:0] Exit_Grt_IU_IB;
+
+    Fetch_Decode IF_ID (
+	.clk(clk), 
+	.rst_n(rst),
+	//From TM
+	.WarpID_TM_PC(WarpID_TM_PC),
+	.UpdatePC_TM_PC(UpdatePC_TM_PC),
+	.StartingPC_TM_PC(StartingPC_TM_PC),	
+	//From ALU
+	.TargetAddr_ALU_PC_Flattened(TargetAddr_ALU_PC_Flattened), //work with UpdatePC_Qual1_SIMT_PC
+	//From SIMT
+	.Stall_SIMT_PC(Stall_SIMT_PC),
+	.UpdatePC_Qual1_SIMT_PC(UpdatePC_Qual1_SIMT_PC),
+	.UpdatePC_Qual2_SIMT_PC(UpdatePC_Qual2_SIMT_PC),
+	.TargetAddr_SIMT_PC_Flattened(TargetAddr_SIMT_PC_Flattened), //work with UpdatePC_Qual2_SIMT_PC
+	//From IB 
+	.Req_IB_PC(Req_IB_IF),// TODO: IF or PC?
+	
+	// To SMIT
+	.PCplus4_ID0_SIMT(PCplus4_ID0_SIMT),
+	.PCplus4_ID1_SIMT(PCplus4_ID1_SIMT),
+	.DotS_ID0_SIMT(DotS_ID0_SIMT),
+	.DotS_ID1_SIMT(DotS_ID1_SIMT),
+	.Call_ID0_SIMT(Call_ID0_SIMT),
+	.Call_ID1_SIMT(Call_ID1_SIMT),
+	.Ret_ID0_SIMT(Ret_ID0_SIMT),
+	.Ret_ID1_SIMT(Ret_ID1_SIMT),
+	.Jmp_ID0_SIMT(Jmp_ID0_SIMT),
+	.Jmp_ID1_SIMT(Jmp_ID1_SIMT),
+	//To I-buffer
+	.Valid_IF_IB(Valid_IF_IB), // Data-stationary method of control
+	.Src1_ID0_IB(Src1_ID0_IB), 
+	.Src1_ID1_IB(Src1_ID1_IB),
+	.Src2_ID0_IB(Src2_ID0_IB),
+	.Src2_ID1_IB(Src2_ID1_IB),
+	.Dst_ID0_IB(Dst_ID0_IB),
+	.Dst_ID1_IB(Dst_ID1_IB),
+	.Imme_ID0_IB(Imme_ID0_IB), 
+	.Imme_ID1_IB(Imme_ID1_IB),
+	.RegWrite_ID0_IB(RegWrite_ID0_IB),
+	.RegWrite_ID1_IB(RegWrite_ID1_IB),
+	.MemWrite_ID0_IB(MemWrite_ID0_IB),
+	.MemWrite_ID1_IB(MemWrite_ID1_IB),
+	.MemRead_ID0_IB(MemRead_ID0_IB),
+	.MemRead_ID1_IB(MemRead_ID1_IB),
+	.Exit_ID0_IB(Exit_ID0_IB),
+	.Exit_ID1_IB(Exit_ID1_IB),
+	.ALUop_ID0_IB(ALUop_ID0_IB),
+	.ALUop_ID1_IB(ALUop_ID1_IB),
+	.Shared_Globalbar_ID0_IB(Shared_Globalbar_ID0_IB),
+	.Shared_Globalbar_ID1_IB(Shared_Globalbar_ID1_IB),
+	.Src1_Valid_ID0_IB(Src1_Valid_ID0_IB),
+	.Src1_Valid_ID1_IB(Src1_Valid_ID1_IB),
+	.Src2_Valid_ID0_IB(Src2_Valid_ID0_IB),
+	.Src2_Valid_ID1_IB(Src2_Valid_ID1_IB),
+	.Imme_Valid_ID0_IB(Imme_Valid_ID0_IB),
+	.Imme_Valid_ID1_IB(Imme_Valid_ID1_IB),
+	.Instr_ID0_IB(Instr_ID0_IB),
+	.Instr_ID1_IB(Instr_ID1_IB),
+	//To both SMIT&I-buffer
+	.BEQ_ID0_IB_SIMT(BEQ_ID0_IB_SIMT),
+	.BEQ_ID1_IB_SIMT(BEQ_ID1_IB_SIMT),
+	.BLT_ID0_IB_SIMT(BLT_ID0_IB_SIMT),
+	.BLT_ID1_IB_SIMT(BLT_ID1_IB_SIMT),
+	.Valid_ID0_IB_SIMT(Valid_ID0_IB_SIMT),	//one-hot warpID
+	.Valid_ID1_IB_SIMT(Valid_ID1_IB_SIMT)
+    );
 
     IBuffer IB(
     .clk(clk),

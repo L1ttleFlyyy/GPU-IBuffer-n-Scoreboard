@@ -48,7 +48,7 @@ module Fetch_Decode #(
 	output MemRead_ID0_IB,
 	output MemRead_ID1_IB,
 	output Exit_ID0_IB,
-	output Exit_ID1_IB
+	output Exit_ID1_IB,
 	output [3:0] ALUop_ID0_IB,
 	output [3:0] ALUop_ID1_IB,
 	output Shared_Globalbar_ID0_IB,
@@ -57,10 +57,10 @@ module Fetch_Decode #(
 	output Src1_Valid_ID1_IB,
 	output Src2_Valid_ID0_IB,
 	output Src2_Valid_ID1_IB,
-	output Dst_Valid_ID0_IB,
-	output Dst_Valid_ID1_IB,
 	output Imme_Valid_ID0_IB,
 	output Imme_Valid_ID1_IB,
+	output [31:0] Instr_ID0_IB,
+	output [31:0] Instr_ID1_IB,
 	//To both SMIT&I-buffer
 	output BEQ_ID0_IB_SIMT,
 	output BEQ_ID1_IB_SIMT,
@@ -68,8 +68,6 @@ module Fetch_Decode #(
 	output BLT_ID1_IB_SIMT,
 	output [7:0] Valid_ID0_IB_SIMT,	//one-hot warpID
 	output [7:0] Valid_ID1_IB_SIMT
-	output [31:0] Inst_ID0_IB,
-	output [31:0] Inst_ID1_IB,
 );
 
 wire [31:0] TargetAddr_ALU_PC [7:0];
