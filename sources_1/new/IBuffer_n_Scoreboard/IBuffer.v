@@ -44,9 +44,9 @@ module IBuffer#(
     input [4:0] Dst_ID0_IB,
 	input Src1_Valid_ID0_IB,
 	input Src2_Valid_ID0_IB,
-	input Dst_Valid_ID0_IB,
     input [3:0] ALUop_ID0_IB,
     input [15:0] Imme_ID0_IB,
+    input Imme_Valid_ID0_IB,
     input RegWrite_ID0_IB,
     input MemWrite_ID0_IB,
     input MemRead_ID0_IB,
@@ -62,9 +62,9 @@ module IBuffer#(
     input [4:0] Dst_ID1_IB,
 	input Src1_Valid_ID1_IB,
 	input Src2_Valid_ID1_IB,
-	input Dst_Valid_ID1_IB,
     input [3:0] ALUop_ID1_IB,
     input [15:0] Imme_ID1_IB,
+    input Imme_Valid_ID1_IB,
     input RegWrite_ID1_IB,
     input MemWrite_ID1_IB,
     input MemRead_ID1_IB,
@@ -102,10 +102,13 @@ module IBuffer#(
     output Valid_IB_OC,
     output reg [LOGNUM_WARPS-1:0] WarpID_IB_OC,
     output reg [31:0] Instr_IB_OC,
-    output reg [5:0] Src1_IB_OC, // 5-bit RegID with MSB as Valid
-    output reg [5:0] Src2_IB_OC,
-    output reg [5:0] Dst_IB_OC,
+    output reg [4:0] Src1_IB_OC,
+    output reg [4:0] Src2_IB_OC,
+    output reg [4:0] Dst_IB_OC,
+    output reg Src1_Valid_IB_OC,
+    output reg Src2_Valid_IB_OC,
     output reg [15:0] Imme_IB_OC,
+    output reg Imme_Valid_IB_OC,
     output reg [3:0] ALUop_IB_OC,
     output reg RegWrite_IB_OC,
     output reg MemWrite_IB_OC,
@@ -164,11 +167,14 @@ module IBuffer#(
 
     // output to OC
     wire [31:0] Instr_array[0:NUM_WARPS-1];
-    wire [5:0] Src1_array[0:NUM_WARPS-1];
-    wire [5:0] Src2_array[0:NUM_WARPS-1];
-    wire [5:0] Dst_array[0:NUM_WARPS-1];
+    wire [4:0] Src1_array[0:NUM_WARPS-1];
+    wire [4:0] Src2_array[0:NUM_WARPS-1];
+    wire [4:0] Dst_array[0:NUM_WARPS-1];
     wire [15:0] Imme_array[0:NUM_WARPS-1];
     wire [3:0] ALUop_array[0:NUM_WARPS-1];
+    wire [NUM_WARPS-1:0] Src1_Valid_array;
+    wire [NUM_WARPS-1:0] Src2_Valid_array;
+    wire [NUM_WARPS-1:0] Imme_Valid_array;
     wire [NUM_WARPS-1:0] RegWrite_array;
     wire [NUM_WARPS-1:0] MemWrite_array;
     wire [NUM_WARPS-1:0] MemRead_array;
@@ -182,8 +188,11 @@ module IBuffer#(
         Instr_IB_OC = Instr_array[0];
         Src1_IB_OC = Src1_array[0];
         Src2_IB_OC = Src2_array[0];
+        Src1_Valid_IB_OC = Src1_Valid_array[0];
+        Src2_Valid_IB_OC = Src2_Valid_array[0];
         Dst_IB_OC = Dst_array[0];
         Imme_IB_OC = Imme_array[0];
+        Imme_Valid_IB_OC = Imme_Valid_array[0];
         ALUop_IB_OC = ALUop_array[0];
         RegWrite_IB_OC = RegWrite_array[0];
         MemWrite_IB_OC = MemWrite_array[0];
@@ -197,8 +206,11 @@ module IBuffer#(
                 Instr_IB_OC = Instr_array[j];
                 Src1_IB_OC = Src1_array[j];
                 Src2_IB_OC = Src2_array[j];
+                Src1_Valid_IB_OC = Src1_Valid_array[j];
+                Src2_Valid_IB_OC = Src2_Valid_array[j];
                 Dst_IB_OC = Dst_array[j];
                 Imme_IB_OC = Imme_array[j];
+                Imme_Valid_IB_OC = Imme_Valid_array[j];
                 ALUop_IB_OC = ALUop_array[j];
                 RegWrite_IB_OC = RegWrite_array[j];
                 MemWrite_IB_OC = MemWrite_array[j];
@@ -238,9 +250,9 @@ module IBuffer#(
             .Dst_ID0_IB(Dst_ID0_IB),
             .Src1_Valid_ID0_IB(Src1_Valid_ID0_IB),
             .Src2_Valid_ID0_IB(Src2_Valid_ID0_IB),
-            .Dst_Valid_ID0_IB(Dst_Valid_ID0_IB),
             .ALUop_ID0_IB(ALUop_ID0_IB),
             .Imme_ID0_IB(Imme_ID0_IB),
+            .Imme_Valid_ID0_IB(Imme_Valid_ID0_IB),
             .RegWrite_ID0_IB(RegWrite_ID0_IB),
             .MemWrite_ID0_IB(MemWrite_ID0_IB),
             .MemRead_ID0_IB(MemRead_ID0_IB),
@@ -256,9 +268,9 @@ module IBuffer#(
             .Dst_ID1_IB(Dst_ID1_IB),
             .Src1_Valid_ID1_IB(Src1_Valid_ID1_IB),
             .Src2_Valid_ID1_IB(Src2_Valid_ID1_IB),
-            .Dst_Valid_ID1_IB(Dst_Valid_ID1_IB),
             .ALUop_ID1_IB(ALUop_ID1_IB),
             .Imme_ID1_IB(Imme_ID1_IB),
+            .Imme_Valid_ID1_IB(Imme_Valid_ID1_IB),
             .RegWrite_ID1_IB(RegWrite_ID1_IB),
             .MemWrite_ID1_IB(MemWrite_ID1_IB),
             .MemRead_ID1_IB(MemRead_ID1_IB),
@@ -278,10 +290,13 @@ module IBuffer#(
             // signal to/from OC
             // .Valid_IB_OC, TODO: .OC_Full?
             .Instr_IB_OC(Instr_array[i]),
-            .Src1_IB_OC(Src1_array[i]), // 5-bit RegID with MSB as Valid
+            .Src1_IB_OC(Src1_array[i]),
             .Src2_IB_OC(Src2_array[i]),
+            .Src1_Valid_IB_OC(Src1_Valid_array[i]),
+            .Src2_Valid_IB_OC(Src2_Valid_array[i]),
             .Dst_IB_OC(Dst_array[i]),
             .Imme_IB_OC(Imme_array[i]),
+            .Imme_Valid_IB_OC(Imme_Valid_array[i]),
             .ALUop_IB_OC(ALUop_array[i]),
             .RegWrite_IB_OC(RegWrite_array[i]),
             .MemWrite_IB_OC(MemWrite_array[i]),

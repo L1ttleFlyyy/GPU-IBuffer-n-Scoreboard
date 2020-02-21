@@ -33,14 +33,14 @@ module IBuffer_warp#(
     // signals from ID stage (dual decoding unit)
     input Valid_ID0_IB_SIMT,
     input [31:0] Instr_ID0_IB,
-    input [4:0] Src1_ID0_IB, // 5-bit RegID with MSB as Valid
+    input [4:0] Src1_ID0_IB,
     input [4:0] Src2_ID0_IB,
     input [4:0] Dst_ID0_IB,
     input Src1_Valid_ID0_IB,
     input Src2_Valid_ID0_IB,
-    input Dst_Valid_ID0_IB,
     input [3:0] ALUop_ID0_IB,
     input [15:0] Imme_ID0_IB,
+    input Imme_Valid_ID0_IB,
     input RegWrite_ID0_IB,
     input MemWrite_ID0_IB,
     input MemRead_ID0_IB,
@@ -51,14 +51,14 @@ module IBuffer_warp#(
 
     input Valid_ID1_IB_SIMT,
     input [31:0] Instr_ID1_IB,
-    input [4:0] Src1_ID1_IB, // 5-bit RegID with MSB as Valid
+    input [4:0] Src1_ID1_IB,
     input [4:0] Src2_ID1_IB,
     input [4:0] Dst_ID1_IB,
     input Src1_Valid_ID1_IB,
     input Src2_Valid_ID1_IB,
-    input Dst_Valid_ID1_IB,
     input [3:0] ALUop_ID1_IB,
     input [15:0] Imme_ID1_IB,
+    input Imme_Valid_ID1_IB,
     input RegWrite_ID1_IB,
     input MemWrite_ID1_IB,
     input MemRead_ID1_IB,
@@ -78,10 +78,13 @@ module IBuffer_warp#(
     // signal to/from OC
     // output Valid_IB_OC, TODO: input OC_Full?
     output [31:0] Instr_IB_OC,
-    output [5:0] Src1_IB_OC, // 5-bit RegID with MSB as Valid
-    output [5:0] Src2_IB_OC,
-    output [5:0] Dst_IB_OC,
+    output [4:0] Src1_IB_OC,
+    output [4:0] Src2_IB_OC,
+    output [4:0] Dst_IB_OC,
+    output Src1_Valid_IB_OC,
+    output Src2_Valid_IB_OC,
     output [15:0] Imme_IB_OC,
+    output Imme_Valid_IB_OC,
     output [3:0] ALUop_IB_OC,
     output RegWrite_IB_OC,
     output MemWrite_IB_OC,
@@ -124,9 +127,10 @@ module IBuffer_warp#(
     reg [3:0] Valid_array, Replay_array;
     reg [NUM_THREADS-1:0] PAM_array[0:3]; // private active AM for each Instruction
     reg [4:0] Src1_array[0:3], Src2_array[0:3], Dst_array[0:3];
-    reg [3:0] Src1_Valid_array, Src2_Valid_array, Dst_Valid_array;
+    reg [3:0] Src1_Valid_array, Src2_Valid_array;
     reg [3:0] ALUop_array[0:3];
     reg [15:0] Imme_array[0:3];
+    reg [3:0] Imme_Valid_array;
     reg [3:0] RegWrite_array, MemWrite_array, MemRead_array, Shared_Globalbar_array;
     reg [3:0] BEQ_array, BLT_array, Exit_array;
     reg [1:0] ScbID_array[0:3];
@@ -210,13 +214,13 @@ module IBuffer_warp#(
             PAM_array[WP_ind] <= AM_SIMT_IB;
             Instr_array[WP_ind] <= Instr_ID0_IB;
             Src1_Valid_array[WP_ind] <= Src1_Valid_ID0_IB;
-            Src1_array[WP_ind] <= Src1_ID0_IB[4:0];
+            Src1_array[WP_ind] <= Src1_ID0_IB;
             Src2_Valid_array[WP_ind] <= Src2_Valid_ID0_IB;
-            Src2_array[WP_ind] <= Src2_ID0_IB[4:0];
-            Dst_Valid_array[WP_ind] <= Dst_Valid_ID0_IB;
-            Dst_array[WP_ind] <= Dst_ID0_IB[4:0];
+            Src2_array[WP_ind] <= Src2_ID0_IB;
+            Dst_array[WP_ind] <= Dst_ID0_IB;
             ALUop_array[WP_ind] <= ALUop_ID0_IB;
             Imme_array[WP_ind] <= Imme_ID0_IB;
+            Imme_Valid_array[WP_ind] <= Imme_Valid_ID0_IB;
             RegWrite_array[WP_ind] <= RegWrite_ID0_IB;
             MemRead_array[WP_ind] <= MemRead_ID0_IB;
             MemWrite_array[WP_ind] <= MemWrite_ID0_IB;
@@ -229,13 +233,13 @@ module IBuffer_warp#(
             PAM_array[WP_ind] <= AM_SIMT_IB;
             Instr_array[WP_ind] <= Instr_ID1_IB;
             Src1_Valid_array[WP_ind] <= Src1_Valid_ID1_IB;
-            Src1_array[WP_ind] <= Src1_ID1_IB[4:0];
+            Src1_array[WP_ind] <= Src1_ID1_IB;
             Src2_Valid_array[WP_ind] <= Src2_Valid_ID1_IB;
-            Src2_array[WP_ind] <= Src2_ID1_IB[4:0];
-            Dst_Valid_array[WP_ind] <= Dst_Valid_ID1_IB;
-            Dst_array[WP_ind] <= Dst_ID1_IB[4:0];
+            Src2_array[WP_ind] <= Src2_ID1_IB;
+            Dst_array[WP_ind] <= Dst_ID1_IB;
             ALUop_array[WP_ind] <= ALUop_ID1_IB;
             Imme_array[WP_ind] <= Imme_ID1_IB;
+            Imme_Valid_array[WP_ind] <= Imme_Valid_ID1_IB;
             RegWrite_array[WP_ind] <= RegWrite_ID1_IB;
             MemRead_array[WP_ind] <= MemRead_ID1_IB;
             MemWrite_array[WP_ind] <= MemWrite_ID1_IB;
@@ -264,10 +268,13 @@ module IBuffer_warp#(
 
     // output to OC
     assign Instr_IB_OC = IRP_Req? Instr_array[IRP_ind]:Instr_array[RP_ind];
-    assign Src1_IB_OC = IRP_Req? {Src1_Valid_array[IRP_ind], Src1_array[IRP_ind]}:{Src1_Valid_array[RP_ind], Src1_array[RP_ind]};
-    assign Src2_IB_OC = IRP_Req? {Src2_Valid_array[IRP_ind], Src2_array[IRP_ind]}:{Src2_Valid_array[RP_ind], Src2_array[RP_ind]};
-    assign Dst_IB_OC = IRP_Req? {Dst_Valid_array[IRP_ind], Dst_array[IRP_ind]}:{Dst_Valid_array[RP_ind], Dst_array[RP_ind]};
+    assign Src1_IB_OC = IRP_Req? Src1_array[IRP_ind]:Src1_array[RP_ind];
+    assign Src2_IB_OC = IRP_Req? Src2_array[IRP_ind]:Src2_array[RP_ind];
+    assign Dst_IB_OC = IRP_Req? Dst_array[IRP_ind]:Dst_array[RP_ind];
+    assign Src1_Valid_IB_OC = IRP_Req? Src1_Valid_array[IRP_ind]:Src1_Valid_array[RP_ind];
+    assign Src2_Valid_IB_OC = IRP_Req? Src2_Valid_array[IRP_ind]:Src2_Valid_array[RP_ind];
     assign Imme_IB_OC = IRP_Req? Imme_array[IRP_ind]:Imme_array[RP_ind];
+    assign Imme_Valid_IB_OC = IRP_Req? Imme_Valid_array[IRP_ind]:Imme_Valid_array[RP_ind];
     assign ALUop_IB_OC = IRP_Req? ALUop_array[IRP_ind]:ALUop_array[RP_ind];
     assign RegWrite_IB_OC = IRP_Req? RegWrite_array[IRP_ind]:RegWrite_array[RP_ind];
     assign MemWrite_IB_OC = IRP_Req? MemWrite_array[IRP_ind]:MemWrite_array[RP_ind];
@@ -283,7 +290,7 @@ module IBuffer_warp#(
     assign Dst_IB_Scb = Dst_array[RP_ind];
     assign Src1_Valid_IB_Scb = Src1_Valid_array[RP_ind];
     assign Src2_Valid_IB_Scb = Src2_Valid_array[RP_ind];
-    assign Dst_Valid_IB_Scb = Dst_Valid_array[RP_ind];
+    assign Dst_Valid_IB_Scb = RegWrite_array[RP_ind];
     assign RP_Grt_IB_Scb = RP_Grt;
     assign Replayable_IB_Scb = Replay_array[RP_ind];
 
