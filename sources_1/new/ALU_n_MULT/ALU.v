@@ -37,12 +37,14 @@ module ALU #(
     input [3:0] ALUop_OC_ALU,
     input BEQ_OC_ALU,
     input BLT_OC_ALU,
-    input [1:0] ScbID_OC_ALU,
+    input [1:0] ScbID_OC_ALU, // for BEQ and BLT only, to clear Scb entry
 
     // output to Fetch
     output [32*8-1:0] TargetAddr_ALU_PC_Flattened,
 
     // output to CDB
+    output [31:0] Instr_ALU_CDB,
+    output [2:0] WarpID_ALU_CDB, 
     output RegWrite_ALU_CDB,
     output [4:0] Dst_OC_ALU,
     output [NUM_THREADS*DATA_WIDTH-1:0] Dst_Data_ALU_CDB,
