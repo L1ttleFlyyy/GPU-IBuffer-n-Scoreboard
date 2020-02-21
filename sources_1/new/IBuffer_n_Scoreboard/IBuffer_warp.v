@@ -153,6 +153,7 @@ module IBuffer_warp#(
     wire [NUM_THREADS-1:0] PAM_next = PosFB_Valid_MEM_IB? (PAM_array[IRP_ind] & (~PosFB_MEM_IB)): PAM_array[IRP_ind];
     // clear the Inst[IRP_ind] in the same clock as PosFB is received
 
+    reg [3:0] Valid_array_cleared;
     // pointer management
     assign WP_EN = !DropInstr_SIMT_IB & (Valid_ID0_IB_SIMT | Valid_ID1_IB_SIMT);
     assign WP_next = WP_EN? (WP+1'b1):WP;
@@ -167,7 +168,6 @@ module IBuffer_warp#(
     // it results in a very long comb path
     // we can even do FWFT from ID to OC totally bypassing IB
 
-    reg [3:0] Valid_array_cleared;
     always@(*) begin
         Valid_array_cleared = Valid_array;
         if (PAM_next == 0) Valid_array_cleared[IRP_ind] = 1'b0;
