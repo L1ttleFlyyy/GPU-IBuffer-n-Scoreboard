@@ -98,8 +98,10 @@ module IBuffer#(
     output [NUM_WARPS-1:0] Exit_Req_IB_IU,
     input [NUM_WARPS-1:0] Exit_Grt_IU_IB,
 
-    // signal to/from Operand Collector // TODO: OC_Full
+    // signal to/from Operand Collector
+    input Full_OC_IB,
     output Valid_IB_OC,
+    output reg [NUM_THREADS-1:0] ActiveMask_IB_OC,
     output reg [LOGNUM_WARPS-1:0] WarpID_IB_OC,
     output reg [31:0] Instr_IB_OC,
     output reg [4:0] Src1_IB_OC,
@@ -118,7 +120,8 @@ module IBuffer#(
     output reg BLT_IB_OC,
     output reg [1:0] ScbID_IB_OC,
 
-    // signals to RAU
+    // signals from/to RAU
+    input [NUM_WARPS-1:0] AllocStall_RAU_IB,
     output Exit_IB_RAU_TM,
     output reg [LOGNUM_WARPS-1:0] Exit_WarpID_IB_RAU_TM,
 
@@ -166,6 +169,7 @@ module IBuffer#(
     end
 
     // output to OC
+    wire [NUM_THREADS-1:0] ActiveMask_array[0:NUM_WARPS-1];
     wire [31:0] Instr_array[0:NUM_WARPS-1];
     wire [4:0] Src1_array[0:NUM_WARPS-1];
     wire [4:0] Src2_array[0:NUM_WARPS-1];
@@ -186,6 +190,7 @@ module IBuffer#(
 
     always@(*) begin
         Instr_IB_OC = Instr_array[0];
+        ActiveMask_IB_OC = ActiveMask_array[0];
         Src1_IB_OC = Src1_array[0];
         Src2_IB_OC = Src2_array[0];
         Src1_Valid_IB_OC = Src1_Valid_array[0];
@@ -202,7 +207,8 @@ module IBuffer#(
         BLT_IB_OC = BLT_array[0];
         ScbID_IB_OC = ScbID_array[0];
         for (j=1; j<NUM_WARPS; j=j+1) begin: IB_OC_mux
-            if (Grt_IU_IB[j]) begin       
+            if (Grt_IU_IB[j]) begin   
+                ActiveMask_IB_OC = ActiveMask_array[j];    
                 Instr_IB_OC = Instr_array[j];
                 Src1_IB_OC = Src1_array[j];
                 Src2_IB_OC = Src2_array[j];
@@ -288,7 +294,8 @@ module IBuffer#(
             .Grt_IU_IB(Grt_IU_IB[i]),
 
             // signal to/from OC
-            // .Valid_IB_OC, TODO: .OC_Full?
+            .Full_OC_IB(Full_OC_IB),
+            .ActiveMask_IB_OC(ActiveMask_array[i]),
             .Instr_IB_OC(Instr_array[i]),
             .Src1_IB_OC(Src1_array[i]),
             .Src2_IB_OC(Src2_array[i]),
@@ -306,7 +313,8 @@ module IBuffer#(
             .BLT_IB_OC(BLT_array[i]),
             .ScbID_IB_OC(ScbID_array[i]),
 
-            // signal to RAU
+            // signal from/to RAU
+            .AllocStall_RAU_IB(AllocStall_RAU_IB[i]),
             .Exit_Req_IB_IU(Exit_Req_IB_IU[i]),
             .Exit_Grt_IU_IB(Exit_Grt_IU_IB[i]),
 

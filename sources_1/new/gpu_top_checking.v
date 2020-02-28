@@ -65,10 +65,12 @@ module gpu_top_checking#(
     input [NUM_WARPS*NUM_THREADS-1:0]AM_Flattened_SIMT_IB, //TODO: Flattened I/O or not?
 
 
-    // signal to/from Operand Collector // TODO: OC_Full
+    // signal to/from Operand Collector 
+    input Full_OC_IB,
     output Valid_IB_OC,
     output [LOGNUM_WARPS-1:0] WarpID_IB_OC,
     output [31:0] Instr_IB_OC,
+    output [NUM_THREADS-1:0] ActiveMask_IB_OC,
     output [4:0] Src1_IB_OC,
     output [4:0] Src2_IB_OC,
     output [4:0] Dst_IB_OC,
@@ -86,6 +88,7 @@ module gpu_top_checking#(
     output [1:0] ScbID_IB_OC,
 
     // signals to RAU
+    input AllocStall_RAU_IB,
     output Exit_IB_RAU_TM,
     output [LOGNUM_WARPS-1:0] Exit_WarpID_IB_RAU_TM,
 
@@ -303,7 +306,9 @@ module gpu_top_checking#(
     .Exit_Req_IB_IU(Exit_Req_IB_IU),
     .Exit_Grt_IU_IB(Exit_Grt_IU_IB),
 
-    // signal to/from Operand Collector // TODO: OC_Full
+    // signal to/from Operand Collector
+    .Full_OC_IB(Full_OC_IB),
+    .ActiveMask_IB_OC(ActiveMask_IB_OC),
     .Valid_IB_OC(Valid_IB_OC),
     .WarpID_IB_OC(WarpID_IB_OC),
     .Instr_IB_OC(Instr_IB_OC),
@@ -323,7 +328,8 @@ module gpu_top_checking#(
     .BLT_IB_OC(BLT_IB_OC),
     .ScbID_IB_OC(ScbID_IB_OC),
 
-    // signals to RAU
+    // signals from/to RAU
+    .AllocStall_RAU_IB(AllocStall_RAU_IB),
     .Exit_IB_RAU_TM(Exit_IB_RAU_TM),
     .Exit_WarpID_IB_RAU_TM(Exit_WarpID_IB_RAU_TM),
 

@@ -25,6 +25,7 @@ module ALU #(
     parameter NUM_THREADS = 8
     ) (
     // interface with OC
+	// TODO: ActiveMask
     input Valid_OC_ALU,
     input [2:0] WarpID_OC_ALU,
     input [31:0] Instr_OC_ALU,

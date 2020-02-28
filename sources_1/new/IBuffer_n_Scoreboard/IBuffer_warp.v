@@ -74,9 +74,12 @@ module IBuffer_warp#(
     // signals to/from IU
     output Req_IB_IU,
     input Grt_IU_IB,
+    output Exit_Req_IB_IU,
+    input Exit_Grt_IU_IB,
 
     // signal to/from OC
-    // output Valid_IB_OC, TODO: input OC_Full?
+    input Full_OC_IB,
+    output [NUM_THREADS-1:0] ActiveMask_IB_OC,
     output [31:0] Instr_IB_OC,
     output [4:0] Src1_IB_OC,
     output [4:0] Src2_IB_OC,
@@ -94,9 +97,8 @@ module IBuffer_warp#(
     output BLT_IB_OC,
     output [1:0] ScbID_IB_OC,
 
-    // signal to RAU
-    output Exit_Req_IB_IU,
-    input Exit_Grt_IU_IB,
+    // signal from RAU
+    input AllocStall_RAU_IB,
 
     // signal from/to Scb
     // signals for depositing/issuing
@@ -254,20 +256,21 @@ module IBuffer_warp#(
     always@(*) begin
         RP_Req = 1'b0;
         IRP_Req = 1'b0;
-        if (RP == IRP | !Valid_array[IRP_ind]) begin // !Valid_array[IRP_ind] is kind of redundant
-            RP_Req = Valid_array[RP_ind] & !Exit_array[RP_ind] & !Full_Scb_IB & !Dependent_Scb_IB;// TODO: DIV stall, Operand collector Full
+        if (RP == IRP | !Valid_array[IRP_ind]) begin
+            RP_Req = Valid_array[RP_ind] & !Exit_array[RP_ind] & !Full_Scb_IB & !Dependent_Scb_IB & !Full_OC_IB & !AllocStall_RAU_IB;
         end else begin // RP != IRP && IRPValid
             // give priority to the Replay Instruction
             if (Replay_array[IRP_ind] | ZeroFB_Valid_MEM_IB | (PosFB_Valid_MEM_IB & PAM_next != 0)) begin
-                IRP_Req = 1'b1;
+                IRP_Req = !Full_OC_IB;
             end else if (Valid_array[RP_ind] & !Replay_array[RP_ind]) begin // RP is Valid && RP is not another Replayable inst
-                RP_Req = !Exit_array[RP_ind] & !Full_Scb_IB & !Dependent_Scb_IB;// TODO: DIV stall, Operand collector Full
+                RP_Req = !Exit_array[RP_ind] & !Full_Scb_IB & !Dependent_Scb_IB & !Full_OC_IB;
             end
         end
     end
 
     // output to OC
     assign Instr_IB_OC = IRP_Req? Instr_array[IRP_ind]:Instr_array[RP_ind];
+    assign ActiveMask_IB_OC = IRP_Req? PAM_array[IRP_ind]:PAM_array[RP_ind];
     assign Src1_IB_OC = IRP_Req? Src1_array[IRP_ind]:Src1_array[RP_ind];
     assign Src2_IB_OC = IRP_Req? Src2_array[IRP_ind]:Src2_array[RP_ind];
     assign Dst_IB_OC = IRP_Req? Dst_array[IRP_ind]:Dst_array[RP_ind];
