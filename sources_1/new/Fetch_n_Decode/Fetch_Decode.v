@@ -32,10 +32,10 @@ module Fetch_Decode #(
 	output Jmp_ID0_SIMT,
 	output Jmp_ID1_SIMT,
 	//To I-buffer
-	output [31:0] Inst_ID0_IB,
-	output [31:0] Inst_ID1_IB,
-	output [7:0] Valid_2_ID0_IB, // Data-stationary method of control
-	output [7:0] Valid_2_ID1_IB, // Data-stationary method of control
+	output [31:0] Instr_ID0_IB,
+	output [31:0] Instr_ID1_IB,
+	output [7:0] Valid_IF_ID0_IB, // Data-stationary method of control
+	output [7:0] Valid_IF_ID1_IB, // Data-stationary method of control
 	output [4:0] Src1_ID0_IB, 
 	output [4:0] Src1_ID1_IB,
 	output [4:0] Src2_ID0_IB,
@@ -216,10 +216,10 @@ Decode id(
 	.Jmp_ID0_SIMT(Jmp_ID0_SIMT),
 	.Jmp_ID1_SIMT(Jmp_ID1_SIMT),
 	//To I-buffer
-	.Inst_ID0_IB(Inst_ID0_IB),
-	.Inst_ID1_IB(Inst_ID1_IB),
-	.Valid_2_ID0_IB(Valid_2_ID0_IB), // Data-stationary method of control
-	.Valid_2_ID1_IB(Valid_2_ID1_IB), // Data-stationary method of control
+	.Instr_ID0_IB(Instr_ID0_IB),
+	.Instr_ID1_IB(Instr_ID1_IB),
+	.Valid_IF_ID0_IB(Valid_IF_ID0_IB), // Data-stationary method of control
+	.Valid_IF_ID1_IB(Valid_IF_ID1_IB), // Data-stationary method of control
 	.Src1_ID0_IB(Src1_ID0_IB), 
 	.Src1_ID1_IB(Src1_ID1_IB),
 	.Src2_ID0_IB(Src2_ID0_IB),

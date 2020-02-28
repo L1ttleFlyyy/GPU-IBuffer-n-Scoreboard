@@ -30,10 +30,10 @@ module Decode (
 	output Jmp_ID0_SIMT,
 	output Jmp_ID1_SIMT,
 	//To I-buffer
-	output [31:0] Inst_ID0_IB,
-	output [31:0] Inst_ID1_IB,
-	output [7:0] Valid_2_ID0_IB, // Data-stationary method of control
-	output [7:0] Valid_2_ID1_IB, // Data-stationary method of control
+	output [31:0] Instr_ID0_IB,
+	output [31:0] Instr_ID1_IB,
+	output [7:0] Valid_IF_ID0_IB, // Data-stationary method of control
+	output [7:0] Valid_IF_ID1_IB, // Data-stationary method of control
 	output [4:0] Src1_ID0_IB, 
 	output [4:0] Src1_ID1_IB,
 	output [4:0] Src2_ID0_IB,
@@ -114,10 +114,10 @@ assign Jmp_ID0_SIMT = (opcode_ID0 == 6'b000010 || opcode_ID0 == 6'b010010);	//J
 assign Jmp_ID1_SIMT = (opcode_ID1 == 6'b000010 || opcode_ID1 == 6'b010010);
 
 //To I-buffer
-assign Inst_ID0_IB = Instr_in_IF_ID0;
-assign Inst_ID1_IB = Instr_in_IF_ID1;
-assign Valid_2_ID0_IB = Valid_2_IF_ID0;
-assign Valid_2_ID1_IB = Valid_2_IF_ID1;
+assign Instr_ID0_IB = Instr_in_IF_ID0;
+assign Instr_ID1_IB = Instr_in_IF_ID1;
+assign Valid_IF_ID0_IB = Valid_2_IF_ID0;
+assign Valid_IF_ID1_IB = Valid_2_IF_ID1;
 assign Src1_ID0_IB = rs_ID0;
 assign Src1_ID1_IB = rs_ID1;
 assign Src2_ID0_IB = rt_ID0;
