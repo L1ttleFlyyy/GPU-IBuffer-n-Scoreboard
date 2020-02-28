@@ -29,7 +29,8 @@ module IBuffer#(
     input rst,
 
     // signals to/from IF stage (warp specific)
-    input [NUM_WARPS-1:0]Valid_IF_IB, 
+    input [NUM_WARPS-1:0]Valid_IF_ID0_IB, 
+    input [NUM_WARPS-1:0]Valid_IF_ID1_IB, 
     output [NUM_WARPS-1:0]Req_IB_IF,
     
     // signals from SIMT (warp specific)
@@ -245,7 +246,8 @@ module IBuffer#(
             .rst(rst),
 
             // signals to/from IF stage
-            .Valid_IF_IB(Valid_IF_IB[i]), // data statioinary method of control
+            .Valid_IF_ID0_IB(Valid_IF_ID0_IB[i]),
+            .Valid_IF_ID1_IB(Valid_IF_ID1_IB[i]),
             .Req_IB_IF(Req_IB_IF[i]),
 
             // signals from ID stage (dual decoding unit)

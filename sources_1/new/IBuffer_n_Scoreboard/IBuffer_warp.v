@@ -27,7 +27,8 @@ module IBuffer_warp#(
     input rst,
 
     // signals to/from IF stage
-    input Valid_IF_IB, // data statioinary method of control
+    input Valid_IF_ID0_IB,
+    input Valid_IF_ID1_IB,
     output Req_IB_IF,
 
     // signals from ID stage (dual decoding unit)
@@ -191,7 +192,10 @@ module IBuffer_warp#(
     end
 
     // TODO: should I supress Req_IB_IF when I see an "EXIT"?
-    assign Req_IB_IF = (depth + Valid_IF_IB + WP_EN) < 3'b100;
+    // Note: here we has to be conservative, even though the Valid_IF might be a Call/Jump,
+    // we still need to reserve an IBuffer slot for it
+    // For the "depth" calculation, a more aggresive choice is to use WP_next-IRP_next
+    assign Req_IB_IF = (depth + Valid_IF_ID0_IB + Valid_IF_ID1_IB + WP_EN) < 3'b100;
 
     //similarly, Replay_array_set, Replay_array_cleared
     reg [3:0] Replay_array_next;

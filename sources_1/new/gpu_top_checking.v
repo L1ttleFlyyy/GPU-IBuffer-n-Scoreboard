@@ -113,7 +113,8 @@ module gpu_top_checking#(
 	wire [7:0] Req_IB_IF;
 
     // ID to IB
-	wire [7:0] Valid_IF_IB; // Data-stationary method of control
+	wire [7:0] Valid_IF_ID0_IB;
+	wire [7:0] Valid_IF_ID1_IB;
 	wire [4:0] Src1_ID0_IB; 
 	wire [4:0] Src1_ID1_IB;
 	wire [4:0] Src2_ID0_IB;
@@ -231,7 +232,10 @@ module gpu_top_checking#(
 	.Jmp_ID0_SIMT(Jmp_ID0_SIMT),
 	.Jmp_ID1_SIMT(Jmp_ID1_SIMT),
 	//To I-buffer
-	.Valid_IF_IB(Valid_IF_IB), // Data-stationary method of control
+	.Instr_ID0_IB(Instr_ID0_IB),
+	.Instr_ID1_IB(Instr_ID1_IB),
+	.Valid_IF_ID0_IB(Valid_IF_ID0_IB),
+	.Valid_IF_ID1_IB(Valid_IF_ID1_IB),
 	.Src1_ID0_IB(Src1_ID0_IB), 
 	.Src1_ID1_IB(Src1_ID1_IB),
 	.Src2_ID0_IB(Src2_ID0_IB),
@@ -258,8 +262,6 @@ module gpu_top_checking#(
 	.Src2_Valid_ID1_IB(Src2_Valid_ID1_IB),
 	.Imme_Valid_ID0_IB(Imme_Valid_ID0_IB),
 	.Imme_Valid_ID1_IB(Imme_Valid_ID1_IB),
-	.Instr_ID0_IB(Instr_ID0_IB),
-	.Instr_ID1_IB(Instr_ID1_IB),
 	//To both SMIT&I-buffer
 	.BEQ_ID0_IB_SIMT(BEQ_ID0_IB_SIMT),
 	.BEQ_ID1_IB_SIMT(BEQ_ID1_IB_SIMT),
@@ -273,7 +275,8 @@ module gpu_top_checking#(
     .clk(clk),
     .rst(rst),
     // signals to/from IF stage (warp specific)
-    .Valid_IF_IB(Valid_IF_IB), 
+    .Valid_IF_ID0_IB(Valid_IF_ID0_IB), 
+    .Valid_IF_ID1_IB(Valid_IF_ID1_IB), 
     .Req_IB_IF(Req_IB_IF),
     
     // signals from SIMT (warp specific)
