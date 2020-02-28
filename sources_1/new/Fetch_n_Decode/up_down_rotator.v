@@ -27,7 +27,7 @@ always@(*) begin
 		out[7:0] = REQ[7:0];
 end
 
-endmodule;
+endmodule
 
 module down_rotator (
 REQ,
