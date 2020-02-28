@@ -6,6 +6,11 @@ module Fetch_Decode #(
 ) (
 	input clk, 
 	input rst_n,
+	// FileIO
+	input FileIO_Wen_ICache,
+	input [11:0] FileIO_Addr_ICache,
+	input [31:0] FileIO_Din_ICache,
+	output [31:0] FileIO_Dout_ICache,
 	//From TM
 	input [2:0] WarpID_TM_PC,
 	input UpdatePC_TM_PC,
@@ -105,12 +110,12 @@ end
 genvar i;
 generate
 	for (i = 0; i < 8 ; i = i+1) begin: g1
-		assign TargetAddr_ALU_PC[i] = TargetAddr_ALU_PC_Flattened[i*8+7: i*8];
-		assign TargetAddr_SIMT_PC[i] = TargetAddr_SIMT_PC_Flattened[i*8+7: i*8];
+		assign TargetAddr_ALU_PC[i] = TargetAddr_ALU_PC_Flattened[i*32+31: i*32];
+		assign TargetAddr_SIMT_PC[i] = TargetAddr_SIMT_PC_Flattened[i*32+31: i*32];
 		assign UpdatePC_mature_TM_PC[i] = WarpID_onehot_TM_PC[i] && UpdatePC_TM_PC;
 		PC_update pc(
 			.clk(clk), 
-			.reset_n(rst_n), 
+			.rst_n(rst_n), 
 			.UpdatePC_TM_PC(UpdatePC_mature_TM_PC[i]), 
 			.StartingPC_TM_PC(StartingPC_TM_PC),
 			.TargetAddr_ALU_PC(TargetAddr_ALU_PC[i]),
@@ -122,9 +127,9 @@ generate
 			.valid_1_IF_PC(GRT[i]),
 			.valid_2_IF_PC(Valid_2_IF_ID0 || Valid_2_IF_ID1),
 			.valid_3_IF_PC(Valid_3_IF_ID0 || Valid_3_IF_ID1),
-			.Valid_3_ID1_PC(Valid_3_ID1_PC),
-			.UpdatePC_Qual3_ID0_PC(UpdatePC_Qual3_ID0_PC),
-			.UpdatePC_Qual3_ID1_PC(UpdatePC_Qual3_ID1_PC),
+			.Valid_3_ID1_PC(Valid_3_ID1_PC[i]),
+			.UpdatePC_Qual3_ID0_PC(UpdatePC_Qual3_ID0_PC[i]),
+			.UpdatePC_Qual3_ID1_PC(UpdatePC_Qual3_ID1_PC[i]),
 			.TargetAddr_ID0_PC(TargetAddr_ID0_PC),
 			.TargetAddr_ID1_PC(TargetAddr_ID1_PC),
 
@@ -161,6 +166,11 @@ Generate_PCvalid_Logic pc_valid(
 Fetch ifetch(
 	.clk(clk), 
 	.rst_n(rst_n),
+
+	.FileIO_Wen_ICache(FileIO_Wen_ICache),
+	.FileIO_Addr_ICache(FileIO_Addr_ICache),
+	.FileIO_Din_ICache(FileIO_Din_ICache),
+	.FileIO_Dout_ICache(FileIO_Dout_ICache),
 	.PC0_PC_IF(PC_out[0]), 
 	.PC1_PC_IF(PC_out[1]), 
 	.PC2_PC_IF(PC_out[2]), 

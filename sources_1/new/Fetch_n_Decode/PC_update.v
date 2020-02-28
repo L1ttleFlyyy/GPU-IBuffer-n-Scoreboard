@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module PC_Update #(
+module PC_update #(
 	parameter DATA = 32,
     parameter ADDR = 12
 )(
@@ -40,6 +40,7 @@ assign UpdatePC_Qual3_ID_PC = UpdatePC_Qual3_ID0_PC || UpdatePC_Qual3_ID1_PC;
 
 //Update_PC
 always @(*) begin
+	PC_next = PC_reg;
 	if (!rst_n)
 		PC_next = 32'b0;
 	else if (UpdatePC_TM_PC)

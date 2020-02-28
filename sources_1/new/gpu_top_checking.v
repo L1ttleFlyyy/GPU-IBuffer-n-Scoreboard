@@ -27,7 +27,11 @@ module gpu_top_checking#(
     )(
     input clk,
     input rst,
-
+    // FileIO to ICache
+	input FileIO_Wen_ICache,
+	input [11:0] FileIO_Addr_ICache,
+	input [31:0] FileIO_Din_ICache,
+	output [31:0] FileIO_Dout_ICache,
     // TM to PC
     input [2:0] WarpID_TM_PC,
 	input UpdatePC_TM_PC,
@@ -41,8 +45,8 @@ module gpu_top_checking#(
 	input [32*8-1:0] TargetAddr_SIMT_PC_Flattened, //work with UpdatePC_Qual2_SIMT_PC
 	
 	// ID To SMIT
-	output [9:0] PCplus4_ID0_SIMT,
-	output [9:0] PCplus4_ID1_SIMT,
+	output [31:0] PCplus4_ID0_SIMT,
+	output [31:0] PCplus4_ID1_SIMT,
 	output DotS_ID0_SIMT,
 	output DotS_ID1_SIMT,
 	output Call_ID0_SIMT,
@@ -206,6 +210,11 @@ module gpu_top_checking#(
     Fetch_Decode IF_ID (
 	.clk(clk), 
 	.rst_n(rst),
+	// FileIO
+	.FileIO_Wen_ICache(FileIO_Wen_ICache),
+	.FileIO_Addr_ICache(FileIO_Addr_ICache),
+	.FileIO_Din_ICache(FileIO_Din_ICache),
+	.FileIO_Dout_ICache(FileIO_Dout_ICache),
 	//From TM
 	.WarpID_TM_PC(WarpID_TM_PC),
 	.UpdatePC_TM_PC(UpdatePC_TM_PC),
