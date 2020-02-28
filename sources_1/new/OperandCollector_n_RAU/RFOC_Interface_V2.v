@@ -8,9 +8,11 @@ module RFOC(
     input wire Src1_Valid_IB_OC,
     input wire [4:0] Src2_IB_OC,
     input wire Src2_Valid_IB_OC,
+    input wire [4:0] Dst_IB_OC,
     input wire [15:0] Imme_IB_OC,
     input wire Imme_Valid_IB_OC,
     input wire [3:0] ALUop_IB_OC,
+    input wire RegWrite_IB_OC,
     input wire MemWrite_IB_OC,//区分是给ALU还是MEN，再分具体的操作
     input wire MemRead_IB_OC,
     input wire Shared_Globalbar_IB_OC,
@@ -31,7 +33,7 @@ module RFOC(
     input wire [7:0] SWWarp_TM_RAU,
 
     //Read 
-    input wire [2:0] HWWarp_IB_OC, //with valid?
+    input wire [2:0] WarpID_IB_OC, //with valid?
 
     //Write
     input wire RegWrite_CDB_OC,
@@ -40,8 +42,8 @@ module RFOC(
     input wire [255:0] Data_CDB_OC,
     input wire [31:0] Instr_CDB_OC,
 
-    output reg [4:0]Available_RAU_TM,
-    output reg AllocStall_RAU_IB,//IF?
+    output reg [4:0] Available_RAU_TM,
+    output reg [7:0] AllocStall_RAU_IB,//IF?
 
     output reg [255:0] Data1_OC_EX,
     output reg [255:0] Data2_OC_EX,
@@ -53,7 +55,7 @@ module RFOC(
     output reg [4:0] Src1_OC_EX,// MSB 是 取R16 下一位是specialreg
     output reg Src1_Valid_OC_EX,
     output reg [4:0] Src2_OC_EX,
-    output reg Src1_Valid_OC_EX,
+    output reg Src2_Valid_OC_EX,
     output reg [15:0] Imme_OC_EX,
     output reg Imme_Valid_OC_EX,
     output reg [3:0] ALUop_OC_EX,
@@ -67,4 +69,5 @@ module RFOC(
     output reg [7:0] ActiveMask_OC_EX
 
 
-)
+);
+endmodule

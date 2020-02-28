@@ -64,40 +64,49 @@ module gpu_top_checking#(
     input [NUM_WARPS-1:0]DropInstr_SIMT_IB,
     input [NUM_WARPS*NUM_THREADS-1:0]AM_Flattened_SIMT_IB, //TODO: Flattened I/O or not?
 
-
-    // signal to/from Operand Collector 
-    input Full_OC_IB,
-    output Valid_IB_OC,
-    output [LOGNUM_WARPS-1:0] WarpID_IB_OC,
-    output [31:0] Instr_IB_OC,
-    output [NUM_THREADS-1:0] ActiveMask_IB_OC,
-    output [4:0] Src1_IB_OC,
-    output [4:0] Src2_IB_OC,
-    output [4:0] Dst_IB_OC,
-    output [15:0] Imme_IB_OC,
-    output [3:0] ALUop_IB_OC,
-    output Src1_Valid_IB_OC,
-    output Src2_Valid_IB_OC,
-    output Imme_Valid_IB_OC,
-    output RegWrite_IB_OC,
-    output MemWrite_IB_OC,
-    output MemRead_IB_OC,
-    output Shared_Globalbar_IB_OC,
-    output BEQ_IB_OC,
-    output BLT_IB_OC,
-    output [1:0] ScbID_IB_OC,
-
-    // signals to RAU
-    input AllocStall_RAU_IB,
-    output Exit_IB_RAU_TM,
-    output [LOGNUM_WARPS-1:0] Exit_WarpID_IB_RAU_TM,
-
     // feedback from MEM
     input [NUM_THREADS-1:0] PosFB_MEM_IB,
     input PosFB_Valid_MEM_IB,
     input ZeroFB_Valid_MEM_IB,
     input [LOGNUM_WARPS-1:0] PosFB_WarpID_MEM_IB,
-    input [LOGNUM_WARPS-1:0] ZeroFB_WarpID_MEM_IB
+    input [LOGNUM_WARPS-1:0] ZeroFB_WarpID_MEM_IB,
+
+    //Allo
+    input [2:0] HWWarp_TM_RAU,
+    input AlloEN_TM_RAU,
+    input [2:0] Nreq_TM_RAU,
+    input [7:0] SWWarp_TM_RAU,
+
+    //Write
+    input RegWrite_CDB_OC,
+    input [2:0] WriteAddr_CDB_OC,
+    input [2:0] HWWarp_CDB_OC,
+    input [255:0] Data_CDB_OC,
+    input [31:0] Instr_CDB_OC,
+
+    output [4:0]Available_RAU_TM,
+
+    output [255:0] Data1_OC_EX,
+    output [255:0] Data2_OC_EX,
+
+    output Valid_OC_EX,
+    output [31:0] Instr_OC_EX,
+    output [4:0] Src1_OC_EX,// MSB 是 取R16 下一位是specialreg
+    output Src1_Valid_OC_EX,
+    output [4:0] Src2_OC_EX,
+    output Src2_Valid_OC_EX,
+    output [15:0] Imme_OC_EX,
+    output Imme_Valid_OC_EX,
+    output [3:0] ALUop_OC_EX,
+    output RegWrite_OC_EX,
+    output MemWrite_OC_EX,//区分是给ALU还是MEN，再分具体的操作
+    output MemRead_OC_EX,
+    output Shared_Globalbar_OC_EX,
+    output BEQ_OC_EX,
+    output BLT_OC_EX,
+    output [1:0] ScbID_OC_EX,
+    output [7:0] ActiveMask_OC_EX
+
     );
 
 	//From IB to PC
@@ -165,6 +174,33 @@ module gpu_top_checking#(
     wire [NUM_WARPS-1:0] Grt_IU_IB;
     wire [NUM_WARPS-1:0] Exit_Req_IB_IU;
     wire [NUM_WARPS-1:0] Exit_Grt_IU_IB;
+
+    // IB to/from OC
+    wire Valid_IB_OC;
+    wire Full_OC_IB;
+    wire [2:0] WarpID_IB_OC; //with valid?
+    wire [31:0] Instr_IB_OC;
+    wire [4:0] Src1_IB_OC;// MSB 是 取R16 下一位是specialreg
+    wire Src1_Valid_IB_OC;
+    wire [4:0] Src2_IB_OC;
+    wire Src2_Valid_IB_OC;
+    wire [4:0] Dst_IB_OC;
+    wire [15:0] Imme_IB_OC;
+    wire Imme_Valid_IB_OC;
+    wire [3:0] ALUop_IB_OC;
+    wire RegWrite_IB_OC;
+    wire MemWrite_IB_OC;//区分是给ALU还是MEN，再分具体的操作
+    wire MemRead_IB_OC;
+    wire Shared_Globalbar_IB_OC;
+    wire BEQ_IB_OC;
+    wire BLT_IB_OC;
+    wire [1:0] ScbID_IB_OC;
+    wire [7:0] ActiveMask_IB_OC;
+
+    // IB to RAU/TM
+    wire [2:0] Exit_WarpID_IB_RAU_TM;
+    wire Exit_IB_RAU_TM;
+    wire [7:0] AllocStall_RAU_IB;
 
     Fetch_Decode IF_ID (
 	.clk(clk), 
@@ -386,6 +422,78 @@ module gpu_top_checking#(
     .Empty_Scb_IB(Empty_Scb_IB),
     .Dependent_Scb_IB(Dependent_Scb_IB),
     .ScbID_Flattened_Scb_IB(ScbID_Flattened_Scb_IB)
+    );
+
+    RFOC OC_RAU (
+    .rst(rst),
+    .clk(clk),
+    
+    .Valid_IB_OC(Valid_IB_OC),
+    .Instr_IB_OC(Instr_IB_OC),
+    .Src1_IB_OC(Src1_IB_OC),// MSB 是 取R16 下一位是specialreg
+    .Src1_Valid_IB_OC(Src1_Valid_IB_OC),
+    .Src2_IB_OC(Src2_IB_OC),
+    .Src2_Valid_IB_OC(Src2_Valid_IB_OC),
+    .Dst_IB_OC(Dst_IB_OC),
+    .Imme_IB_OC(Imme_IB_OC),
+    .Imme_Valid_IB_OC(Imme_Valid_IB_OC),
+    .ALUop_IB_OC(Imme_Valid_IB_OC),
+    .RegWrite_IB_OC(RegWrite_IB_OC),
+    .MemWrite_IB_OC(MemWrite_IB_OC),//区分是给ALU还是MEN，再分具体的操作
+    .MemRead_IB_OC(MemRead_IB_OC),
+    .Shared_Globalbar_IB_OC(Shared_Globalbar_IB_OC),
+    .BEQ_IB_OC(BEQ_IB_OC),
+    .BLT_IB_OC(BLT_IB_OC),
+    .ScbID_IB_OC(ScbID_IB_OC),
+    .ActiveMask_IB_OC(ActiveMask_IB_OC),
+
+    //Allo or exit
+    //Exit
+    .Exit_WarpID_IB_RAU_TM(Exit_WarpID_IB_RAU_TM),
+    .Exit_IB_RAU_TM(Exit_IB_RAU_TM),
+
+    //Allo
+    .HWWarp_TM_RAU(HWWarp_TM_RAU),
+    .AlloEN_TM_RAU(AlloEN_TM_RAU),
+    .Nreq_TM_RAU(Nreq_TM_RAU),
+    .SWWarp_TM_RAU(SWWarp_TM_RAU),
+
+    //Read 
+    .WarpID_IB_OC(WarpID_IB_OC), //with valid?
+
+    //Write
+    .RegWrite_CDB_OC(RegWrite_CDB_OC),
+    .WriteAddr_CDB_OC(WriteAddr_CDB_OC),
+    .HWWarp_CDB_OC(HWWarp_CDB_OC),
+    .Data_CDB_OC(Data_CDB_OC),
+    .Instr_CDB_OC(Instr_CDB_OC),
+
+    .Available_RAU_TM(Available_RAU_TM),
+    .AllocStall_RAU_IB(AllocStall_RAU_IB),
+
+    .Data1_OC_EX(Data1_OC_EX),
+    .Data2_OC_EX(Data2_OC_EX),
+
+    .Full_OC_IB(Full_OC_IB),//FULL_OC_IF
+
+    .Valid_OC_EX(Valid_OC_EX),
+    .Instr_OC_EX(Instr_OC_EX),
+    .Src1_OC_EX(Src1_OC_EX),// MSB 是 取R16 下一位是specialreg
+    .Src1_Valid_OC_EX(Src1_Valid_OC_EX),
+    .Src2_OC_EX(Src2_OC_EX),
+    .Src2_Valid_OC_EX(Src2_Valid_OC_EX),
+    .Imme_OC_EX(Imme_OC_EX),
+    .Imme_Valid_OC_EX(Imme_Valid_OC_EX),
+    .ALUop_OC_EX(ALUop_OC_EX),
+    .RegWrite_OC_EX(RegWrite_OC_EX),
+    .MemWrite_OC_EX(MemWrite_OC_EX),//区分是给ALU还是MEN，再分具体的操作
+    .MemRead_OC_EX(MemRead_OC_EX),
+    .Shared_Globalbar_OC_EX(Shared_Globalbar_OC_EX),
+    .BEQ_OC_EX(BEQ_OC_EX),
+    .BLT_OC_EX(BLT_OC_EX),
+    .ScbID_OC_EX(ScbID_OC_EX),
+    .ActiveMask_OC_EX(ActiveMask_OC_EX)
+
     );
 
 endmodule
