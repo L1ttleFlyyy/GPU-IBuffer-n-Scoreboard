@@ -58,8 +58,6 @@ module Decode (
 	output Src1_Valid_ID1_IB,
 	output Src2_Valid_ID0_IB,
 	output Src2_Valid_ID1_IB,
-	output Dst_Valid_ID0_IB,
-	output Dst_Valid_ID1_IB,
 	output Imme_Valid_ID0_IB,
 	output Imme_Valid_ID1_IB,
 	//To both SMIT & I-buffer
@@ -239,8 +237,6 @@ assign Src2_Valid_ID1_IB = (opcode_ID1 == 6'b000000 || opcode_ID1 == 6'b010000 	
 							|| opcode_ID1 == 6'b000100 || opcode_ID1 == 6'b010100	//BEQ
 							|| opcode_ID1 == 6'b000111 || opcode_ID1 == 6'b010111	//BLT
 							);
-assign Dst_Valid_ID0_IB = (opcode_ID0 == 6'b000000 || opcode_ID0 == 6'b010000);		//Integer Instr
-assign Dst_Valid_ID1_IB = (opcode_ID1 == 6'b000000 || opcode_ID1 == 6'b010000);		//Integer Instr
 assign Imme_Valid_ID0_IB = (opcode_ID0 == 6'b001000 || opcode_ID0 == 6'b011000		//ADDI
 							|| opcode_ID0 == 6'b001100 || opcode_ID0 == 6'b011100 	//ANDI
 							|| opcode_ID0 == 6'b001101 || opcode_ID0 == 6'b011101 	//ORI

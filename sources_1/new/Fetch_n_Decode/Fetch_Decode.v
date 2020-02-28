@@ -60,8 +60,6 @@ module Fetch_Decode #(
 	output Src1_Valid_ID1_IB,
 	output Src2_Valid_ID0_IB,
 	output Src2_Valid_ID1_IB,
-	output Dst_Valid_ID0_IB,
-	output Dst_Valid_ID1_IB,
 	output Imme_Valid_ID0_IB,
 	output Imme_Valid_ID1_IB,
 	//To both SMIT&I-buffer
@@ -246,8 +244,6 @@ Decode id(
 	.Src1_Valid_ID1_IB(Src1_Valid_ID1_IB),
 	.Src2_Valid_ID0_IB(Src2_Valid_ID0_IB),
 	.Src2_Valid_ID1_IB(Src2_Valid_ID1_IB),
-	.Dst_Valid_ID0_IB(Dst_Valid_ID0_IB),
-	.Dst_Valid_ID1_IB(Dst_Valid_ID1_IB),
 	.Imme_Valid_ID0_IB(Imme_Valid_ID0_IB),
 	.Imme_Valid_ID1_IB(Imme_Valid_ID1_IB),
 	//To both SMIT & I-buffer
