@@ -67,7 +67,7 @@ module ALU #(
 	assign Instr_ALU_CDB = Instr_OC_ALU;
 	assign Dst_ALU_CDB = Dst_OC_ALU;
 	assign RegWrite_ALU_CDB = RegWrite_OC_ALU;
-	assign Clear_Valid_ALU_Scb = Valid_OC_ALU;
+    assign Clear_Valid_ALU_Scb = Valid_OC_ALU & (BLT_OC_ALU | BEQ_OC_ALU);
 	
 	genvar i;
 	generate
