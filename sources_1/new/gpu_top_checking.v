@@ -28,46 +28,26 @@ module gpu_top_checking#(
     input clk,
     input rst,
     
-    // TM to/from SIMT
-    output Update_TM_SIMT,
-    output [2:0] WarpID_TM_SIMT,
-    output [7:0] AM_TM_SIMT,
     // FileIO to ICache
 	input FileIO_Wen_ICache,
 	input [11:0] FileIO_Addr_ICache,
 	input [31:0] FileIO_Din_ICache,
 	output [31:0] FileIO_Dout_ICache,
 	// From ALU to ID
-	input [32*8-1:0] TargetAddr_ALU_PC_Flattened, //work with UpdatePC_Qual1_SIMT_PC
-	// From SIMT to ID
-	input [7:0] Stall_SIMT_PC,
-	input [7:0] UpdatePC_Qual1_SIMT_PC,
-	input [7:0] UpdatePC_Qual2_SIMT_PC,
-	input [32*8-1:0] TargetAddr_SIMT_PC_Flattened, //work with UpdatePC_Qual2_SIMT_PC
-	
-	// ID To SMIT
-	output [31:0] PCplus4_ID0_SIMT,
-	output [31:0] PCplus4_ID1_SIMT,
-	output DotS_ID0_SIMT,
-	output DotS_ID1_SIMT,
-	output Call_ID0_SIMT,
-	output Call_ID1_SIMT,
-	output Ret_ID0_SIMT,
-	output Ret_ID1_SIMT,
-	output Jmp_ID0_SIMT,
-	output Jmp_ID1_SIMT,
+	input [32*8-1:0] TargetAddr_ALU_PC_Flattened,
+    
+    // From ALU to SIMT
+    input Br_ALU_SIMT,
+    input [7:0] BrOutcome_ALU_SIMT,
+    input [2:0] WarpID_ALU_SIMT,
 
-    // ALU/CDB to Scoreboard
+    // From ALU/CDB to Scoreboard
     input [1:0] Clear_ScbID_ALU_Scb, // Clear signal from ALU (branch only)
     input [1:0] Clear_ScbID_CDB_Scb, // Clear signal from CDB (for all regwrite)
     input [LOGNUM_WARPS-1:0] Clear_WarpID_ALU_Scb,
     input [LOGNUM_WARPS-1:0] Clear_WarpID_CDB_Scb,
     input Clear_Valid_ALU_Scb,
     input Clear_Valid_CDB_Scb,
-    
-    // signals from SIMT (warp specific)
-    input [NUM_WARPS-1:0]DropInstr_SIMT_IB,
-    input [NUM_WARPS*NUM_THREADS-1:0]ActiveMask_SIMT_IB_Flattened, //TODO: Flattened I/O or not?
 
     // feedback from MEM
     input [NUM_THREADS-1:0] PosFB_MEM_IB,
@@ -110,12 +90,36 @@ module gpu_top_checking#(
     wire UpdatePC_TM_PC;
     wire [2:0] WarpID_TM_PC;
     wire [31:0] StartingPC_TM_PC;
+    
+    // TM to/from SIMT
+    wire Update_TM_SIMT;
+    wire [2:0] WarpID_TM_SIMT;
+    wire [7:0] AM_TM_SIMT;
+
     // TM to/from RAU
     wire Update_TM_RAU;
     wire [2:0] HWWarpID_TM_RAU;
     wire [7:0] SWWarpID_TM_RAU;
     wire [2:0] Nreg_TM_RAU;
     wire Alloc_BusyBar_RAU_TM;
+
+	// From SIMT to ID
+	wire [7:0] Stall_SIMT_PC;
+	wire [7:0] UpdatePC_Qual1_SIMT_PC;
+	wire [7:0] UpdatePC_Qual2_SIMT_PC;
+	wire [32*8-1:0] TargetAddr_SIMT_PC_Flattened; //work with UpdatePC_Qual2_SIMT_PC
+	
+	// ID To SMIT
+	wire [31:0] PCplus4_ID0_SIMT;
+	wire [31:0] PCplus4_ID1_SIMT;
+	wire DotS_ID0_SIMT;
+	wire DotS_ID1_SIMT;
+	wire Call_ID0_SIMT;
+	wire Call_ID1_SIMT;
+	wire Ret_ID0_SIMT;
+	wire Ret_ID1_SIMT;
+	wire Jmp_ID0_SIMT;
+	wire Jmp_ID1_SIMT;
 
 	//From IB to PC
 	wire [7:0] Req_IB_IF;
@@ -158,6 +162,10 @@ module gpu_top_checking#(
 	wire BLT_ID1_IB_SIMT;
 	wire [7:0] Valid_ID0_IB_SIMT;	//one-hot warpID
 	wire [7:0] Valid_ID1_IB_SIMT;
+    
+    // signals from SIMT (warp specific)
+    wire [NUM_WARPS-1:0]DropInstr_SIMT_IB;
+    wire [NUM_WARPS*NUM_THREADS-1:0]ActiveMask_SIMT_IB_Flattened;
 
     // signals to/from scoreboard (warp specific)
     wire [NUM_WARPS-1:0] RP_Grt_IB_Scb;
@@ -310,6 +318,51 @@ module gpu_top_checking#(
 	.BLT_ID1_IB_SIMT(BLT_ID1_IB_SIMT),
 	.Valid_ID0_IB_SIMT(Valid_ID0_IB_SIMT),	//one-hot warpID
 	.Valid_ID1_IB_SIMT(Valid_ID1_IB_SIMT)
+    );
+
+    SIMT simt_stack(
+    // Global Signals
+    .clk(clk),
+    .rst(rst),
+
+    //interface with Task Manager
+    .Update_TM_SIMT(Update_TM_SIMT),
+    .WarpID_TM_SIMT(WarpID_TM_SIMT),
+    .AM_TM_SIMT(AM_TM_SIMT),
+
+    //interface with Fetch (PC)
+    .UpdatePC_Qual1_SIMT_PC(UpdatePC_Qual1_SIMT_PC),
+    .UpdatePC_Qual2_SIMT_PC(UpdatePC_Qual2_SIMT_PC),
+    .Stall_SIMT_PC(Stall_SIMT_PC),    //Stall signal from SIMT
+    .TargetAddr_SIMT_PC_Flattened(TargetAddr_SIMT_PC_Flattened),
+
+    //interface with Instruction Decode
+    .BEQ_ID0_IB_SIMT(BEQ_ID0_IB_SIMT),
+    .BEQ_ID1_IB_SIMT(BEQ_ID1_IB_SIMT),
+    .BLT_ID0_IB_SIMT(BLT_ID0_IB_SIMT),
+    .BLT_ID1_IB_SIMT(BLT_ID1_IB_SIMT),
+    .DotS_ID0_SIMT(DotS_ID0_SIMT),
+    .DotS_ID1_SIMT(DotS_ID1_SIMT),
+    .Call_ID0_SIMT(Call_ID0_SIMT),
+    .Call_ID1_SIMT(Call_ID1_SIMT),
+    .Ret_ID0_SIMT(Ret_ID0_SIMT),
+    .Ret_ID1_SIMT(Ret_ID1_SIMT),
+    .Jmp_ID0_SIMT(Jmp_ID0_SIMT),
+    .Jmp_ID1_SIMT(Jmp_ID1_SIMT),
+    .Valid_ID0_IB_SIMT(Valid_ID0_IB_SIMT),
+    .Valid_ID1_IB_SIMT(Valid_ID1_IB_SIMT),
+    .PCplus4_ID0_SIMT(PCplus4_ID0_SIMT),
+    .PCplus4_ID1_SIMT(PCplus4_ID1_SIMT),
+
+    //interface with IBuffer
+    .DropInstr_SIMT_IB(DropInstr_SIMT_IB),
+    .ActiveMask_SIMT_IB_Flattened(ActiveMask_SIMT_IB_Flattened),
+
+    //interface with ALU
+    .Br_ALU_SIMT(Br_ALU_SIMT),
+    .BrOutcome_ALU_SIMT(BrOutcome_ALU_SIMT),
+    .WarpID_ALU_SIMT(WarpID_ALU_SIMT)
+
     );
 
     IBuffer IB(

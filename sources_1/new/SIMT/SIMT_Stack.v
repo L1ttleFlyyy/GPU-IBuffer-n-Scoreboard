@@ -34,8 +34,8 @@ input Jmp_ID0_SIMT,
 input Jmp_ID1_SIMT,
 input [7:0] Valid_ID0_IB_SIMT, // TODO: both IB and SIMT need this
 input [7:0] Valid_ID1_IB_SIMT,
-input [9:0] PCplus4_ID0_SIMT,
-input [9:0] PCplus4_ID1_SIMT,
+input [31:0] PCplus4_ID0_SIMT,
+input [31:0] PCplus4_ID1_SIMT,
 
 //interface with IBuffer
 // TODO: flattened active mask
