@@ -35,7 +35,7 @@ module IBuffer#(
     
     // signals from SIMT (warp specific)
     input [NUM_WARPS-1:0]DropInstr_SIMT_IB,
-    input [NUM_WARPS*NUM_THREADS-1:0]AM_Flattened_SIMT_IB, //TODO: Flattened I/O or not?
+    input [NUM_WARPS*NUM_THREADS-1:0]ActiveMask_SIMT_IB_Flattened, //TODO: Flattened I/O or not?
 
     // signals from ID stage (dual decoding unit)
     input [NUM_WARPS-1:0] Valid_ID0_IB_SIMT,
@@ -133,7 +133,7 @@ module IBuffer#(
     input [LOGNUM_WARPS-1:0] PosFB_WarpID_MEM_IB,
     input [LOGNUM_WARPS-1:0] ZeroFB_WarpID_MEM_IB
     );
-    wire [NUM_THREADS-1:0] AM_SIMT_IB[0:NUM_WARPS-1];
+    wire [NUM_THREADS-1:0] ActiveMask_SIMT_IB[0:NUM_WARPS-1];
 
     // signals to/from scoreboard (warp specific)
     wire [4:0] Src1_IB_Scb[0:NUM_WARPS-1];
@@ -234,7 +234,7 @@ module IBuffer#(
     genvar i;
     generate
     for (i=0; i<NUM_WARPS; i=i+1) begin: IBuffer_loop
-        assign AM_SIMT_IB[i] = AM_Flattened_SIMT_IB[NUM_THREADS*(i+1)-1:NUM_THREADS*i];
+        assign ActiveMask_SIMT_IB[i] = ActiveMask_SIMT_IB_Flattened[NUM_THREADS*(i+1)-1:NUM_THREADS*i];
         assign Src1_Flattened_IB_Scb[5*i+4:5*i] = Src1_IB_Scb[i];
         assign Src2_Flattened_IB_Scb[5*i+4:5*i] = Src2_IB_Scb[i];
         assign Dst_Flattened_IB_Scb[5*i+4:5*i] = Dst_IB_Scb[i];
@@ -289,7 +289,7 @@ module IBuffer#(
 
             // signals from SIMT 
             .DropInstr_SIMT_IB(DropInstr_SIMT_IB[i]),
-            .AM_SIMT_IB(AM_SIMT_IB[i]),
+            .ActiveMask_SIMT_IB(ActiveMask_SIMT_IB[i]),
 
             // signals to/from IU
             .Req_IB_IU(Req_IB_IU[i]),

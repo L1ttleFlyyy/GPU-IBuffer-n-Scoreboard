@@ -43,14 +43,7 @@ input [9:0] PCplus4_ID1_SIMT,
 //interface with IBuffer
 // TODO: flattened active mask
 output reg [7:0] DropInstr_SIMT_IB,
-output [7:0] AM_Warp0_SIMT_IB,
-output [7:0] AM_Warp1_SIMT_IB,
-output [7:0] AM_Warp2_SIMT_IB,
-output [7:0] AM_Warp3_SIMT_IB,
-output [7:0] AM_Warp4_SIMT_IB,
-output [7:0] AM_Warp5_SIMT_IB,
-output [7:0] AM_Warp6_SIMT_IB,
-output [7:0] AM_Warp7_SIMT_IB
+output [8*8-1:0] ActiveMask_SIMT_IB_Flattened,
 
 //interface with ALU
 input CondBr_ALU_SIMT,

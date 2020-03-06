@@ -70,7 +70,7 @@ module IBuffer_warp#(
 
     // signals from SIMT 
     input DropInstr_SIMT_IB,
-    input [NUM_THREADS-1: 0]AM_SIMT_IB,
+    input [NUM_THREADS-1: 0]ActiveMask_SIMT_IB,
 
     // signals to/from IU
     output Req_IB_IU,
@@ -217,7 +217,7 @@ module IBuffer_warp#(
             ScbID_array[RP_ind] <= ScbID_Scb_IB;
         end
         if (Valid_ID0_IB_SIMT & !DropInstr_SIMT_IB) begin
-            PAM_array[WP_ind] <= AM_SIMT_IB;
+            PAM_array[WP_ind] <= ActiveMask_SIMT_IB;
             Instr_array[WP_ind] <= Instr_ID0_IB;
             Src1_Valid_array[WP_ind] <= Src1_Valid_ID0_IB;
             Src1_array[WP_ind] <= Src1_ID0_IB;
@@ -236,7 +236,7 @@ module IBuffer_warp#(
             Exit_array[WP_ind] <= Exit_ID0_IB;
         end
         if (Valid_ID1_IB_SIMT & !DropInstr_SIMT_IB) begin
-            PAM_array[WP_ind] <= AM_SIMT_IB;
+            PAM_array[WP_ind] <= ActiveMask_SIMT_IB;
             Instr_array[WP_ind] <= Instr_ID1_IB;
             Src1_Valid_array[WP_ind] <= Src1_Valid_ID1_IB;
             Src1_array[WP_ind] <= Src1_ID1_IB;

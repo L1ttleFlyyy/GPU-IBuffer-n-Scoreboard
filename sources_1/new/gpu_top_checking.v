@@ -66,7 +66,7 @@ module gpu_top_checking#(
     
     // signals from SIMT (warp specific)
     input [NUM_WARPS-1:0]DropInstr_SIMT_IB,
-    input [NUM_WARPS*NUM_THREADS-1:0]AM_Flattened_SIMT_IB, //TODO: Flattened I/O or not?
+    input [NUM_WARPS*NUM_THREADS-1:0]ActiveMask_SIMT_IB_Flattened, //TODO: Flattened I/O or not?
 
     // feedback from MEM
     input [NUM_THREADS-1:0] PosFB_MEM_IB,
@@ -290,7 +290,7 @@ module gpu_top_checking#(
     
     // signals from SIMT (warp specific)
     .DropInstr_SIMT_IB(DropInstr_SIMT_IB),
-    .AM_Flattened_SIMT_IB(AM_Flattened_SIMT_IB), //TODO: Flattened I/O or not?
+    .ActiveMask_SIMT_IB_Flattened(ActiveMask_SIMT_IB_Flattened), //TODO: Flattened I/O or not?
 
     // signals from ID stage (dual decoding unit)
     .Valid_ID0_IB_SIMT(Valid_ID0_IB_SIMT),
