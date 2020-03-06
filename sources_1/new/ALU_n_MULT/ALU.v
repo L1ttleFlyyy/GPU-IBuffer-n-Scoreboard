@@ -26,6 +26,7 @@ module ALU #(
     ) (
     // interface with OC
 	// TODO: ActiveMask
+	// input [7:0] ActiveMask_OC_ALU,
     input Valid_OC_ALU,
     input [2:0] WarpID_OC_ALU,
     input [31:0] Instr_OC_ALU,
@@ -43,10 +44,14 @@ module ALU #(
     // output to Fetch
     output reg [32*8-1:0] TargetAddr_ALU_PC_Flattened,
 	
-	// output to SIMT
-	output reg [7:0] Conditional_Branch_Outcome,// TODO: WarpID; Naming Convention
+	// output to SIMT 
+	// TODO: Branch outcome
+	// output Br_ALU_SIMT,
+	// output reg [7:0] BrOutcome_ALU_SIMT,
+	// output [2:0] WarpID_ALU_SIMT,
 
     // output to CDB
+	output [7:0] ActiveMask_ALU_CDB,
     output [31:0] Instr_ALU_CDB,
     output [2:0] WarpID_ALU_CDB, 
     output RegWrite_ALU_CDB,
