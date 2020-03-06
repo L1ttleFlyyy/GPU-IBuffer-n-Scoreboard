@@ -9,9 +9,9 @@ output reg [2:0] WarpID_TM_SIMT,
 output reg [7:0] AM_TM_SIMT,
 
 //interface with Fetch
-output Update_TM_IF,
-output reg [2:0] WarpID_TM_IF,
-output reg [9:0] PC_TM_IF,
+output UpdatePC_TM_PC,
+output reg [2:0] WarpID_TM_PC,
+output reg [31:0] StartingPC_TM_PC,
 
 //interface with Issue Unit
 input Exit_IB_RAU_TM,

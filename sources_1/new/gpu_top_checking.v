@@ -27,15 +27,16 @@ module gpu_top_checking#(
     )(
     input clk,
     input rst,
+    
+    // TM to/from SIMT
+    output Update_TM_SIMT,
+    output [2:0] WarpID_TM_SIMT,
+    output [7:0] AM_TM_SIMT,
     // FileIO to ICache
 	input FileIO_Wen_ICache,
 	input [11:0] FileIO_Addr_ICache,
 	input [31:0] FileIO_Din_ICache,
 	output [31:0] FileIO_Dout_ICache,
-    // TM to PC
-    input [2:0] WarpID_TM_PC,
-	input UpdatePC_TM_PC,
-	input [31:0] StartingPC_TM_PC,	
 	// From ALU to ID
 	input [32*8-1:0] TargetAddr_ALU_PC_Flattened, //work with UpdatePC_Qual1_SIMT_PC
 	// From SIMT to ID
@@ -75,13 +76,6 @@ module gpu_top_checking#(
     input [LOGNUM_WARPS-1:0] PosFB_WarpID_MEM_IB,
     input [LOGNUM_WARPS-1:0] ZeroFB_WarpID_MEM_IB,
 
-    //Allo
-    input Update_TM_RAU,
-    input [2:0] HWWarp_TM_RAU,
-    input [2:0] Nreg_TM_RAU,
-    input [7:0] SWWarp_TM_RAU,
-    output Alloc_BusyBar_RAU_TM,
-
     //Write
     input RegWrite_CDB_OC,
     input [2:0] WriteAddr_CDB_OC,
@@ -111,6 +105,17 @@ module gpu_top_checking#(
     output [7:0] ActiveMask_OC_EX
 
     );
+
+    // TM to IF_ID
+    wire UpdatePC_TM_PC;
+    wire [2:0] WarpID_TM_PC;
+    wire [31:0] StartingPC_TM_PC;
+    // TM to/from RAU
+    wire Update_TM_RAU;
+    wire [2:0] HWWarpID_TM_RAU;
+    wire [7:0] SWWarpID_TM_RAU;
+    wire [2:0] Nreg_TM_RAU;
+    wire Alloc_BusyBar_RAU_TM;
 
 	//From IB to PC
 	wire [7:0] Req_IB_IF;
@@ -205,6 +210,34 @@ module gpu_top_checking#(
     wire [2:0] Exit_WarpID_IB_RAU_TM;
     wire Exit_IB_RAU_TM;
     wire [7:0] AllocStall_RAU_IB;
+
+
+    TaskManager TM(
+    // Global Signals
+    .clk(clk),
+    .rst(rst),
+
+    //interface with SIMT
+    .Update_TM_SIMT(Update_TM_SIMT),
+    .WarpID_TM_SIMT(WarpID_TM_SIMT),
+    .AM_TM_SIMT(AM_TM_SIMT),
+
+    //interface with Fetch
+    .UpdatePC_TM_PC(UpdatePC_TM_PC),
+    .WarpID_TM_PC(WarpID_TM_PC),
+    .StartingPC_TM_PC(StartingPC_TM_PC),
+
+    //interface with Issue Unit
+    .Exit_IB_RAU_TM(Exit_IB_RAU_TM),
+    .Exit_WarpID_IB_RAU_TM(Exit_WarpID_IB_RAU_TM),
+
+    //interface with Register File Allocation Unit
+    .Update_TM_RAU(Update_TM_RAU),
+    .HWWarpID_TM_RAU(HWWarpID_TM_RAU),
+    .SWWarpID_TM_RAU(SWWarpID_TM_RAU),
+    .Nreg_TM_RAU(Nreg_TM_RAU),
+    .Alloc_BusyBar_RAU_TM(Alloc_BusyBar_RAU_TM)
+    );
 
     Fetch_Decode IF_ID (
 	.clk(clk), 
@@ -466,9 +499,9 @@ module gpu_top_checking#(
     .Exit_IB_RAU_TM(Exit_IB_RAU_TM),
 
     //Allo
-    .HWWarp_TM_RAU(HWWarp_TM_RAU),
+    .HWWarpID_TM_RAU(HWWarpID_TM_RAU),
     .Nreg_TM_RAU(Nreg_TM_RAU),
-    .SWWarp_TM_RAU(SWWarp_TM_RAU),
+    .SWWarpID_TM_RAU(SWWarpID_TM_RAU),
 
     //Read 
     .WarpID_IB_OC(WarpID_IB_OC), //with valid?

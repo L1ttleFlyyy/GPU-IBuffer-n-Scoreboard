@@ -28,8 +28,8 @@ module RFOC(
 
     //Allo
     input wire Update_TM_RAU,
-    input wire [2:0] HWWarp_TM_RAU,
-    input wire [7:0] SWWarp_TM_RAU,
+    input wire [2:0] HWWarpID_TM_RAU,
+    input wire [7:0] SWWarpID_TM_RAU,
     input wire [2:0] Nreg_TM_RAU,
     output Alloc_BusyBar_RAU_TM,
 
