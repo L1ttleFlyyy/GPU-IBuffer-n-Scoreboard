@@ -27,10 +27,11 @@ module RFOC(
     input wire Exit_IB_RAU_TM,
 
     //Allo
+    input wire Update_TM_RAU,
     input wire [2:0] HWWarp_TM_RAU,
-    input wire AlloEN_TM_RAU,
-    input wire [2:0] Nreq_TM_RAU,
     input wire [7:0] SWWarp_TM_RAU,
+    input wire [2:0] Nreg_TM_RAU,
+    output Alloc_BusyBar_RAU_TM,
 
     //Read 
     input wire [2:0] WarpID_IB_OC, //with valid?
@@ -42,8 +43,10 @@ module RFOC(
     input wire [255:0] Data_CDB_OC,
     input wire [31:0] Instr_CDB_OC,
 
-    output reg [4:0] Available_RAU_TM,
-    output reg [7:0] AllocStall_RAU_IB,//IF?
+    // REMOVE: output reg [4:0] Available_RAU_TM,
+    // TODO:record num of regs in TM 
+    // (instead of requesting and then see if RAU has enough space)
+    output reg [7:0] AllocStall_RAU_IB,// TODO: stall IF?
 
     output reg [255:0] Data1_OC_EX,
     output reg [255:0] Data2_OC_EX,

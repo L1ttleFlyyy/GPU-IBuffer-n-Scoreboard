@@ -76,10 +76,11 @@ module gpu_top_checking#(
     input [LOGNUM_WARPS-1:0] ZeroFB_WarpID_MEM_IB,
 
     //Allo
+    input Update_TM_RAU,
     input [2:0] HWWarp_TM_RAU,
-    input AlloEN_TM_RAU,
-    input [2:0] Nreq_TM_RAU,
+    input [2:0] Nreg_TM_RAU,
     input [7:0] SWWarp_TM_RAU,
+    output Alloc_BusyBar_RAU_TM,
 
     //Write
     input RegWrite_CDB_OC,
@@ -87,8 +88,6 @@ module gpu_top_checking#(
     input [2:0] HWWarp_CDB_OC,
     input [255:0] Data_CDB_OC,
     input [31:0] Instr_CDB_OC,
-
-    output [4:0]Available_RAU_TM,
 
     output [255:0] Data1_OC_EX,
     output [255:0] Data2_OC_EX,
@@ -461,13 +460,14 @@ module gpu_top_checking#(
 
     //Allo or exit
     //Exit
+    .Update_TM_RAU(Update_TM_RAU),
+    .Alloc_BusyBar_RAU_TM(Alloc_BusyBar_RAU_TM),
     .Exit_WarpID_IB_RAU_TM(Exit_WarpID_IB_RAU_TM),
     .Exit_IB_RAU_TM(Exit_IB_RAU_TM),
 
     //Allo
     .HWWarp_TM_RAU(HWWarp_TM_RAU),
-    .AlloEN_TM_RAU(AlloEN_TM_RAU),
-    .Nreq_TM_RAU(Nreq_TM_RAU),
+    .Nreg_TM_RAU(Nreg_TM_RAU),
     .SWWarp_TM_RAU(SWWarp_TM_RAU),
 
     //Read 
@@ -480,7 +480,6 @@ module gpu_top_checking#(
     .Data_CDB_OC(Data_CDB_OC),
     .Instr_CDB_OC(Instr_CDB_OC),
 
-    .Available_RAU_TM(Available_RAU_TM),
     .AllocStall_RAU_IB(AllocStall_RAU_IB),
 
     .Data1_OC_EX(Data1_OC_EX),

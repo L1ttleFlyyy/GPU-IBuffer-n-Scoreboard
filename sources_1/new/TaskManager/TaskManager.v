@@ -18,15 +18,11 @@ input Exit_IB_RAU_TM,
 input [2:0] Exit_WarpID_IB_RAU_TM,
 
 //interface with Register File Allocation Unit
-input alloc_busyBar_RAU_TM,
-output alloc_TM_RAU,
-output [2:0] reg_TM_RAU,
-output [2:0] WarpID_TM_RAU,
-
-//interface with Operand Collector
-output Update_TM_OC,
-output [2:0] HWWarpID_TM_OC,
-output [7:0] SWWarpID_TM_OC // FIXME: interface with RAU vs OC?
+output Update_TM_RAU,
+output [2:0] HWWarpID_TM_RAU,
+output [7:0] SWWarpID_TM_RAU, // FIXME: interface with RAU vs OC?
+output [2:0] Nreg_TM_RAU,
+input Alloc_BusyBar_RAU_TM
 
 );
 
