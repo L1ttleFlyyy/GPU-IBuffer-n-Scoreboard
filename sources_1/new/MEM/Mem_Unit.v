@@ -25,9 +25,9 @@ module mem_unit
 	input [4:0] reg_addr_OC_MEM,
 	
 	
-	input FIO_MEMWRITE,
-	input [addr_width-1:0] FIO_ADDR,
-	input [255:0] FIO_WRITE_DATA,
+	input FIFO_MEMWRITE,
+	input [addr_width-1:0] FIFO_ADDR,
+	input [255:0] FIFO_WRITE_DATA,
 	
 	output neg_feedback_valid_o_MEM_Scb, pos_feedback_valid_o_MEM_Scb, cdb_regwrite_MEM_CDB,
 	output [2:0] neg_feedback_warpID_o_MEM_Scb, pos_feedback_warpID_o_MEM_Scb,
@@ -143,9 +143,9 @@ module mem_unit
 							.thread_mask(stage23_thread_mask),
 							.miss_latency(stage23_miss_latency),
 							
-							.FIO_MEMWRITE(FIO_MEMWRITE),
-							.FIO_ADDR(FIO_ADDR),
-							.FIO_WRITE_DATA(FIO_WRITE_DATA),
+							.FIFO_MEMWRITE(FIFO_MEMWRITE),
+							.FIFO_ADDR(FIFO_ADDR),
+							.FIFO_WRITE_DATA(FIFO_WRITE_DATA),
 							
 							
 							.reg_write_o(stage34_reg_write), .write_fb_valid_o(stage34_write_fb_valid),
