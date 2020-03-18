@@ -61,7 +61,6 @@ module mshr_fifo(clk, resetb, cle_hit_missbar, scbID, warpID, cle_addr, cle_late
 				
 				wp <= wp + 1;
 			end
-			
 		end
 	end
 
