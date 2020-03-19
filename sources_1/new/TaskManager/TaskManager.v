@@ -235,12 +235,6 @@ end
 
 
 always @(*) begin
-	if(rst==0) begin
-		can_reg_alloc = 0;
-		reg_would_alloc = 0;
-		freed_reg = 0;
-	end
-	else begin
 		if(free_registers > tasks[tasks_rptr[7:0]][2:0]) begin
 			can_reg_alloc = 1;
 		end
@@ -262,5 +256,4 @@ always @(*) begin
 		end
 
 	end
-end
 endmodule
