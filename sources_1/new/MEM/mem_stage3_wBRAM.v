@@ -142,8 +142,8 @@ module mem_stage3
 		else
 		begin
 			
-			
-			if(MemRead)
+			read_data_o	<=	0;
+			if(MemRead_R)
 			    read_data_o <= {read_data[7], read_data[6], read_data[5], read_data[4], read_data[3], read_data[2], read_data[1], read_data[0]};
 			
 			
