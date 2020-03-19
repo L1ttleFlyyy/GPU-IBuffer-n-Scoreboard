@@ -28,6 +28,14 @@ module gpu_top_checking#(
     input clk,
     input rst,
     
+    // FileIO to TM
+    
+    input Write_Enable_FIO_TM,
+    input [28:0] Write_Data_FIO_TM,
+    input start_FIO_TM,
+    input clear_FIO_TM,
+    output finished_TM_FIO,
+
     // FileIO to ICache
 	input FileIO_Wen_ICache,
 	input [11:0] FileIO_Addr_ICache,
@@ -233,7 +241,7 @@ module gpu_top_checking#(
     //interface with Fetch
     .UpdatePC_TM_PC(UpdatePC_TM_PC),
     .WarpID_TM_PC(WarpID_TM_PC),
-    .StartingPC_TM_PC(StartingPC_TM_PC),
+    .StartingPC_TM_PC(StartingPC_TM_PC[9:0]),
 
     //interface with Issue Unit
     .Exit_IB_RAU_TM(Exit_IB_RAU_TM),
@@ -244,7 +252,12 @@ module gpu_top_checking#(
     .HWWarpID_TM_RAU(HWWarpID_TM_RAU),
     .SWWarpID_TM_RAU(SWWarpID_TM_RAU),
     .Nreg_TM_RAU(Nreg_TM_RAU),
-    .Alloc_BusyBar_RAU_TM(Alloc_BusyBar_RAU_TM)
+    .Alloc_BusyBar_RAU_TM(Alloc_BusyBar_RAU_TM),
+    .Write_Enable_FIO_TM(Write_Enable_FIO_TM),
+    .Write_Data_FIO_TM(Write_Data_FIO_TM),
+    .start_FIO_TM(start_FIO_TM),
+    .clear_FIO_TM(clear_FIO_TM),
+    .finished_TM_FIO(finished_TM_FIO)
     );
 
     Fetch_Decode IF_ID (

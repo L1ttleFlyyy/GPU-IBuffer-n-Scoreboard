@@ -14,8 +14,8 @@ output reg [2:0] WarpID_TM_PC,
 output reg [9:0] StartingPC_TM_PC,
 
 //interface with Issue Unit
-input Exit_IU_SIMT,
-input [2:0] WarpID_IU_TM,
+input Exit_IB_RAU_TM,
+input [2:0] Exit_WarpID_IB_RAU_TM,
 
 //interface with Register File Allocation Unit
 input Alloc_BusyBar_RAU_TM,
@@ -171,10 +171,10 @@ always @ (posedge clk or negedge rst) begin
 				// alloc_TM_RAU<=0;
 			end
 
-			if(Exit_IU_SIMT) begin
+			if(Exit_IB_RAU_TM) begin
 				free_registers <= free_registers + freed_reg;
-				tasks[active_Warp[WarpID_IU_TM]][28]<=0;
-				free_Warp[free_Warp_wptr[2:0]]<=WarpID_IU_TM;
+				tasks[active_Warp[Exit_WarpID_IB_RAU_TM]][28]<=0;
+				free_Warp[free_Warp_wptr[2:0]]<=Exit_WarpID_IB_RAU_TM;
 				free_Warp_wptr<=free_Warp_wptr+1;
 				active_tasks<=active_tasks-1;
 			end
@@ -235,25 +235,25 @@ end
 
 
 always @(*) begin
-		if(free_registers > tasks[tasks_rptr[7:0]][2:0]) begin
-			can_reg_alloc = 1;
-		end
-		else begin
-			can_reg_alloc = 0;
-		end
-
-		if(tasks[tasks_rptr[7:0]][0]) begin
-			reg_would_alloc[3:0] = {1'b0,tasks[tasks_rptr[7:0]][2:0]} + 1;
-		end
-		else begin
-			reg_would_alloc[3:0] = {1'b0,tasks[tasks_rptr[7:0]][2:0]} + 2;
-		end
-		if(tasks[active_Warp[WarpID_IU_TM]][0]) begin
-			freed_reg [3:0] = {1'b0,tasks[active_Warp[WarpID_IU_TM]][2:0]} + 1;
-		end
-		else begin
-			freed_reg [3:0] = {1'b0,tasks[active_Warp[WarpID_IU_TM]][2:0]} + 2;
-		end
-
+	if(free_registers > tasks[tasks_rptr[7:0]][2:0]) begin
+		can_reg_alloc = 1;
 	end
+	else begin
+		can_reg_alloc = 0;
+	end
+
+	if(tasks[tasks_rptr[7:0]][0]) begin
+		reg_would_alloc[3:0] = {1'b0,tasks[tasks_rptr[7:0]][2:0]} + 1;
+	end
+	else begin
+		reg_would_alloc[3:0] = {1'b0,tasks[tasks_rptr[7:0]][2:0]} + 2;
+	end
+	if(tasks[active_Warp[Exit_WarpID_IB_RAU_TM]][0]) begin
+		freed_reg [3:0] = {1'b0,tasks[active_Warp[Exit_WarpID_IB_RAU_TM]][2:0]} + 1;
+	end
+	else begin
+		freed_reg [3:0] = {1'b0,tasks[active_Warp[Exit_WarpID_IB_RAU_TM]][2:0]} + 2;
+	end
+
+end
 endmodule
