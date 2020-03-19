@@ -21,9 +21,9 @@ module mem_stage3
 	input [7:0] thread_mask,
 	input [4:0] miss_latency,
 	
-	input FIFO_MEMWRITE,
-	input [255:0] FIFO_WRITE_DATA,
-	input [addr_width-1:0] FIFO_ADDR,
+	input FIO_MEMWRITE,
+	input [255:0] FIO_WRITE_DATA,
+	input [addr_width-1:0] FIO_ADDR,
 	
 	
 	
@@ -70,12 +70,12 @@ module mem_stage3
 	integer scan_return;
 	integer i, x;
 	
-	assign write_data_int	=	FIFO_MEMWRITE? FIFO_WRITE_DATA : write_data;
-	assign mem_addr_int		=	FIFO_MEMWRITE? FIFO_ADDR : mem_addr[addr_width-1:0];
+	assign write_data_int	=	FIO_MEMWRITE? FIO_WRITE_DATA : write_data;
+	assign mem_addr_int		=	FIO_MEMWRITE? FIO_ADDR : mem_addr[addr_width-1:0];
 	
 	
 	
-	mshr_fifo mf_inst(.clk(clk),.resetb(resetb), .cle_hit_missbar(hit_missbar), .scbID(scb_ID), .warpID(warp_ID), .cle_addr(addr_sel),
+	mshr_fifo mf_inst(.clk(clk),.resetb(resetb), .cle_hit_missbar(hit_missbar), .scbID(scb_ID), .warpID(warp_ID), .cle_addr(mem_addr),
 						.cle_latency(miss_latency_int), .addr_valid(addr_valid),.neg_feedback_scbID(mshr_neg_feedback_scbID_o), 
 						.neg_feedback_warpID(mshr_neg_feedback_warpID_o), .neg_feedback_addr(mshr_neg_feedback_addr_o), 
 						.neg_feedback_valid(mshr_neg_feedback_valid_o));
@@ -86,42 +86,42 @@ module mem_stage3
 	
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache0 (.a_clk(clk), .a_wr(0), .a_addr(mem_addr[addr_width-1:0]), .a_din(0), .a_dout(read_data[0]), 
-								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[0] || FIFO_MEMWRITE), .b_addr(mem_addr_int), 
+								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[0] || FIO_MEMWRITE), .b_addr(mem_addr_int), 
 								 .b_din(write_data_int[31:0]), .b_dout());
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache1 (.a_clk(clk), .a_wr(0), .a_addr(mem_addr[addr_width-1:0]), .a_din(0), .a_dout(read_data[1]), 
-								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[1] || FIFO_MEMWRITE), .b_addr(mem_addr_int), 
+								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[1] || FIO_MEMWRITE), .b_addr(mem_addr_int), 
 								 .b_din(write_data_int[63:32]), .b_dout());
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache2 (.a_clk(clk), .a_wr(0), .a_addr(mem_addr[addr_width-1:0]), .a_din(0), .a_dout(read_data[2]), 
-								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[2] || FIFO_MEMWRITE), .b_addr(mem_addr_int), 
+								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[2] || FIO_MEMWRITE), .b_addr(mem_addr_int), 
 								 .b_din(write_data_int[95:64]), .b_dout());
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache3 (.a_clk(clk), .a_wr(0), .a_addr(mem_addr[addr_width-1:0]), .a_din(0), .a_dout(read_data[3]), 
-								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[3] || FIFO_MEMWRITE), .b_addr(mem_addr_int), 
+								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[3] || FIO_MEMWRITE), .b_addr(mem_addr_int), 
 								 .b_din(write_data_int[127:96]), .b_dout());
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache4 (.a_clk(clk), .a_wr(0), .a_addr(mem_addr[addr_width-1:0]), .a_din(0), .a_dout(read_data[4]), 
-								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[4] || FIFO_MEMWRITE), .b_addr(mem_addr_int), 
+								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[4] || FIO_MEMWRITE), .b_addr(mem_addr_int), 
 								 .b_din(write_data_int[159:128]), .b_dout());
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache5 (.a_clk(clk), .a_wr(0), .a_addr(mem_addr[addr_width-1:0]), .a_din(0), .a_dout(read_data[5]), 
-								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[5] || FIFO_MEMWRITE), .b_addr(mem_addr_int), 
+								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[5] || FIO_MEMWRITE), .b_addr(mem_addr_int), 
 								 .b_din(write_data_int[191:160]), .b_dout());
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache6 (.a_clk(clk), .a_wr(0), .a_addr(mem_addr[addr_width-1:0]), .a_din(0), .a_dout(read_data[6]), 
-								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[6] || FIFO_MEMWRITE), .b_addr(mem_addr_int), 
+								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[6] || FIO_MEMWRITE), .b_addr(mem_addr_int), 
 								 .b_din(write_data_int[223:192]), .b_dout());
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache7 (.a_clk(clk), .a_wr(0), .a_addr(mem_addr[addr_width-1:0]), .a_din(0), .a_dout(read_data[7]), 
-								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[7] || FIFO_MEMWRITE), .b_addr(mem_addr_int), 
+								 .b_clk(clk), .b_wr(MemWrite && mem_write_mask[7] || FIO_MEMWRITE), .b_addr(mem_addr_int), 
 								 .b_din(write_data_int[255:224]), .b_dout());
 	
 	

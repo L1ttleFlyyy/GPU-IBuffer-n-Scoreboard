@@ -1,16 +1,20 @@
 `include "Inferable_BRAM.v"
 
-module cache_latency_emulator(addr, addr_valid, addr_response, addr_response_valid, clk, resetb, 
+module cache_latency_emulator(addr, addr_valid, addr_response, addr_response_valid, clk, resetb, FIO_CACHE_LAT_WRITE, FIO_CACHE_LAT_VALUE, FIO_CACHE_MEM_ADDR,
 latency, hit_missbar, miss_wait);
 	parameter mem_size = 256;
 	parameter cache_size = 32;
-	localparam addr_width = $clog2(mem_size);
+	parameter addr_width = 8;
 	
 	input clk;
 	input resetb;
 	input addr_response_valid;
 	input addr_valid;
 	input [26:0] addr, addr_response;
+	
+	input FIO_CACHE_LAT_WRITE;
+	input [4:0] FIO_CACHE_LAT_VALUE;
+	input [addr_width-1:0] FIO_CACHE_MEM_ADDR;
 	
 	
 	output [4:0] latency;
@@ -37,7 +41,7 @@ latency, hit_missbar, miss_wait);
 	
 	Inferable_BRAM #(.OREG(0), .DATA(5), .ADDR(addr_width))
 					latency_RAM (.a_clk(clk), .a_wr(0), .a_addr(addr[addr_width-1:0]), .a_din(0), .a_dout(latency), 
-								 .b_clk(clk), .b_wr(0), .b_addr(0), .b_din(0), .b_dout());
+								 .b_clk(clk), .b_wr(FIO_CACHE_LAT_WRITE), .b_addr(FIO_CACHE_MEM_ADDR), .b_din(FIO_CACHE_LAT_VALUE), .b_dout());
 	
 	
 	

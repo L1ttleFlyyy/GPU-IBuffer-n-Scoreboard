@@ -1,6 +1,12 @@
 `include "cache_latency_emulator_wBRAM.v"
 
-module mem_stage2(
+module mem_stage2
+#(
+	parameter mem_size = 256,
+	parameter cache_size = 32,
+	parameter addr_width = 8
+)
+(
 	
 	input clk, resetb, MemRead, MemWrite, shared_global_bar, mshr_neg_feedback_valid,
 	input [2:0] warp_ID,
@@ -9,6 +15,10 @@ module mem_stage2(
 	input [255:0] eff_addr, write_data,
 	input [4:0] reg_addr,
 	input [26:0] addr_sel, mshr_neg_feedback_addr,
+	
+	input FIO_CACHE_LAT_WRITE,
+	input [4:0] FIO_CACHE_LAT_VALUE,
+	input [addr_width-1:0] FIO_CACHE_MEM_ADDR,
 	
 	output reg addr_valid_o,
 	output MemRead_o, MemWrite_o, hit_missbar_o, miss_wait_o,
@@ -25,8 +35,6 @@ module mem_stage2(
 	
 	
 	
-	parameter mem_size = 256;
-	parameter cache_size = 32;
 	
 	
 	
@@ -53,10 +61,12 @@ module mem_stage2(
 	
 	integer i, j;
 	
-	cache_latency_emulator #(.mem_size(mem_size), .cache_size(cache_size)) 
+	cache_latency_emulator #(.mem_size(mem_size), .cache_size(cache_size), .addr_width(addr_width))
 							cle_inst (.addr(addr_sel), .addr_valid(cache_addr_valid), .latency(miss_latency), .hit_missbar(hit_missbar), 
 									.addr_response(mshr_neg_feedback_addr), .addr_response_valid(mshr_neg_feedback_valid), .clk(clk), 
-									.resetb(resetb), .miss_wait(miss_wait));
+									.resetb(resetb), .miss_wait(miss_wait),
+									.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE), .FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE), 
+									.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR));
 	
 	
 	

@@ -31,14 +31,14 @@ module mem_stage1(
 	always@(rs_reg_data, offset)
 	begin
 	
-		eff_addr[0] 	<= 	rs_reg_data[31:0] 		+ 	{{16{offset[15]}},offset};
-		eff_addr[1] 	<= 	rs_reg_data[63:32] 		+ 	{{16{offset[15]}},offset};
-		eff_addr[2] 	<= 	rs_reg_data[95:64] 		+ 	{{16{offset[15]}},offset};
-		eff_addr[3] 	<= 	rs_reg_data[127:96] 	+ 	{{16{offset[15]}},offset};
-		eff_addr[4] 	<= 	rs_reg_data[159:128] 	+ 	{{16{offset[15]}},offset};
-		eff_addr[5] 	<= 	rs_reg_data[191:160] 	+ 	{{16{offset[15]}},offset};
-		eff_addr[6] 	<= 	rs_reg_data[223:192] 	+ 	{{16{offset[15]}},offset};
-		eff_addr[7] 	<= 	rs_reg_data[255:224] 	+ 	{{16{offset[15]}},offset};
+		eff_addr[0] 	= 	rs_reg_data[31:0] 		+ 	{{16{offset[15]}},offset};
+		eff_addr[1] 	= 	rs_reg_data[63:32] 		+ 	{{16{offset[15]}},offset};
+		eff_addr[2] 	= 	rs_reg_data[95:64] 		+ 	{{16{offset[15]}},offset};
+		eff_addr[3] 	= 	rs_reg_data[127:96] 	+ 	{{16{offset[15]}},offset};
+		eff_addr[4] 	= 	rs_reg_data[159:128] 	+ 	{{16{offset[15]}},offset};
+		eff_addr[5] 	= 	rs_reg_data[191:160] 	+ 	{{16{offset[15]}},offset};
+		eff_addr[6] 	= 	rs_reg_data[223:192] 	+ 	{{16{offset[15]}},offset};
+		eff_addr[7] 	= 	rs_reg_data[255:224] 	+ 	{{16{offset[15]}},offset};
 		
 	end
 	

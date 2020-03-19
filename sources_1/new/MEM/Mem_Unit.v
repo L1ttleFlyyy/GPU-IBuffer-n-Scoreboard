@@ -10,7 +10,8 @@ module mem_unit
 	parameter mem_size = 256,
 	parameter shmem_size = 256,
 	parameter cache_size = 32,
-	localparam addr_width = $clog2(mem_size+shmem_size)
+	localparam addr_width = $clog2(mem_size+shmem_size),
+	localparam mem_addr_width = $clog2(mem_size)
 )
 
 
@@ -21,13 +22,17 @@ module mem_unit
 	input [2:0] warp_ID_OC_MEM,
 	input [1:0] scb_ID_o_OC_MEM,
 	input [255:0] rs_data_OC_MEM, rt_data_OC_MEM,
-	input [7:0] offset_OC_MEM,
+	input [15:0] offset_OC_MEM,
 	input [4:0] reg_addr_OC_MEM,
 	
 	
-	input FIFO_MEMWRITE,
-	input [addr_width-1:0] FIFO_ADDR,
-	input [255:0] FIFO_WRITE_DATA,
+	input FIO_MEMWRITE,
+	input [addr_width-1:0] FIO_ADDR,
+	input [255:0] FIO_WRITE_DATA,
+	
+	input FIO_CACHE_LAT_WRITE,
+	input [4:0] FIO_CACHE_LAT_VALUE,
+	input [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR,
 	
 	output neg_feedback_valid_o_MEM_Scb, pos_feedback_valid_o_MEM_Scb, cdb_regwrite_MEM_CDB,
 	output [2:0] neg_feedback_warpID_o_MEM_Scb, pos_feedback_warpID_o_MEM_Scb,
@@ -47,7 +52,7 @@ module mem_unit
 	reg [2:0] warp_ID_q;
 	reg [1:0] scb_ID_q;
 	reg [255:0] rs_data_q, rt_data_q;
-	reg [7:0] offset_q;
+	reg [15:0] offset_q;
 	reg [4:0] reg_addr_q;
 	
 	wire stage12_MemRead, stage12_MemWrite, stage12_shared_global_bar;
@@ -102,7 +107,7 @@ module mem_unit
 	);
 	
 	
-	mem_stage2 #(.mem_size(mem_size), .cache_size(cache_size))
+	mem_stage2 #(.mem_size(mem_size), .cache_size(cache_size), .addr_width(mem_addr_width))
 			stage2_inst(
 	
 							.clk(clk), .resetb(rst), .MemRead(stage12_MemRead), .MemWrite(stage12_MemWrite), 
@@ -113,6 +118,10 @@ module mem_unit
 							.eff_addr(stage12_eff_addr), .write_data(stage12_write_data),
 							.reg_addr(stage12_reg_addr),
 							.addr_sel(stage12_addr_sel), .mshr_neg_feedback_addr(stage32_neg_feedback_addr),
+							
+							.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE), .FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE),
+							.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR),
+							
 							
 							.MemRead_o(stage23_MemRead), .MemWrite_o(stage23_MemWrite), .hit_missbar_o(stage23_hit_missbar), 
 							.miss_wait_o(stage23_miss_wait), .addr_valid_o(stage23_addr_valid),
@@ -143,9 +152,9 @@ module mem_unit
 							.thread_mask(stage23_thread_mask),
 							.miss_latency(stage23_miss_latency),
 							
-							.FIFO_MEMWRITE(FIFO_MEMWRITE),
-							.FIFO_ADDR(FIFO_ADDR),
-							.FIFO_WRITE_DATA(FIFO_WRITE_DATA),
+							.FIO_MEMWRITE(FIO_MEMWRITE),
+							.FIO_ADDR(FIO_ADDR),
+							.FIO_WRITE_DATA(FIO_WRITE_DATA),
 							
 							
 							.reg_write_o(stage34_reg_write), .write_fb_valid_o(stage34_write_fb_valid),
