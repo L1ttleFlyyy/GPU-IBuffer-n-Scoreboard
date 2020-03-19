@@ -18,10 +18,10 @@ input Update_TM_SIMT,
 input [7:0] AM_TM_SIMT,
 
 // //interface with Fetch
-output UpdatePC_Qual1_SIMT_IF,
-output UpdatePC_Qual2_SIMT_IF,
+output UpdatePC_Qual1_SIMT_PC,
+output UpdatePC_Qual2_SIMT_PC,
   //--Moved to Decode stage--> output [7:0] UpdatePC_Qual3,
-output Stall_SIMT_IF,    //Stall signal from SIMT
+output Stall_SIMT_PC,    //Stall signal from SIMT
 output reg [9:0] TA_Warp_SIMT_IF,   // Target Address from SIMT per warp
 
 //interface with Instruction Decode
@@ -29,7 +29,7 @@ input DotS_ID_SIMT,
 input CondBr_ID_SIMT,
 input Call_ID_SIMT,
 input Ret_ID_SIMT,
-input Jump_ID_SIMT,
+input Jmp_ID_SIMT,
 input [9:0] PCplus4_ID_SIMT,
 
 //interface with IBuffer
@@ -106,12 +106,12 @@ assign push_SIMT_raw_sim = push_SIMT_raw;
 //-----Simulation Signals interface ends-------
 
 
-assign Stall_SIMT_IF = Stall_SIMT;
+assign Stall_SIMT_PC = Stall_SIMT;
 assign AM_Warp_SIMT_IB = ActiveMask;
 //////-------------------------/////
 
 assign DropInstr_SIMT_IB = (Stall_SIMT | 
-                              Call_ID_SIMT | Jump_ID_SIMT | Ret_ID_SIMT |
+                              Call_ID_SIMT | Jmp_ID_SIMT | Ret_ID_SIMT |
                               (TOS_SYNC_Token & (DotS_ID_SIMT & ~(CondBr_ID_SIMT))));
 //////-----------Stall Signal Generation--------------/////
 assign CondBr_status_Not_rx = ~CondBr_Ex_SIMT;
@@ -119,11 +119,11 @@ assign Stall_SIMT = Waiting_Status_CondBr & CondBr_status_Not_rx;
 
 //////-----------PC Qual 1--------------/////
 assign updatePC_raw = | CondOutcome_Ex_SIMT;
-assign UpdatePC_Qual1_SIMT_IF = updatePC_raw & Stall_SIMT & CondBr_Ex_SIMT;
+assign UpdatePC_Qual1_SIMT_PC = updatePC_raw & Stall_SIMT & CondBr_Ex_SIMT;
 //////-----------PC Qual 2--------------/////
 //assign pop_stack_raw = Ret_ID_SIMT | (DotS_ID_SIMT & ~(Call_ID_SIMT | CondBr_ID_SIMT));
 //assign pop_stack_qual = pop_stack_raw & ~Stall_SIMT;
-assign UpdatePC_Qual2_SIMT_IF = pop_stack_qual & ~TOS_SYNC_Token;
+assign UpdatePC_Qual2_SIMT_PC = pop_stack_qual & ~TOS_SYNC_Token;
 //////-----------SIMT Stack Pushing--------------/////
 assign push_SIMT_raw = ~(& CondOutcome_Ex_SIMT);
 //assign updateAM_Qual1 = updatePC_raw & push_SIMT_raw & CondBr_Ex_SIMT & Stall_SIMT;
