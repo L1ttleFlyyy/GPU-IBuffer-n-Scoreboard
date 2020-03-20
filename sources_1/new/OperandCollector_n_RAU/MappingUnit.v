@@ -4,15 +4,12 @@ module Mapping(
 
     //every
     input wire Valid_IB_RAU,//use
-
     input wire [31:0] Instr_IB_RAU,//pass
-    //
     input wire [4:0] Src1_IB_RAU,//use; MSB->SpecialReg
     input wire Src1_Valid_IB_RAU,//?????
     input wire [4:0] Src2_IB_RAU,//use; MSB->SpecialReg
     input wire Src2_Valid_IB_RAU,//?????
-    //
-    input wire RegWrite_IB_RAU,
+    input wire RegWrite_IB_OC,
     input wire [4:0] Dst_IB_OC,
     input wire [15:0] Imme_IB_RAU,//use
     input wire Imme_Valid_IB_RAU,//?????
@@ -27,17 +24,17 @@ module Mapping(
 
     //Allo or exit
     //Exit
-    input wire [2:0] ExitWarpID_IB_RAU,
+    input wire [2:0] Exit_WarpID_IB_RAU,
     input wire Exit_IB_RAU_TM,
 
     //Allo
-    input wire [2:0] HWWarp_TM_RAU,
-    input wire AlloEN_TM_RAU,
-    input wire [2:0] Nreq_TM_RAU,
-    input wire [7:0] SWWarp_TM_RAU,
+    input wire [2:0] HWWarpID_TM_RAU,
+    input wire Update_TM_RAU,
+    input wire [2:0] Nreg_TM_RAU,
+    input wire [7:0] SWWarpID_TM_RAU,
 
     //output reg [4:0] Available_RAU_TM,
-    output reg [8:0] AllocStall_RAU_IB,//IF?
+    output reg [7:0] AllocStall_RAU_IB,//IF?
 
     //Read 
     input wire [2:0] HWWarp_IB_RAU, //with valid?
@@ -56,7 +53,7 @@ module Mapping(
     input wire oc_3_empty,
 
     //OCID
-    output reg [1:0] OCID_RAU_OC,
+
     output wire [2:0] Src1_OCID_RAU_OC,
     output wire [2:0] Src2_OCID_RAU_OC,
 
@@ -88,6 +85,7 @@ module Mapping(
     output wire BLT_RAU_Collecting ,//pass
     output wire [1:0] ScbID_RAU_Collecting ,//pass
     output wire [7:0] ActiveMask_RAU_Collecting ,//pass
+    output wire RegWrite_RAU_Collecting,
 
     output wire [255:0]Data_CDB,
     output wire [31:0]Instr_CDB
@@ -139,7 +137,7 @@ always @ (*)
 begin
     case(state)
         READY: begin 
-            if (!Exit_IB_RAU_TM & AlloEN_TM_RAU) begin
+            if (!Exit_IB_RAU_TM & Update_TM_RAU) begin
                 next_state = ALLO;
             end else if (Exit_IB_RAU_TM) begin
                 next_state = DEALLO;
@@ -178,12 +176,12 @@ begin
     case(state)
         READY: begin
             AllocStall_RAU_IB = 0;
-            if (AlloEN_TM_RAU) begin
-                Nreq <= Nreq_TM_RAU;
-                HWWarp <= HWWarp_TM_RAU; //SWWARP
-                SpecialReg[HWWarp_TM_RAU] <= SWWarp_TM_RAU; // special reg
+            if (Update_TM_RAU) begin
+                Nreq <= Nreg_TM_RAU;
+                HWWarp <= HWWarpID_TM_RAU; //SWWARP
+                SpecialReg[HWWarpID_TM_RAU] <= SWWarpID_TM_RAU; // special reg
             end else begin
-                HWWarp <= ExitWarpID_IB_RAU; //how to write certain bits in instrcution
+                HWWarp <= Exit_WarpID_IB_RAU; //how to write certain bits in instrcution
             end
         end
 
@@ -265,6 +263,8 @@ assign ReqFIFO_2op_EN = (Src1_Phy_Bank_ID == Src2_Phy_Bank_ID) & (Src1_Valid_IB_
 //给到ReqFIFO再到rf
 
 
+reg [1:0] OCID_RAU_OC;
+
 always @ (*)
 begin
     if (oc_0_empty == 1)
@@ -297,7 +297,7 @@ assign BEQ_RAU_Collecting = BEQ_IB_RAU;
 assign BLT_RAU_Collecting = BLT_IB_RAU;
 assign ScbID_RAU_Collecting = ScbID_IB_RAU;
 assign ActiveMask_RAU_Collecting = ActiveMask_IB_RAU;
-assign RegWrite_RAU_Collecting = RegWrite_IB_RAU;
+assign RegWrite_RAU_Collecting = RegWrite_IB_OC;
 
 
 assign Data_CDB = Data_CDB_RAU;
