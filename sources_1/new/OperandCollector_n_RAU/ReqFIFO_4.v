@@ -1,14 +1,13 @@
-`default_nettype none
 
 module ReqFIFO_4(
-    input wire rst,
-    input wire clk,
+    input rst,
+    input clk,
 
 
-    input wire WriteValid,
+    input WriteValid,
 
-    input wire [1:0] WriteBank,
-    input wire [2:0] WriteRow,
+    input [1:0] WriteBank,
+    input [2:0] WriteRow,
     
     input Src1_Valid,
     input [1:0] Src1_Phy_Bank_ID,
@@ -60,10 +59,10 @@ wire [2:0] Src2_Phy_Row_ID_1 = Src2_Phy_Row_ID;
 wire [2:0] Src2_Phy_Row_ID_2 = Src2_Phy_Row_ID;
 wire [2:0] Src2_Phy_Row_ID_3 = Src2_Phy_Row_ID;
 
-wire [2:0] Src1_OCID_RAU_OC_0 = Src2_OCID_RAU_OC;
-wire [2:0] Src1_OCID_RAU_OC_1 = Src2_OCID_RAU_OC;
-wire [2:0] Src1_OCID_RAU_OC_2 = Src2_OCID_RAU_OC;
-wire [2:0] Src1_OCID_RAU_OC_3 = Src2_OCID_RAU_OC;
+wire [2:0] Src1_OCID_RAU_OC_0 = Src1_OCID_RAU_OC;
+wire [2:0] Src1_OCID_RAU_OC_1 = Src1_OCID_RAU_OC;
+wire [2:0] Src1_OCID_RAU_OC_2 = Src1_OCID_RAU_OC;
+wire [2:0] Src1_OCID_RAU_OC_3 = Src1_OCID_RAU_OC;
 
 wire [2:0] Src2_OCID_RAU_OC_0 = Src2_OCID_RAU_OC;
 wire [2:0] Src2_OCID_RAU_OC_1 = Src2_OCID_RAU_OC;

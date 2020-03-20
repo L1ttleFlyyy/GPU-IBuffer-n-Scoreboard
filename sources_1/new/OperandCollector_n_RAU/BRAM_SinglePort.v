@@ -5,7 +5,7 @@
 // 
 // Create Date: 01/19/2020 06:28:47 PM
 // Design Name: 
-// Module Name: Inferable_BRAM
+// Module Name: BRAM_SinglePort
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -22,25 +22,17 @@
 
 // A parameterized, inferable, true dual-port, dual-clock block RAM in Verilog.
  
-module Inferable_BRAM #(
-    parameter OREG = 0, //要不要？？？
-    parameter DATA = 256,    // 32 * 8 bits for each warp with 8 threads
-    parameter ADDR = 3      // 8 loc each bank
+module BRAM_SinglePort #(
+    parameter OREG = 0,
+    parameter DATA = 32,
+    parameter ADDR = 9
 ) (
-        // Port A
+    // Port A
     input   wire                a_clk,
     input   wire                a_wr,
     input   wire    [ADDR-1:0]  a_addr,
     input   wire    [DATA-1:0]  a_din,
-    output  reg     [DATA-1:0]  a_dout,
-     
-    // Port B
-    input   wire                b_clk,
-    input   wire                b_wr,
-    input   wire    [ADDR-1:0]  b_addr,
-    input   wire    [DATA-1:0]  b_din,
-    output  reg     [DATA-1:0]  b_dout
-
+    output  reg     [DATA-1:0]  a_dout
 );
  
 // Shared memory
@@ -65,16 +57,6 @@ if (OREG) begin // pipelined BRAM
             mem[a_addr] <= a_din;
         end
     end
-     
-    // Port B
-    always @(posedge b_clk) begin
-        b_dout <= b_oreg;
-        b_oreg <= mem[b_addr];
-        if(b_wr) begin
-            b_oreg      <= b_din;
-            mem[b_addr] <= b_din;
-        end
-    end
 end else begin // flow-through BRAM
     // Port A
     always @(posedge a_clk) begin
@@ -84,16 +66,6 @@ end else begin // flow-through BRAM
             mem[a_addr] <= a_din;
         end
     end
-     
-    // Port B
-    always @(posedge b_clk) begin
-        b_dout      <= mem[b_addr];
-        if(b_wr) begin
-            b_dout      <= b_din;
-            mem[b_addr] <= b_din;
-        end
-    end
-
 end
 endgenerate
  

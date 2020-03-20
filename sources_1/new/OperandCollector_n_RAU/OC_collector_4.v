@@ -19,9 +19,8 @@ module OC_collector_4(
     input wire BLT_RAU_Collecting ,//pass
     input wire [1:0] ScbID_RAU_Collecting ,//pass
     input wire [7:0] ActiveMask_RAU_Collecting ,//pass
+    input wire [4:0] Dst_RAU_Collecting,
 
-    input wire [2:0] Src1_OCID_RAU_OC,
-    input wire [2:0] Src2_OCID_RAU_OC,
 
     input wire [255:0] DataOut_0,
     input wire [255:0] DataOut_1,
@@ -39,8 +38,9 @@ module OC_collector_4(
     input wire RF_WR_2,
     input wire RF_WR_3,
 
-    input wire [1:0] Src1_Phy_Bank_ID,
-    input wire [1:0] Src2_Phy_Bank_ID,
+    input wire [1:0]Src1_Phy_Bank_ID,
+    input wire [1:0]Src2_Phy_Bank_ID,
+
 
 
     output wire [255:0] oc_0_data_0,
@@ -62,7 +62,7 @@ module OC_collector_4(
     output BLT_Collecting_Ex_0 ,//pass
     output [1:0] ScbID_Collecting_Ex_0 ,//pass
     output [7:0] ActiveMask_Collecting_Ex_0,//pass
-    
+    output [4:0] Dst_Collecting_Ex_0,
 
     output wire [255:0] oc_0_data_1,
     output wire [255:0] oc_1_data_1,
@@ -83,7 +83,7 @@ module OC_collector_4(
     output BLT_Collecting_Ex_1 ,//pass
     output [1:0] ScbID_Collecting_Ex_1 ,//pass
     output [7:0] ActiveMask_Collecting_Ex_1,//pass
-
+    output [4:0] Dst_Collecting_Ex_1,
     output wire [255:0] oc_0_data_2,
     output wire [255:0] oc_1_data_2,
 
@@ -103,7 +103,7 @@ module OC_collector_4(
     output BLT_Collecting_Ex_2 ,//pass
     output [1:0] ScbID_Collecting_Ex_2 ,//pass
     output [7:0] ActiveMask_Collecting_Ex_2,//pass
-
+    output [4:0] Dst_Collecting_Ex_2,
     output wire [255:0] oc_0_data_3,
     output wire [255:0] oc_1_data_3,
 
@@ -122,8 +122,8 @@ module OC_collector_4(
     output BEQ_Collecting_Ex_3 ,//pass
     output BLT_Collecting_Ex_3 ,//pass
     output [1:0] ScbID_Collecting_Ex_3 ,//pass
-    output [7:0] ActiveMask_Collecting_Ex_3//pass
-    
+    output [7:0] ActiveMask_Collecting_Ex_3,//pass
+    output [4:0] Dst_Collecting_Ex_3
 
 );
 
@@ -145,10 +145,10 @@ wire [4:0]c_0_reg_id_in = {Src1_Phy_Bank_ID, 3'b000};///////??????
 wire [4:0]c_1_reg_id_in = {Src2_Phy_Bank_ID, 3'b000};///////??????
 
 
-wire RE_0 = ALU_Grt_Sched_OC[0] & ALU_Grt_Sched_OC[0];
-wire RE_1 = ALU_Grt_Sched_OC[1] & ALU_Grt_Sched_OC[1];
-wire RE_2 = ALU_Grt_Sched_OC[2] & ALU_Grt_Sched_OC[2];
-wire RE_3 = ALU_Grt_Sched_OC[3] & ALU_Grt_Sched_OC[3];
+wire RE_0 = ALU_Grt_Sched_OC[0] | MEM_Grt_Sched_OC[0];
+wire RE_1 = ALU_Grt_Sched_OC[1] | MEM_Grt_Sched_OC[1];
+wire RE_2 = ALU_Grt_Sched_OC[2] | MEM_Grt_Sched_OC[2];
+wire RE_3 = ALU_Grt_Sched_OC[3] | MEM_Grt_Sched_OC[3];
 
 
 OC_collector_unit#(
@@ -180,7 +180,7 @@ OC_collector_unit#(
 
     .Valid_RAU_Collecting(Valid_RAU_Collecting) ,//use
     .Instr_RAU_Collecting(Instr_RAU_Collecting) ,//pass
-
+    .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
     .Imme_RAU_Collecting(Imme_RAU_Collecting) ,//
     .Imme_Valid_RAU_Collecting(Imme_Valid_RAU_Collecting) ,//
     .ALUop_RAU_Collecting(ALUop_RAU_Collecting) ,//
@@ -191,6 +191,7 @@ OC_collector_unit#(
     .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
     .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
     .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
+    .Dst_RAU_Collecting(Dst_RAU_Collecting),  
     .RDY(RDY_0), 
     .valid(valid_0),
 
@@ -210,7 +211,8 @@ OC_collector_unit#(
     .BEQ_Collecting_Ex(BEQ_Collecting_Ex_0) ,//pass
     .BLT_Collecting_Ex(BLT_Collecting_Ex_0) ,//pass
     .ScbID_Collecting_Ex(ScbID_Collecting_Ex_0) ,//pass
-    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_0)//pass
+    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_0),//pass
+    .Dst_Collecting_Ex(Dst_Collecting_Ex_0)
 );
 
 OC_collector_unit#(
@@ -242,6 +244,7 @@ OC_collector_unit#(
 
     .Valid_RAU_Collecting(Valid_RAU_Collecting) ,//use
     .Instr_RAU_Collecting(Instr_RAU_Collecting) ,//pass
+    .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
 
     .RegWrite_Collecting_Ex(RegWrite_Collecting_Ex_1),
     .Imme_RAU_Collecting(Imme_RAU_Collecting) ,//
@@ -254,6 +257,7 @@ OC_collector_unit#(
     .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
     .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
     .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
+    .Dst_RAU_Collecting(Dst_RAU_Collecting),
     .RDY(RDY_1), 
     .valid(valid_1),
 
@@ -272,7 +276,8 @@ OC_collector_unit#(
     .BEQ_Collecting_Ex(BEQ_Collecting_Ex_1) ,//pass
     .BLT_Collecting_Ex(BLT_Collecting_Ex_1) ,//pass
     .ScbID_Collecting_Ex(ScbID_Collecting_Ex_1) ,//pass
-    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_1)//pass
+    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_1),//pass
+    .Dst_Collecting_Ex(Dst_Collecting_Ex_1)
 );
 
 OC_collector_unit#(
@@ -304,6 +309,7 @@ OC_collector_unit#(
 
     .Valid_RAU_Collecting(Valid_RAU_Collecting) ,//use
     .Instr_RAU_Collecting(Instr_RAU_Collecting) ,//pass
+    .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
 
     .Imme_RAU_Collecting(Imme_RAU_Collecting) ,//
     .Imme_Valid_RAU_Collecting(Imme_Valid_RAU_Collecting) ,//
@@ -315,11 +321,12 @@ OC_collector_unit#(
     .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
     .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
     .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
+    .Dst_RAU_Collecting(Dst_RAU_Collecting),
     .RDY(RDY_2), 
     .valid(valid_2),
 
-    .oc_0_data(oc_0_data_0),
-    .oc_1_data(oc_1_data_0),
+    .oc_0_data(oc_0_data_2),
+    .oc_1_data(oc_1_data_2),
 
     .Valid_Collecting_Ex(Valid_Collecting_Ex_2) ,//use
     .Instr_Collecting_Ex(Instr_Collecting_Ex_2) ,//pass
@@ -334,7 +341,8 @@ OC_collector_unit#(
     .BEQ_Collecting_Ex(BEQ_Collecting_Ex_2) ,//pass
     .BLT_Collecting_Ex(BLT_Collecting_Ex_2) ,//pass
     .ScbID_Collecting_Ex(ScbID_Collecting_Ex_2) ,//pass
-    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_2)//pass
+    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_2),//pass
+    .Dst_Collecting_Ex(Dst_Collecting_Ex_2)
 );
 OC_collector_unit#(
     .ocid(3)
@@ -365,6 +373,7 @@ OC_collector_unit#(
 
     .Valid_RAU_Collecting(Valid_RAU_Collecting) ,//use
     .Instr_RAU_Collecting(Instr_RAU_Collecting) ,//pass
+    .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
 
     .Imme_RAU_Collecting(Imme_RAU_Collecting) ,//
     .Imme_Valid_RAU_Collecting(Imme_Valid_RAU_Collecting) ,//
@@ -376,6 +385,7 @@ OC_collector_unit#(
     .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
     .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
     .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
+    .Dst_RAU_Collecting(Dst_RAU_Collecting),
     .RDY(RDY_3), 
     .valid(valid_3),
 
@@ -395,6 +405,7 @@ OC_collector_unit#(
     .BEQ_Collecting_Ex(BEQ_Collecting_Ex_3) ,//pass
     .BLT_Collecting_Ex(BLT_Collecting_Ex_3) ,//pass
     .ScbID_Collecting_Ex(ScbID_Collecting_Ex_3) ,//pass
-    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_3)//pass
+    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_3),//pass
+    .Dst_Collecting_Ex(Dst_Collecting_Ex_3)
 );
 endmodule

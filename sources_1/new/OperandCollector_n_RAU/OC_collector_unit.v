@@ -49,11 +49,12 @@ input wire BEQ_RAU_Collecting ,//pass
 input wire BLT_RAU_Collecting ,//pass
 input wire [1:0] ScbID_RAU_Collecting ,//pass
 input wire [7:0] ActiveMask_RAU_Collecting ,//pass
+input wire [4:0] Dst_RAU_Collecting,
 output RDY, 
-output valid,
+output reg valid,
 
-output [255:0] oc_0_data,
-output [255:0] oc_1_data,
+output reg [255:0] oc_0_data,
+output reg [255:0] oc_1_data,
 
 output reg Valid_Collecting_Ex ,//use
 output reg [31:0] Instr_Collecting_Ex ,//pass
@@ -68,20 +69,16 @@ output reg Shared_Globalbar_Collecting_Ex ,//pass
 output reg BEQ_Collecting_Ex ,//pass
 output reg BLT_Collecting_Ex ,//pass
 output reg [1:0] ScbID_Collecting_Ex ,//pass
-output reg [7:0] ActiveMask_Collecting_Ex//pass
+output reg [7:0] ActiveMask_Collecting_Ex,//pass
+output reg [4:0] Dst_Collecting_Ex
 );
 /*---------wire/reg-------*/
-wire RDY;
-reg valid;
-reg [10:0] bypass_pyld;
 reg [4:0] oc_0_reg_id;
 reg [4:0] oc_1_reg_id;
 reg oc_0_valid;
 reg oc_1_valid;
 reg oc_0_rdy;
 reg oc_1_rdy;
-reg [255:0] oc_0_data;
-reg [255:0] oc_1_data;
 /*-------------------------*/
 
 reg [255:0] oc_0_data_in;
@@ -149,6 +146,7 @@ begin
 				BLT_Collecting_Ex <= BLT_RAU_Collecting ;//pass
 				ScbID_Collecting_Ex <= ScbID_RAU_Collecting ;//pass
 				ActiveMask_Collecting_Ex <= ActiveMask_RAU_Collecting ;//pass
+				Dst_Collecting_Ex <= Dst_RAU_Collecting;
 				
 
 				if (WE[0] == 1)

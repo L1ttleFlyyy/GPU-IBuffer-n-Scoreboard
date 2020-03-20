@@ -35,13 +35,8 @@ module RFOC(
 
     //Read 
     input wire [2:0] WarpID_IB_OC, //with valid?
-
+    output wire Full_OC_IB,
     //Write
-    input wire RegWrite_CDB_OC,
-    input wire [2:0] WriteAddr_CDB_OC,
-    input wire [2:0] HWWarp_CDB_OC,
-    input wire [255:0] Data_CDB_OC,
-    input wire [31:0] Instr_CDB_OC,
     output wire [7:0] AllocStall_RAU_IB,
     output Valid_Collecting_Ex_0 ,//use
     output [31:0] Instr_Collecting_Ex_0 ,//pass
@@ -55,7 +50,7 @@ module RFOC(
     output BLT_Collecting_Ex_0 ,//pass
     output [1:0] ScbID_Collecting_Ex_0 ,//pass
     output [7:0] ActiveMask_Collecting_Ex_0,//pass
-    
+    output [4:0] Dst_Collecting_Ex_0,
 
 
     output Valid_Collecting_Ex_1 ,//use
@@ -70,14 +65,14 @@ module RFOC(
     output BLT_Collecting_Ex_1 ,//pass
     output [1:0] ScbID_Collecting_Ex_1 ,//pass
     output [7:0] ActiveMask_Collecting_Ex_1,//pass
-
+    output [4:0] Dst_Collecting_Ex_1,
     output Valid_Collecting_Ex_2 ,//use
     output [31:0] Instr_Collecting_Ex_2 ,//pass
 
     output [15:0] Imme_Collecting_Ex_2 ,//
     output Imme_Valid_Collecting_Ex_2 ,//
     output [3:0] ALUop_Collecting_Ex_2 ,//
-
+    output [4:0] Dst_Collecting_Ex_2,
     output Shared_Globalbar_Collecting_Ex_2 ,//pass
     output BEQ_Collecting_Ex_2 ,//pass
     output BLT_Collecting_Ex_2 ,//pass
@@ -95,7 +90,7 @@ module RFOC(
     output BLT_Collecting_Ex_3 ,//pass
     output [1:0] ScbID_Collecting_Ex_3 ,//pass
     output [7:0] ActiveMask_Collecting_Ex_3,//pass
-    
+    output [4:0] Dst_Collecting_Ex_3,
 
 
     input wire RegWrite_CDB_RAU,
@@ -103,6 +98,7 @@ module RFOC(
     input wire [2:0] HWWarp_CDB_RAU,
     input wire [255:0] Data_CDB_RAU,
     input wire [31:0] Instr_CDB_RAU,
+    input wire [7:0] ActiveMask_CDB_RAU,
 
 
     input wire RegWrite_LastStage_MEM_Sched,
@@ -173,6 +169,7 @@ wire Shared_Globalbar_RAU_Collecting;
 wire BEQ_RAU_Collecting;//pass
 wire BLT_RAU_Collecting;//pass
 wire [1:0]ScbID_RAU_Collecting;//pass
+wire [4:0]Dst_RAU_Collecting;
 
 wire RDY_0;
 wire RDY_1;
@@ -208,8 +205,7 @@ wire valid_1;
 wire valid_2;
 wire valid_3;
 
-
-
+assign Full_OC_IB = valid_0 & valid_1 & valid_2 & valid_3;
 wire oc_0_empty = ~valid_0;
 wire oc_1_empty = ~valid_1;
 wire oc_2_empty = ~valid_2;
@@ -307,7 +303,7 @@ Mapping MappingUnit(
     .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
 
     .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
-
+    .Dst_RAU_Collecting(Dst_RAU_Collecting),
 
     .Data_CDB(Data_CDB),
     .Instr_CDB()  //////////////////////!@DASDUFHEFIUABEIPFULKBASEIUDKIALEBFCILWSBHD
@@ -359,9 +355,9 @@ ReqFIFO_4 ReqFIFO_4(
 
 RegisterFile RegisterFile(
     .clk(clk),
-    .rst(rst),
 
-    .RF_WR_MASK(ActiveMask_RAU_Collecting),
+
+    .RF_WR_MASK(ActiveMask_CDB_RAU),
     .RF_Addr_0(RF_Addr_0),
     .RF_Addr_1(RF_Addr_1),
     .RF_Addr_2(RF_Addr_2),
@@ -415,9 +411,8 @@ OC_collector_4 OC_collector_4(
     .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
     .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
     .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
+    .Dst_RAU_Collecting(Dst_RAU_Collecting),
 
-    .Src1_OCID_RAU_OC(Src1_OCID_RAU_OC),
-    .Src2_OCID_RAU_OC(Src2_OCID_RAU_OC),
 
     .DataOut_0(DataOut_0),
     .DataOut_1(DataOut_1),
@@ -458,7 +453,7 @@ OC_collector_4 OC_collector_4(
     .BLT_Collecting_Ex_0(BLT_Collecting_Ex_0) ,//pass
     .ScbID_Collecting_Ex_0(ScbID_Collecting_Ex_0) ,//pass
     .ActiveMask_Collecting_Ex_0(ActiveMask_Collecting_Ex_0),//pass
-    
+    .Dst_Collecting_Ex_0(Dst_Collecting_Ex_0),
 
     .oc_0_data_1(oc_0_data_1),
     .oc_1_data_1(oc_1_data_1),
@@ -479,7 +474,7 @@ OC_collector_4 OC_collector_4(
     .BLT_Collecting_Ex_1(BLT_Collecting_Ex_1) ,//pass
     .ScbID_Collecting_Ex_1(ScbID_Collecting_Ex_1) ,//pass
     .ActiveMask_Collecting_Ex_1(ActiveMask_Collecting_Ex_1),//pass
-
+    .Dst_Collecting_Ex_1(Dst_Collecting_Ex_1),
     .oc_0_data_2(oc_0_data_2),
     .oc_1_data_2(oc_1_data_2),
 
@@ -499,7 +494,7 @@ OC_collector_4 OC_collector_4(
     .BLT_Collecting_Ex_2(BLT_Collecting_Ex_2) ,//pass
     .ScbID_Collecting_Ex_2(ScbID_Collecting_Ex_2) ,//pass
     .ActiveMask_Collecting_Ex_2(ActiveMask_Collecting_Ex_2),//pass
-
+    .Dst_Collecting_Ex_2(Dst_Collecting_Ex_2),
     .oc_0_data_3(oc_0_data_3),
     .oc_1_data_3(oc_1_data_3),
 
@@ -518,8 +513,8 @@ OC_collector_4 OC_collector_4(
     .BEQ_Collecting_Ex_3(BEQ_Collecting_Ex_3) ,//pass
     .BLT_Collecting_Ex_3(BLT_Collecting_Ex_3) ,//pass
     .ScbID_Collecting_Ex_3(ScbID_Collecting_Ex_3) ,//pass
-    .ActiveMask_Collecting_Ex_3(ActiveMask_Collecting_Ex_3)//pass
-    
+    .ActiveMask_Collecting_Ex_3(ActiveMask_Collecting_Ex_3),//pass
+    .Dst_Collecting_Ex_3(Dst_Collecting_Ex_3)
 );
 
 schedular_4 schedular_4(

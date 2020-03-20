@@ -34,7 +34,7 @@ module Mapping(
     input wire [7:0] SWWarpID_TM_RAU,
 
     //output reg [4:0] Available_RAU_TM,
-    output reg [7:0] AllocStall_RAU_IB,//IF?
+    output [7:0] AllocStall_RAU_IB,//IF?
 
     //Read 
     input wire [2:0] HWWarp_IB_RAU, //with valid?
@@ -86,6 +86,7 @@ module Mapping(
     output wire [1:0] ScbID_RAU_Collecting ,//pass
     output wire [7:0] ActiveMask_RAU_Collecting ,//pass
     output wire RegWrite_RAU_Collecting,
+    output wire [4:0] Dst_RAU_Collecting,
 
     output wire [255:0]Data_CDB,
     output wire [31:0]Instr_CDB
@@ -105,21 +106,43 @@ localparam DEALLO = 3'b100;
 reg [2:0] state;
 reg [2:0] next_state;
 
-reg Req_Done_RAU_IB;
-
 
 reg [2:0] Nreq;
 reg [2:0] HWWarp;
 reg [4:0] LUT_StartAddr;
 reg [4:0] LUT_Addr;
 
-reg [2:0] LUT_RF_Row;
-reg LUT_RF_Bank;
-reg [3:0] MTptr;
 reg [31:0] SpecialReg[7:0]; //special register file
 
 reg MT [15:0];
 reg [4:0] LUT [31:0];
+
+reg [3:0] next_empty_ptr;
+reg [7:0] HWWarp_onehot;
+
+integer i;
+always@(*) begin
+    next_empty_ptr = 0;
+    for (i = 15; i >= 0; i = i-1) begin: next_empty
+        if (~MT[i]) begin
+            next_empty_ptr = i[3:0];
+        end
+    end
+end
+
+
+always@(*) begin
+    HWWarp_onehot = 0;
+    for (i = 0; i < 8; i = i+1) begin: decode3_8
+        if (i == HWWarp) begin
+            HWWarp_onehot = 1 << i;
+        end
+    end
+end
+
+assign AllocStall_RAU_IB = (state == ALLO)? HWWarp_onehot : 0;
+wire [2:0] LUT_RF_Row = next_empty_ptr[3:1];
+wire LUT_RF_Bank  = next_empty_ptr[0];
 
 //FSM
 //state changing
@@ -146,7 +169,7 @@ begin
             end
         end
         ALLO:begin
-            if (Req_Done_RAU_IB == 1'b1) begin //defined in next always block
+            if (Nreq == 2) begin //defined in next always block
                 next_state = READY;
 
             end else begin
@@ -156,6 +179,8 @@ begin
         DEALLO:begin
             next_state = READY;
         end
+        default:
+            next_state = READY;
     endcase
 end
 
@@ -165,76 +190,57 @@ begin
     if (rst == 1'b0) begin
         Nreq <= 0;
         HWWarp <= 0;
-        LUT_StartAddr = 0;
-        LUT_RF_Bank = 0;
-        LUT_RF_Row = 0;
-        MTptr <= 0;
-        Req_Done_RAU_IB = 0;
     end else begin
 
 
     case(state)
         READY: begin
-            AllocStall_RAU_IB = 0;
             if (Update_TM_RAU) begin
                 Nreq <= Nreg_TM_RAU;
                 HWWarp <= HWWarpID_TM_RAU; //SWWARP
-                SpecialReg[HWWarpID_TM_RAU] <= SWWarpID_TM_RAU; // special reg
+                LUT_Addr <= HWWarp * 4; 
+                SpecialReg[HWWarpID_TM_RAU] <= {24'b0,SWWarpID_TM_RAU}; // special reg
             end else begin
                 HWWarp <= Exit_WarpID_IB_RAU; //how to write certain bits in instrcution
             end
         end
 
         ALLO: begin // regular and special
-            AllocStall_RAU_IB = HWWarp; //////TODO！！！！8bit！！！！！！
-            LUT_StartAddr = HWWarp * 4;  //LUT starting Addr (Row)
-            LUT_RF_Row = MTptr / 2;
-            LUT_RF_Bank = MTptr % 2; // gets the mapping of register
-                                    //LUT defined as consequtive registers
-            LUT_Addr = LUT_StartAddr; 
-            while (Nreq != 0) begin
-                MTptr <= MTptr + 1;
-                if (MT[MTptr] == 1'b0) begin
-                    LUT_Addr <= LUT_Addr + 1;//for loop statement//不能用<=??associative？
-                    Nreq <= Nreq - 2;
-                    LUT[LUT_Addr] <= {1'b1, LUT_RF_Row, LUT_RF_Bank};
-                    //Available_RAU_TM <= Available_RAU_TM - 2;
-                    Req_Done_RAU_IB = 1'b0;
-                end
-                else begin
-                    Req_Done_RAU_IB = 1'b1;
-                    AllocStall_RAU_IB = 0;
-                end
+            LUT_Addr <= LUT_Addr + 1;//for loop statement//不能用<=??associative？
+            Nreq <= Nreq - 2;
+            if (Nreq != 0) begin
+                LUT[LUT_Addr] <= {1'b1, LUT_RF_Row, LUT_RF_Bank};
+                //Available_RAU_TM <= Available_RAU_TM - 2;
                 //for (integer i = 0; i<)
+                MT[next_empty_ptr] <= 1;
             end
         end
 
 
         DEALLO: begin
-            AllocStall_RAU_IB = 0;
             if (LUT[HWWarp * 4][4] == 1'b1) begin
-                MT[LUT[HWWarp * 4][3:1] * 2 + LUT[HWWarp * 4][0]] <= 1'b0;	//MT corresponding bit reset
+                MT[LUT[HWWarp * 4][3:0]] <= 1'b0;	//MT corresponding bit reset
                 LUT[HWWarp * 4][4] <= 1'b0; //LUT valid bit reset
                 //Available_RAU_TM <= Available_RAU_TM + 2;
                 
             end
 
             if (LUT[HWWarp * 4 + 1][4] == 1'b1) begin
-                MT[LUT[HWWarp * 4 + 1][3:1] * 2 + LUT[HWWarp * 4 + 1][0]] <= 1'b0;
+                MT[LUT[HWWarp * 4 + 1][3:0]] <= 1'b0;
                 LUT[HWWarp * 4 + 1][4] <= 1'b0;
                 //Available_RAU_TM <= Available_RAU_TM + 4;
                 
             end
 
             if (LUT[HWWarp * 4 + 2][4] == 1'b1) begin
-                MT[LUT[HWWarp * 4 + 2][3:1] * 2 + LUT[HWWarp * 4 + 2][0]] <= 1'b0;
+                MT[LUT[HWWarp * 4 + 2][3:0]] <= 1'b0;
                 LUT[HWWarp * 4 + 2][4] <= 1'b0;
                 //Available_RAU_TM <= Available_RAU_TM + 6;
                 
             end
             
             if (LUT[HWWarp * 4 + 3][4] == 1'b1) begin
-                MT[LUT[HWWarp * 4 + 3][3:1] * 2 + LUT[HWWarp * 4 + 3][0]] <= 1'b0;			
+                MT[LUT[HWWarp * 4 + 3][3:0]] <= 1'b0;			
                 LUT[HWWarp * 4 + 3][4] <= 1'b0;
                 //Available_RAU_TM <= Available_RAU_TM + 8; // later one will mask the previous ones
             end
@@ -267,6 +273,7 @@ reg [1:0] OCID_RAU_OC;
 
 always @ (*)
 begin
+    OCID_RAU_OC = 2'b00;
     if (oc_0_empty == 1)
         OCID_RAU_OC = 2'b00;
     else if (oc_1_empty == 1)
@@ -275,6 +282,8 @@ begin
         OCID_RAU_OC = 2'b10;
     else if (oc_3_empty == 1)
         OCID_RAU_OC = 2'b11;
+
+        
 end
 
 
@@ -298,7 +307,7 @@ assign BLT_RAU_Collecting = BLT_IB_RAU;
 assign ScbID_RAU_Collecting = ScbID_IB_RAU;
 assign ActiveMask_RAU_Collecting = ActiveMask_IB_RAU;
 assign RegWrite_RAU_Collecting = RegWrite_IB_OC;
-
+assign Dst_RAU_Collecting = Dst_IB_OC;
 
 assign Data_CDB = Data_CDB_RAU;
 assign Instr_CDB = Instr_CDB_RAU;

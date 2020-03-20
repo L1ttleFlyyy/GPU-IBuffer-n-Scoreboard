@@ -1,6 +1,5 @@
 module RegisterFile(
     input wire clk,
-    input wire rst,
 
     input wire [7:0] RF_WR_MASK,
     input wire [2:0] RF_Addr_0,
@@ -52,7 +51,7 @@ end
 
 BRAM_MASK RF_0(
     .clk(clk),
-    .rst(rst),
+
 
     .RF_WR_MASK(RF_WR_MASK_0),
     .RF_Addr(RF_Addr_0),
@@ -63,7 +62,7 @@ BRAM_MASK RF_0(
 
 BRAM_MASK RF_1(
     .clk(clk),
-    .rst(rst),
+
 
     .RF_WR_MASK(RF_WR_MASK_1),
     .RF_Addr(RF_Addr_1),
@@ -73,7 +72,7 @@ BRAM_MASK RF_1(
 );
 BRAM_MASK RF_2(
     .clk(clk),
-    .rst(rst),
+
 
     .RF_WR_MASK(RF_WR_MASK_2),
     .RF_Addr(RF_Addr_2),
@@ -83,7 +82,7 @@ BRAM_MASK RF_2(
 );
 BRAM_MASK RF_3(
     .clk(clk),
-    .rst(rst),
+
 
     .RF_WR_MASK(RF_WR_MASK_3),
     .RF_Addr(RF_Addr_3),
