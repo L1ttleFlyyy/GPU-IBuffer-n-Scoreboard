@@ -64,7 +64,7 @@ module ALU #(
     output [1:0] Clear_ScbID_ALU_Scb
     );
     
-	wire [4:0] Shamt_OC_ALU, // shift amount of shift instructions
+	wire [4:0] Shamt_OC_ALU; // shift amount of shift instructions
 	assign Shamt_OC_ALU = Imme_OC_ALU[11:7];
 	assign Clear_ScbID_ALU_Scb = ScbID_OC_ALU;
 	assign Clear_WarpID_ALU_Scb = WarpID_OC_ALU;

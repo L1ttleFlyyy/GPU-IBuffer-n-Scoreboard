@@ -712,8 +712,6 @@ module gpu_top_checking#(
     .ActiveMask_Collecting_Ex_3(ActiveMask_Collecting_Ex_3),//pass
     .Dst_Collecting_Ex_3(Dst_Collecting_Ex_3),
 
-    .RegWrite_LastStage_MEM_Sched(RegWrite_LastStage_MEM_Sched),
-
 
     .oc_0_data_0(oc_0_data_0),
     .oc_1_data_0(oc_1_data_0),

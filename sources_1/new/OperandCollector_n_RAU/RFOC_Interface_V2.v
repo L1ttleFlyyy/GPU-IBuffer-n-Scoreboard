@@ -101,9 +101,6 @@ module RFOC(
     input wire [7:0] ActiveMask_CDB_RAU,
 
 
-    input wire RegWrite_LastStage_MEM_Sched,
-
-
     output wire [255:0] oc_0_data_0,
     output wire [255:0] oc_1_data_0,
 
@@ -517,7 +514,7 @@ OC_collector_4 OC_collector_4(
     .Dst_Collecting_Ex_3(Dst_Collecting_Ex_3)
 );
 
-schedular_4 schedular_4(
+scheduler_4 sched_4(
     .rst(rst),
     .clk(clk),
     .RDY_0(RDY_0),
@@ -537,7 +534,6 @@ schedular_4 schedular_4(
     .MemRead_Collecting_Ex_2(MemRead_Collecting_Ex_2),
     .MemRead_Collecting_Ex_3(MemRead_Collecting_Ex_3),
 
-    .RegWrite_LastStage_MEM_Sched(RegWrite_LastStage_MEM_Sched),
     
     .ALU_Grt_Sched_OC(ALU_Grt_Sched_OC),
     .MEM_Grt_Sched_OC(MEM_Grt_Sched_OC)
