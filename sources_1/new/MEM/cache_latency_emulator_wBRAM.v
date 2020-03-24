@@ -1,4 +1,3 @@
-`include "Inferable_BRAM.v"
 
 module cache_latency_emulator(addr, addr_valid, addr_response, addr_response_valid, clk, resetb, FIO_CACHE_LAT_WRITE, FIO_CACHE_LAT_VALUE, FIO_CACHE_MEM_ADDR,
 latency, hit_missbar, miss_wait);
@@ -8,7 +7,8 @@ latency, hit_missbar, miss_wait);
 	
 	input clk;
 	input resetb;
-	input addr_response_valid;
+	input addr_response_valid;
+
 	input addr_valid;
 	input [26:0] addr, addr_response;
 	
@@ -78,9 +78,11 @@ latency, hit_missbar, miss_wait);
 		if(!resetb)
 		begin
 			for(i=0; i<mem_size; i=i+1)
-				mem_wait[i]=1'b0;
-			for(i=0; i<cache_size; i=i+1)
-				tag_valid[i]=1'b0;
+				mem_wait[i]<=1'b0;
+			for(i=0;i<cache_size;i=i+1) begin
+				tag_valid[i]<=1'b0;
+				cache_tag_ram[i]<={27{1'bx}};
+			end
 			wp<=0;
 			addr_valid_R <= 0;
 			addr_response_R <= 0;

@@ -1,4 +1,4 @@
-`include "cache_latency_emulator_wBRAM.v"
+
 
 module mem_stage2
 #(

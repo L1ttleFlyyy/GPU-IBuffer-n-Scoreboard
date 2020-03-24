@@ -1,9 +1,3 @@
-`include "mem_stage1.v"
-`include "mem_stage2.v"
-`include "mem_stage3_wBRAM.v"
-`include "mem_stage4.v"
-
-
 
 module mem_unit
 #(

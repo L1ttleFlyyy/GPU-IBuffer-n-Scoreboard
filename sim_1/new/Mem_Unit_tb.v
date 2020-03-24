@@ -1,4 +1,4 @@
-`include "Mem_Unit.v"
+
 `timescale 1 ns / 100 ps
 
 module Mem_Unit_tb;

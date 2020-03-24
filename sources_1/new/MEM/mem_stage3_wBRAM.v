@@ -1,4 +1,3 @@
-`include "Inferable_BRAM.v"
 
 module mem_stage3
 #(
