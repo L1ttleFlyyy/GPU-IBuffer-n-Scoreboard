@@ -223,6 +223,8 @@ OC_collector_unit#(
 ) unit1(
     .clk(clk), 
     .rst(rst),
+    .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
+    .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
     .bk_0_data(DataOut_0), 
     .bk_1_data(DataOut_1), 
     .bk_2_data(DataOut_2), 
@@ -288,6 +290,8 @@ OC_collector_unit#(
 ) unit2(
     .clk(clk), 
     .rst(rst),
+    .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
+    .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
     .bk_0_data(DataOut_0), 
     .bk_1_data(DataOut_1), 
     .bk_2_data(DataOut_2), 
@@ -352,6 +356,8 @@ OC_collector_unit#(
 ) unit3(
     .clk(clk), 
     .rst(rst),
+    .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
+    .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
     .bk_0_data(DataOut_0), 
     .bk_1_data(DataOut_1), 
     .bk_2_data(DataOut_2), 
