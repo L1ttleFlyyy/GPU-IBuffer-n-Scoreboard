@@ -50,6 +50,12 @@ input wire BLT_RAU_Collecting ,//pass
 input wire [1:0] ScbID_RAU_Collecting ,//pass
 input wire [7:0] ActiveMask_RAU_Collecting ,//pass
 input wire [4:0] Dst_RAU_Collecting,
+
+
+input wire [1:0] SPEslot_RAU_Collecting,
+input wire [255:0] SPEvalue_RAU_Collecting,
+
+
 output RDY, 
 output reg valid,
 
@@ -100,17 +106,17 @@ assign OC_1_WE = ((bk_0_ocid == ocid << 1 + 1) &&  !bk_0_bz && bk_0_vld)||
 always @ *
 begin 
 	case (oc_0_reg_id[4:3])
-		2'b00:  oc_0_data_in = bk_0_data;
-		2'b01:	oc_0_data_in = bk_1_data;
-		2'b10:	oc_0_data_in = bk_2_data;
-		2'b11:	oc_0_data_in = bk_3_data;
+		2'b00:  oc_0_data_in = SPEslot_RAU_Collecting[0]? SPEvalue_RAU_Collecting:bk_0_data;
+		2'b01:	oc_0_data_in = SPEslot_RAU_Collecting[0]? SPEvalue_RAU_Collecting:bk_1_data;
+		2'b10:	oc_0_data_in = SPEslot_RAU_Collecting[0]? SPEvalue_RAU_Collecting:bk_2_data;
+		2'b11:	oc_0_data_in = SPEslot_RAU_Collecting[0]? SPEvalue_RAU_Collecting:bk_3_data;
 		default: oc_0_data_in = 32'bz;
 	endcase
 	case (oc_1_reg_id[4:3])
-		2'b00:  oc_1_data_in = bk_0_data;
-		2'b01:	oc_1_data_in = bk_1_data;
-		2'b10:	oc_1_data_in = bk_2_data;
-		2'b11:	oc_1_data_in = bk_3_data;
+		2'b00:  oc_1_data_in = SPEslot_RAU_Collecting[1]? SPEvalue_RAU_Collecting:bk_0_data;
+		2'b01:	oc_1_data_in = SPEslot_RAU_Collecting[1]? SPEvalue_RAU_Collecting:bk_1_data;
+		2'b10:	oc_1_data_in = SPEslot_RAU_Collecting[1]? SPEvalue_RAU_Collecting:bk_2_data;
+		2'b11:	oc_1_data_in = SPEslot_RAU_Collecting[1]? SPEvalue_RAU_Collecting:bk_3_data;
 		default: oc_1_data_in = 32'bz;
 	endcase
 end

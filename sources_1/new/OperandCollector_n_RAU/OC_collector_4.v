@@ -41,7 +41,8 @@ module OC_collector_4(
     input wire [1:0]Src1_Phy_Bank_ID,
     input wire [1:0]Src2_Phy_Bank_ID,
 
-
+    input wire [1:0] SPEslot_RAU_Collecting,
+    input wire [255:0] SPEvalue_RAU_Collecting,
 
     output wire [255:0] oc_0_data_0,
     output wire [255:0] oc_1_data_0,
@@ -132,14 +133,14 @@ wire bank_1_valiud = ocid_1[3];
 wire bank_2_valiud = ocid_2[3];
 wire bank_3_valiud = ocid_3[3];
 
-wire [1:0]WE_0 = {((ocid_0 == 3'b001) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b001) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b001) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b001) & (ocid_3[3] == 1'b1)),
-             ((ocid_0 == 3'b000) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b000) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b000) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b000) & (ocid_3[3] == 1'b1))};
-wire [1:0]WE_1 = {((ocid_0 == 3'b011) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b011) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b011) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b011) & (ocid_3[3] == 1'b1)),
-             ((ocid_0 == 3'b010) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b010) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b010) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b010) & (ocid_3[3] == 1'b1))};
-wire [1:0]WE_2 = {((ocid_0 == 3'b101) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b101) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b101) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b101) & (ocid_3[3] == 1'b1)),
-             ((ocid_0 == 3'b100) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b100) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b100) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b100) & (ocid_3[3] == 1'b1))};
-wire [1:0]WE_3 = {((ocid_0 == 3'b111) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b111) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b111) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b111) & (ocid_3[3] == 1'b1)),
-             ((ocid_0 == 3'b110) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b110) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b110) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b110) & (ocid_3[3] == 1'b1))};
+wire [1:0]WE_0 = {((ocid_0 == 3'b001) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b001) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b001) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b001) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[1] == 1) & (Src2_OCID_RAU_OC== 3'b001)),
+             ((ocid_0 == 3'b000) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b000) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b000) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b000) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[0] == 1) & (Src1_OCID_RAU_OC== 3'b000))};
+wire [1:0]WE_1 = {((ocid_0 == 3'b011) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b011) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b011) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b011) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[1] == 1) & (Src2_OCID_RAU_OC== 3'b011)),
+             ((ocid_0 == 3'b010) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b010) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b010) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b010) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[0] == 1) & (Src1_OCID_RAU_OC== 3'b010))};
+wire [1:0]WE_2 = {((ocid_0 == 3'b101) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b101) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b101) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b101) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[1] == 1) & (Src2_OCID_RAU_OC== 3'b101)),
+             ((ocid_0 == 3'b100) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b100) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b100) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b100) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[0] == 1) & (Src1_OCID_RAU_OC== 3'b100)};
+wire [1:0]WE_3 = {((ocid_0 == 3'b111) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b111) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b111) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b111) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[1] == 1) & (Src2_OCID_RAU_OC== 3'b111)),
+             ((ocid_0 == 3'b110) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b110) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b110) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b110) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[0] == 1) & (Src1_OCID_RAU_OC== 3'b110))};
 
 wire [4:0]c_0_reg_id_in = {Src1_Phy_Bank_ID, 3'b000};///////??????
 wire [4:0]c_1_reg_id_in = {Src2_Phy_Bank_ID, 3'b000};///////??????
@@ -156,6 +157,8 @@ OC_collector_unit#(
 ) unit0(
     .clk(clk), 
     .rst(rst),
+    .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
+    .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
     .bk_0_data(DataOut_0), 
     .bk_1_data(DataOut_1), 
     .bk_2_data(DataOut_2), 
