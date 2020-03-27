@@ -45,7 +45,7 @@ module RFOC(
     input wire [2:0] HWWarp_CDB_RAU,
     input wire [255:0] Data_CDB_RAU,
     input wire [31:0] Instr_CDB_RAU,
-    input wire [7:0] ActiveMask_CDB_RAU
+    input wire [7:0] ActiveMask_CDB_RAU,
 
 
     output [255:0] oc_0_data_ALU,
@@ -86,7 +86,7 @@ module RFOC(
     output [7:0] ActiveMask_Collecting_MEM,//pass
     output [4:0] Dst_Collecting_MEM,
 
-    output Valid_MEM,
+    output Valid_MEM
 );
 
 
@@ -185,11 +185,11 @@ wire oc_3_empty = ~valid_3;
 
 assign Alloc_BusyBar_RAU_TM = !(|AllocStall_RAU_IB);
 
-wire [1:0] SPEslot_RAU_Collecting(SPEslot_RAU_Collecting);
-wire [255:0] SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting);
+wire [1:0] SPEslot_RAU_Collecting;
+wire [255:0] SPEvalue_RAU_Collecting;
+wire [1:0] SPEv2slot_RAU_Collecting;
+wire [255:0] SPEv2value_RAU_Collecting;
 
-wire ALU_Grt_Sched_OC;
-wire MEM_Grt_Sched_OC;
 
 wire [255:0] oc_0_data_0;
 wire [255:0] oc_1_data_0;
@@ -343,10 +343,12 @@ Mapping MappingUnit(
     .Dst_RAU_Collecting(Dst_RAU_Collecting),
 
     .Data_CDB(Data_CDB),
-    .Instr_CDB()  //////////////////////!@DASDUFHEFIUABEIPFULKBASEIUDKIALEBFCILWSBHD
+    .Instr_CDB(),  //////////////////////!@DASDUFHEFIUABEIPFULKBASEIUDKIALEBFCILWSBHD
 
     .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
     .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
+    .SPEv2slot_RAU_Collecting(SPEv2slot_RAU_Collecting),
+    .SPEv2value_RAU_Collecting(SPEv2value_RAU_Collecting)
 );
 
 ReqFIFO_4 ReqFIFO_4(
@@ -434,8 +436,12 @@ OC_collector_4 OC_collector_4(
     .rst(rst),
     .clk(clk),
 
+
     .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
     .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
+    .SPEv2slot_RAU_Collecting(SPEv2slot_RAU_Collecting),
+    .SPEv2value_RAU_Collecting(SPEv2value_RAU_Collecting),
+    
 
     .ALU_Grt_Sched_OC(ALU_Grt_Sched_OC),
     .MEM_Grt_Sched_OC(MEM_Grt_Sched_OC),
@@ -476,6 +482,8 @@ OC_collector_4 OC_collector_4(
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
 
+    .Src1_OCID_RAU_OC(Src1_OCID_RAU_OC),
+    .Src2_OCID_RAU_OC(Src2_OCID_RAU_OC),
 
     .oc_0_data_0(oc_0_data_0),
     .oc_1_data_0(oc_1_data_0),
@@ -585,7 +593,7 @@ scheduler_4 sched_4(
     .MEM_Grt_Sched_OC(MEM_Grt_Sched_OC)
 );
 
-MUX_ALU_MEN MUX_ALU_MEN(
+MUX_ALU_MEM MUX_ALU_MEM(
     .MEM_Grt(MEM_Grt_Sched_OC),
     .ALU_Grt(ALU_Grt_Sched_OC),
 

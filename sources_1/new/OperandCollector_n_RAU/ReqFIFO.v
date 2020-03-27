@@ -6,8 +6,7 @@
 //Output:   ReadAddr;
 //          WriteAddr;
 
-module  ReqFIFO
-(
+module  ReqFIFO (
     input wire rst,
     input wire clk,
 

@@ -92,7 +92,9 @@ module Mapping(
     output wire [31:0]Instr_CDB,
 
     output reg [1:0] SPEslot_RAU_Collecting,
-    output reg [255:0] SPEvalue_RAU_Collecting
+    output reg [255:0] SPEvalue_RAU_Collecting,
+    output reg [1:0] SPEv2slot_RAU_Collecting,
+    output reg [255:0] SPEv2value_RAU_Collecting
 );
 
 
@@ -319,7 +321,9 @@ assign Instr_CDB = Instr_CDB_RAU;
 always @ (posedge clk)
 begin
     SPEslot_RAU_Collecting <= {Src2_IB_RAU[4], Src1_IB_RAU[4]}; 
-    SPEvalue_RAU_Collecting <= {SpecialReg[HWWarp_IB_RAU], SpecialReg[HWWarp_IB_RAU], SpecialReg[HWWarp_IB_RAU], SpecialReg[HWWarp_IB_RAU], SpecialReg[HWWarp_IB_RAU], SpecialReg[HWWarp_IB_RAU], SpecialReg[HWWarp_IB_RAU], SpecialReg[HWWarp_IB_RAU]};
+    SPEvalue_RAU_Collecting <= {8{SpecialReg[HWWarp_IB_RAU]}};
+    SPEv2slot_RAU_Collecting <= {Src2_IB_RAU[3], Src1_IB_RAU[3]}; 
+    SPEv2value_RAU_Collecting <= {32'd7,32'd6,32'd5,32'd4,32'd3,32'd2,32'd1,32'd0};
 end
 
 endmodule

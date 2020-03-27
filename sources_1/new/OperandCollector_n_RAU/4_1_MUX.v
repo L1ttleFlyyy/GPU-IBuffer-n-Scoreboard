@@ -74,23 +74,23 @@ module MUX_4_1 (
     input [4:0] Dst_Collecting_Ex_3,
 
 
-    output wire [255:0] oc_0_data,
-    output wire [255:0] oc_1_data,
+    output reg [255:0] oc_0_data,
+    output reg [255:0] oc_1_data,
 
-    output Valid_Collecting_Ex ,//use
-    output [31:0] Instr_Collecting_Ex ,//pass
-    output RegWrite_Collecting_Ex,
-    output [15:0] Imme_Collecting_Ex ,//
-    output Imme_Valid_Collecting_Ex ,//
-    output [3:0] ALUop_Collecting_Ex ,//
-    output MemWrite_Collecting_Ex ,//
-    output MemRead_Collecting_Ex ,//
-    output Shared_Globalbar_Collecting_Ex ,//pass
-    output BEQ_Collecting_Ex ,//pass
-    output BLT_Collecting_Ex ,//pass
-    output [1:0] ScbID_Collecting_Ex ,//pass
-    output [7:0] ActiveMask_Collecting_Ex,//pass
-    output [4:0] Dst_Collecting_Ex,
+    output reg Valid_Collecting_Ex ,//use
+    output reg [31:0] Instr_Collecting_Ex ,//pass
+    output reg RegWrite_Collecting_Ex,
+    output reg [15:0] Imme_Collecting_Ex ,//
+    output reg Imme_Valid_Collecting_Ex ,//
+    output reg [3:0] ALUop_Collecting_Ex ,//
+    output reg MemWrite_Collecting_Ex ,//
+    output reg MemRead_Collecting_Ex ,//
+    output reg Shared_Globalbar_Collecting_Ex ,//pass
+    output reg BEQ_Collecting_Ex ,//pass
+    output reg BLT_Collecting_Ex ,//pass
+    output reg [1:0] ScbID_Collecting_Ex ,//pass
+    output reg [7:0] ActiveMask_Collecting_Ex,//pass
+    output reg [4:0] Dst_Collecting_Ex,
 
     output reg Valid_EX
 );
@@ -100,7 +100,7 @@ begin
     Valid_EX = |Grt;
 
     case (Grt)
-    0001:
+    4'b0001:
         begin
             oc_0_data = oc_0_data_0;
             oc_1_data = oc_1_data_0;
@@ -121,7 +121,7 @@ begin
             Dst_Collecting_Ex = Dst_Collecting_Ex_0;
         end
 
-    0010:
+    4'b0010:
         begin
             oc_0_data = oc_0_data_1;
             oc_1_data = oc_1_data_1;
@@ -142,7 +142,7 @@ begin
             Dst_Collecting_Ex = Dst_Collecting_Ex_1;
         end
     
-    0100:
+    4'b0100:
         begin
             oc_0_data = oc_0_data_2;
             oc_1_data = oc_1_data_2;
@@ -183,7 +183,7 @@ begin
             ActiveMask_Collecting_Ex = ActiveMask_Collecting_Ex_3;//pass
             Dst_Collecting_Ex = Dst_Collecting_Ex_3;
         end
-
+    endcase
 
 
 end

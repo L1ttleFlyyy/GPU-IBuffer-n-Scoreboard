@@ -1,4 +1,4 @@
-module MUX_ALU_MEN(
+module MUX_ALU_MEM(
     input [3:0] MEM_Grt,
     input [3:0] ALU_Grt,
 
@@ -157,8 +157,8 @@ MUX_4_1 MEM_MUX (
     .ActiveMask_Collecting_Ex_1(ActiveMask_Collecting_Ex_1),//pass
     .Dst_Collecting_Ex_1(Dst_Collecting_Ex_1),
 
-    .oc_0_data_1(oc_0_data_2),
-    .oc_1_data_1(oc_1_data_2),
+    .oc_0_data_2(oc_0_data_2),
+    .oc_1_data_2(oc_1_data_2),
 
     .Valid_Collecting_Ex_2(Valid_Collecting_Ex_2) ,//use
     .Instr_Collecting_Ex_2(Instr_Collecting_Ex_2) ,//pass
@@ -175,8 +175,8 @@ MUX_4_1 MEM_MUX (
     .ActiveMask_Collecting_Ex_2(ActiveMask_Collecting_Ex_2),//pass
     .Dst_Collecting_Ex_2(Dst_Collecting_Ex_2),
     
-    .oc_0_data_1(oc_0_data_3),
-    .oc_1_data_1(oc_1_data_3),
+    .oc_0_data_3(oc_0_data_3),
+    .oc_1_data_3(oc_1_data_3),
 
     .Valid_Collecting_Ex_3(Valid_Collecting_Ex_3) ,//use
     .Instr_Collecting_Ex_3(Instr_Collecting_Ex_3) ,//pass
@@ -254,8 +254,8 @@ MUX_4_1 ALU_MUX (
     .ActiveMask_Collecting_Ex_1(ActiveMask_Collecting_Ex_1),//pass
     .Dst_Collecting_Ex_1(Dst_Collecting_Ex_1),
 
-    .oc_0_data_1(oc_0_data_2),
-    .oc_1_data_1(oc_1_data_2),
+    .oc_0_data_2(oc_0_data_2),
+    .oc_1_data_2(oc_1_data_2),
 
     .Valid_Collecting_Ex_2(Valid_Collecting_Ex_2) ,//use
     .Instr_Collecting_Ex_2(Instr_Collecting_Ex_2) ,//pass
@@ -272,8 +272,8 @@ MUX_4_1 ALU_MUX (
     .ActiveMask_Collecting_Ex_2(ActiveMask_Collecting_Ex_2),//pass
     .Dst_Collecting_Ex_2(Dst_Collecting_Ex_2),
     
-    .oc_0_data_1(oc_0_data_3),
-    .oc_1_data_1(oc_1_data_3),
+    .oc_0_data_3(oc_0_data_3),
+    .oc_1_data_3(oc_1_data_3),
 
     .Valid_Collecting_Ex_3(Valid_Collecting_Ex_3) ,//use
     .Instr_Collecting_Ex_3(Instr_Collecting_Ex_3) ,//pass

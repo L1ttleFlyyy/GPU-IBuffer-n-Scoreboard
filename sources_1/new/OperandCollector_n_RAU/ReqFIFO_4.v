@@ -69,25 +69,25 @@ wire [2:0] Src2_OCID_RAU_OC_1 = Src2_OCID_RAU_OC;
 wire [2:0] Src2_OCID_RAU_OC_2 = Src2_OCID_RAU_OC;
 wire [2:0] Src2_OCID_RAU_OC_3 = Src2_OCID_RAU_OC;
 
-wire RF_Read_Valid_0 = ((Src1_Phy_Bank_ID ==  4'b0001)&(Src1_Valid)) | ((Src2_Phy_Bank_ID == 4'b0001) & (Src2_Valid));
-wire RF_Read_Valid_1 = ((Src1_Phy_Bank_ID ==  4'b0010)&(Src1_Valid)) | ((Src2_Phy_Bank_ID == 4'b0010) & (Src2_Valid));
-wire RF_Read_Valid_2 = ((Src1_Phy_Bank_ID ==  4'b0100)&(Src1_Valid)) | ((Src2_Phy_Bank_ID == 4'b0100) & (Src2_Valid));
-wire RF_Read_Valid_3 = ((Src1_Phy_Bank_ID ==  4'b1000)&(Src1_Valid)) | ((Src2_Phy_Bank_ID == 4'b1000) & (Src2_Valid));
+wire RF_Read_Valid_0 = ((Src1_Phy_Bank_ID ==  2'b00)&(Src1_Valid)) | ((Src2_Phy_Bank_ID == 2'b00) & (Src2_Valid));
+wire RF_Read_Valid_1 = ((Src1_Phy_Bank_ID ==  2'b01)&(Src1_Valid)) | ((Src2_Phy_Bank_ID == 2'b01) & (Src2_Valid));
+wire RF_Read_Valid_2 = ((Src1_Phy_Bank_ID ==  2'b10)&(Src1_Valid)) | ((Src2_Phy_Bank_ID == 2'b10) & (Src2_Valid));
+wire RF_Read_Valid_3 = ((Src1_Phy_Bank_ID ==  2'b11)&(Src1_Valid)) | ((Src2_Phy_Bank_ID == 2'b11) & (Src2_Valid));
 
 wire RF_Write_Valid_0 = (WriteBank == 2'b00) & (WriteValid);
 wire RF_Write_Valid_1 = (WriteBank == 2'b01) & (WriteValid);
 wire RF_Write_Valid_2 = (WriteBank == 2'b10) & (WriteValid);
 wire RF_Write_Valid_3 = (WriteBank == 2'b11) & (WriteValid);
 
-wire Src1_Valid_0 = ((Src1_Phy_Bank_ID ==  4'b0001)&(Src1_Valid));
-wire Src1_Valid_1 = ((Src1_Phy_Bank_ID ==  4'b0010)&(Src1_Valid));
-wire Src1_Valid_2 = ((Src1_Phy_Bank_ID ==  4'b0100)&(Src1_Valid));
-wire Src1_Valid_3 = ((Src1_Phy_Bank_ID ==  4'b1000)&(Src1_Valid));
+wire Src1_Valid_0 = ((Src1_Phy_Bank_ID ==  2'b00)&(Src1_Valid));
+wire Src1_Valid_1 = ((Src1_Phy_Bank_ID ==  2'b01)&(Src1_Valid));
+wire Src1_Valid_2 = ((Src1_Phy_Bank_ID ==  2'b10)&(Src1_Valid));
+wire Src1_Valid_3 = ((Src1_Phy_Bank_ID ==  2'b11)&(Src1_Valid));
 
-wire Src2_Valid_0 = ((Src2_Phy_Bank_ID ==  4'b0001)&(Src2_Valid));
-wire Src2_Valid_1 = ((Src2_Phy_Bank_ID ==  4'b0010)&(Src2_Valid));
-wire Src2_Valid_2 = ((Src2_Phy_Bank_ID ==  4'b0100)&(Src2_Valid));
-wire Src2_Valid_3 = ((Src2_Phy_Bank_ID ==  4'b1000)&(Src2_Valid));
+wire Src2_Valid_0 = ((Src2_Phy_Bank_ID ==  2'b00)&(Src2_Valid));
+wire Src2_Valid_1 = ((Src2_Phy_Bank_ID ==  2'b01)&(Src2_Valid));
+wire Src2_Valid_2 = ((Src2_Phy_Bank_ID ==  2'b10)&(Src2_Valid));
+wire Src2_Valid_3 = ((Src2_Phy_Bank_ID ==  2'b11)&(Src2_Valid));
 
 ReqFIFO Req0(
     .rst(rst),
