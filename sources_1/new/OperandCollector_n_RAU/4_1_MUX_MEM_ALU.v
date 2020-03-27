@@ -5,6 +5,7 @@ module MUX_ALU_MEM(
     input wire [255:0] oc_0_data_0,
     input wire [255:0] oc_1_data_0,
 
+    input [2:0] WarpID_OC_Ex_0,
     input [31:0] Instr_OC_Ex_0 ,//pass
     input RegWrite_OC_Ex_0,
     input [15:0] Imme_OC_Ex_0 ,//
@@ -22,6 +23,7 @@ module MUX_ALU_MEM(
     input wire [255:0] oc_0_data_1,
     input wire [255:0] oc_1_data_1,
 
+    input [2:0] WarpID_OC_Ex_1,
     input [31:0] Instr_OC_Ex_1 ,//pass
     input RegWrite_OC_Ex_1,
     input [15:0] Imme_OC_Ex_1 ,//
@@ -39,6 +41,7 @@ module MUX_ALU_MEM(
     input wire [255:0] oc_0_data_2,
     input wire [255:0] oc_1_data_2,
 
+    input [2:0] WarpID_OC_Ex_2,
     input [31:0] Instr_OC_Ex_2 ,//pass
     input RegWrite_OC_Ex_2,
     input [15:0] Imme_OC_Ex_2 ,//
@@ -56,6 +59,7 @@ module MUX_ALU_MEM(
     input wire [255:0] oc_0_data_3,
     input wire [255:0] oc_1_data_3,
 
+    input [2:0] WarpID_OC_Ex_3,
     input [31:0] Instr_OC_Ex_3 ,//pass
     input RegWrite_OC_Ex_3,
     input [15:0] Imme_OC_Ex_3 ,//
@@ -75,6 +79,7 @@ module MUX_ALU_MEM(
     output wire [255:0] Src2_Data_ALU,
 
     output Valid_OC_ALU ,//use
+    output [2:0] WarpID_OC_ALU,
     output [31:0] Instr_OC_ALU ,//pass
     output RegWrite_OC_ALU,
     output [15:0] Imme_OC_ALU ,//
@@ -94,6 +99,7 @@ module MUX_ALU_MEM(
     output wire [255:0] Src2_Data_MEM,
 
     output Valid_OC_MEM ,//use
+    output [2:0] WarpID_OC_MEM,
     output [31:0] Instr_OC_MEM ,//pass
     output RegWrite_OC_MEM,
     output [15:0] Imme_OC_MEM ,//
@@ -117,6 +123,7 @@ MUX_4_1 MEM_MUX (
     .oc_0_data_0(oc_0_data_0),
     .oc_1_data_0(oc_1_data_0),
 
+    .WarpID_OC_Ex_0(WarpID_OC_Ex_0),
     .Instr_OC_Ex_0(Instr_OC_Ex_0) ,//pass
     .RegWrite_OC_Ex_0(RegWrite_OC_Ex_0),
     .Imme_OC_Ex_0(Imme_OC_Ex_0) ,//
@@ -134,6 +141,7 @@ MUX_4_1 MEM_MUX (
     .oc_0_data_1(oc_0_data_1),
     .oc_1_data_1(oc_1_data_1),
 
+    .WarpID_OC_Ex_1(WarpID_OC_Ex_1),
     .Instr_OC_Ex_1(Instr_OC_Ex_1) ,//pass
     .RegWrite_OC_Ex_1(RegWrite_OC_Ex_1),
     .Imme_OC_Ex_1(Imme_OC_Ex_1) ,//
@@ -151,6 +159,7 @@ MUX_4_1 MEM_MUX (
     .oc_0_data_2(oc_0_data_2),
     .oc_1_data_2(oc_1_data_2),
 
+    .WarpID_OC_Ex_2(WarpID_OC_Ex_2),
     .Instr_OC_Ex_2(Instr_OC_Ex_2) ,//pass
     .RegWrite_OC_Ex_2(RegWrite_OC_Ex_2),
     .Imme_OC_Ex_2(Imme_OC_Ex_2) ,//
@@ -168,6 +177,7 @@ MUX_4_1 MEM_MUX (
     .oc_0_data_3(oc_0_data_3),
     .oc_1_data_3(oc_1_data_3),
 
+    .WarpID_OC_Ex_3(WarpID_OC_Ex_3),
     .Instr_OC_Ex_3(Instr_OC_Ex_3) ,//pass
     .RegWrite_OC_Ex_3(RegWrite_OC_Ex_3),
     .Imme_OC_Ex_3(Imme_OC_Ex_3) ,//
@@ -187,6 +197,7 @@ MUX_4_1 MEM_MUX (
     .oc_1_data(Src2_Data_MEM),
 
     .Valid_OC_Ex(Valid_OC_MEM) ,//use
+    .WarpID_OC_Ex(WarpID_OC_MEM),
     .Instr_OC_Ex(Instr_OC_MEM) ,//pass
     .RegWrite_OC_Ex(RegWrite_OC_MEM),
     .Imme_OC_Ex(Imme_OC_MEM) ,//
@@ -208,6 +219,7 @@ MUX_4_1 ALU_MUX (
     .oc_0_data_0(oc_0_data_0),
     .oc_1_data_0(oc_1_data_0),
 
+    .WarpID_OC_Ex_0(WarpID_OC_Ex_0),
     .Instr_OC_Ex_0(Instr_OC_Ex_0) ,//pass
     .RegWrite_OC_Ex_0(RegWrite_OC_Ex_0),
     .Imme_OC_Ex_0(Imme_OC_Ex_0) ,//
@@ -225,6 +237,7 @@ MUX_4_1 ALU_MUX (
     .oc_0_data_1(oc_0_data_1),
     .oc_1_data_1(oc_1_data_1),
 
+    .WarpID_OC_Ex_1(WarpID_OC_Ex_1),
     .Instr_OC_Ex_1(Instr_OC_Ex_1) ,//pass
     .RegWrite_OC_Ex_1(RegWrite_OC_Ex_1),
     .Imme_OC_Ex_1(Imme_OC_Ex_1) ,//
@@ -242,6 +255,7 @@ MUX_4_1 ALU_MUX (
     .oc_0_data_2(oc_0_data_2),
     .oc_1_data_2(oc_1_data_2),
 
+    .WarpID_OC_Ex_2(WarpID_OC_Ex_2),
     .Instr_OC_Ex_2(Instr_OC_Ex_2) ,//pass
     .RegWrite_OC_Ex_2(RegWrite_OC_Ex_2),
     .Imme_OC_Ex_2(Imme_OC_Ex_2) ,//
@@ -259,6 +273,7 @@ MUX_4_1 ALU_MUX (
     .oc_0_data_3(oc_0_data_3),
     .oc_1_data_3(oc_1_data_3),
 
+    .WarpID_OC_Ex_3(WarpID_OC_Ex_3),
     .Instr_OC_Ex_3(Instr_OC_Ex_3) ,//pass
     .RegWrite_OC_Ex_3(RegWrite_OC_Ex_3),
     .Imme_OC_Ex_3(Imme_OC_Ex_3) ,//
@@ -278,6 +293,7 @@ MUX_4_1 ALU_MUX (
     .oc_1_data(Src2_Data_ALU),
 
     .Valid_OC_Ex(Valid_OC_ALU) ,//use
+    .WarpID_OC_Ex(WarpID_OC_ALU),
     .Instr_OC_Ex(Instr_OC_ALU) ,//pass
     .RegWrite_OC_Ex(RegWrite_OC_ALU),
     .Imme_OC_Ex(Imme_OC_ALU) ,//

@@ -75,6 +75,7 @@ module Mapping(
     output wire Valid_RAU_OC ,//use
     output wire [31:0] Instr_RAU_OC ,//pass
 
+    output wire [2:0] WarpID_RAU_OC,
     output wire [15:0] Imme_RAU_OC ,//
     output wire Imme_Valid_RAU_OC ,//
     output wire [3:0] ALUop_RAU_OC ,//
@@ -301,6 +302,7 @@ assign Src2_OCID_RAU_OC = {OCID_RAU_OC , 1'b1};
 assign Valid_RAU_OC = Valid_IB_RAU;
 assign Instr_RAU_OC = Instr_IB_RAU;
 
+assign WarpID_RAU_OC = HWWarp_IB_RAU;
 assign Imme_RAU_OC =Imme_IB_RAU;
 assign Imme_Valid_RAU_OC = Imme_Valid_IB_RAU;
 assign ALUop_RAU_OC = ALUop_IB_RAU;

@@ -52,6 +52,7 @@ module RFOC(
     output [255:0] Src2_Data_ALU,
 
     output Valid_OC_ALU,//use
+    output [2:0] WarpID_OC_ALU,
     output [31:0] Instr_OC_ALU,//pass
     output RegWrite_OC_ALU,
     output [15:0] Imme_OC_ALU,//
@@ -70,6 +71,7 @@ module RFOC(
     output [255:0]Src2_Data_MEM,
 
     output Valid_OC_MEM,//use
+    output [2:0] WarpID_OC_MEM,
     output [31:0]Instr_OC_MEM,//pass
     output RegWrite_OC_MEM,
     output [15:0]Imme_OC_MEM,//
@@ -126,6 +128,7 @@ wire [3:0] ALU_Grt_Sched_OC;
 wire [3:0] MEM_Grt_Sched_OC;
 
 wire Valid_RAU_OC;//use
+wire [2:0] WarpID_RAU_OC;
 wire [31:0]Instr_RAU_OC;
 wire [15:0] Imme_RAU_OC ;//
 wire Imme_Valid_RAU_OC;
@@ -199,6 +202,7 @@ wire [255:0] oc_1_data_2;
 wire [255:0] oc_0_data_3;
 wire [255:0] oc_1_data_3;
 
+wire [2:0] WarpID_OC_Ex_0;
 wire Valid_OC_Ex_0 ;//use
 wire [31:0] Instr_OC_Ex_0 ;//pass
 wire [15:0] Imme_OC_Ex_0 ;//
@@ -211,6 +215,7 @@ wire [1:0] ScbID_OC_Ex_0 ;//pass
 wire [7:0] ActiveMask_OC_Ex_0;//pass
 wire [4:0] Dst_OC_Ex_0;
 
+wire [2:0] WarpID_OC_Ex_1;
 wire Valid_OC_Ex_1 ;//use
 wire [31:0] Instr_OC_Ex_1 ;//pass
 wire [15:0] Imme_OC_Ex_1 ;//
@@ -223,6 +228,7 @@ wire [1:0] ScbID_OC_Ex_1 ;//pass
 wire [7:0] ActiveMask_OC_Ex_1;//pass
 wire [4:0] Dst_OC_Ex_1;
 
+wire [2:0] WarpID_OC_Ex_2;
 wire Valid_OC_Ex_2 ;//use
 wire [31:0] Instr_OC_Ex_2 ;//pass
 wire [15:0] Imme_OC_Ex_2 ;//
@@ -235,6 +241,7 @@ wire [1:0] ScbID_OC_Ex_2 ;//pass
 wire [7:0] ActiveMask_OC_Ex_2;//pass
 wire [4:0] Dst_OC_Ex_2;
 
+wire [2:0] WarpID_OC_Ex_3;
 wire Valid_OC_Ex_3 ;//use
 wire [31:0] Instr_OC_Ex_3 ;//pass
 wire [15:0] Imme_OC_Ex_3 ;//
@@ -324,6 +331,7 @@ Mapping MappingUnit(
     .Valid_RAU_OC(Valid_RAU_OC) ,//use
     .Instr_RAU_OC(Instr_RAU_OC) ,//pass
 
+    .WarpID_RAU_OC(WarpID_RAU_OC),
     .Imme_RAU_OC(Imme_RAU_OC) ,//
     .Imme_Valid_RAU_OC(Imme_Valid_RAU_OC) ,//
     .ALUop_RAU_OC(ALUop_RAU_OC) ,//
@@ -444,7 +452,7 @@ OC_collector_4 OC_collector_4(
 
     .Valid_RAU_OC(Valid_RAU_OC),//use
     .Instr_RAU_OC(Instr_RAU_OC) ,//pass
-
+    .WarpID_RAU_OC(WarpID_RAU_OC),
     .RegWrite_RAU_OC(RegWrite_RAU_OC),
     .Imme_RAU_OC(Imme_RAU_OC) ,//
     .Imme_Valid_RAU_OC(Imme_Valid_RAU_OC) ,//
@@ -487,6 +495,7 @@ OC_collector_4 OC_collector_4(
     .RDY_0(RDY_0), 
     .valid_0(valid_0),
 
+    .WarpID_OC_Ex_0(WarpID_OC_Ex_0),
     .Valid_OC_Ex_0(Valid_OC_Ex_0) ,//use
     .Instr_OC_Ex_0(Instr_OC_Ex_0) ,//pass
     .RegWrite_OC_Ex_0(RegWrite_OC_Ex_0),
@@ -508,6 +517,7 @@ OC_collector_4 OC_collector_4(
     .RDY_1(RDY_1), 
     .valid_1(valid_1),
 
+    .WarpID_OC_Ex_1(WarpID_OC_Ex_1),
     .Valid_OC_Ex_1(Valid_OC_Ex_1) ,//use
     .Instr_OC_Ex_1(Instr_OC_Ex_1) ,//pass
     .RegWrite_OC_Ex_1(RegWrite_OC_Ex_1),
@@ -528,6 +538,7 @@ OC_collector_4 OC_collector_4(
     .RDY_2(RDY_2), 
     .valid_2(valid_2),
 
+    .WarpID_OC_Ex_2(WarpID_OC_Ex_2),
     .Valid_OC_Ex_2(Valid_OC_Ex_2) ,//use
     .Instr_OC_Ex_2(Instr_OC_Ex_2) ,//pass
     .RegWrite_OC_Ex_2(RegWrite_OC_Ex_2),
@@ -548,6 +559,7 @@ OC_collector_4 OC_collector_4(
     .RDY_3(RDY_3), 
     .valid_3(valid_3),
 
+    .WarpID_OC_Ex_3(WarpID_OC_Ex_3),
     .Valid_OC_Ex_3(Valid_OC_Ex_3) ,//use
     .Instr_OC_Ex_3(Instr_OC_Ex_3) ,//pass
     .RegWrite_OC_Ex_3(RegWrite_OC_Ex_3),
@@ -596,6 +608,7 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .oc_0_data_0(oc_0_data_0),
     .oc_1_data_0(oc_1_data_0),
 
+    .WarpID_OC_Ex_0(WarpID_OC_Ex_0),
     .Instr_OC_Ex_0(Instr_OC_Ex_0) ,//pass
     .RegWrite_OC_Ex_0(RegWrite_OC_Ex_0),
     .Imme_OC_Ex_0(Imme_OC_Ex_0) ,//
@@ -613,6 +626,7 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .oc_0_data_1(oc_0_data_1),
     .oc_1_data_1(oc_1_data_1),
 
+    .WarpID_OC_Ex_1(WarpID_OC_Ex_1),
     .Instr_OC_Ex_1(Instr_OC_Ex_1) ,//pass
     .RegWrite_OC_Ex_1(RegWrite_OC_Ex_1),
     .Imme_OC_Ex_1(Imme_OC_Ex_1) ,//
@@ -630,6 +644,7 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .oc_0_data_2(oc_0_data_2),
     .oc_1_data_2(oc_1_data_2),
 
+    .WarpID_OC_Ex_2(WarpID_OC_Ex_2),
     .Instr_OC_Ex_2(Instr_OC_Ex_2) ,//pass
     .RegWrite_OC_Ex_2(RegWrite_OC_Ex_2),
     .Imme_OC_Ex_2(Imme_OC_Ex_2) ,//
@@ -647,6 +662,7 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .oc_0_data_3(oc_0_data_3),
     .oc_1_data_3(oc_1_data_3),
 
+    .WarpID_OC_Ex_3(WarpID_OC_Ex_3),
     .Instr_OC_Ex_3(Instr_OC_Ex_3) ,//pass
     .RegWrite_OC_Ex_3(RegWrite_OC_Ex_3),
     .Imme_OC_Ex_3(Imme_OC_Ex_3) ,//
@@ -666,6 +682,7 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .Src2_Data_ALU(Src2_Data_ALU),
 
     .Valid_OC_ALU(Valid_OC_ALU) ,//use
+    .WarpID_OC_ALU(WarpID_OC_ALU) ,
     .Instr_OC_ALU(Instr_OC_ALU) ,//pass
     .RegWrite_OC_ALU(RegWrite_OC_ALU),
     .Imme_OC_ALU(Imme_OC_ALU) ,//
@@ -684,6 +701,7 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .Src2_Data_MEM(Src2_Data_MEM),
 
     .Valid_OC_MEM(Valid_OC_MEM) ,//use
+    .WarpID_OC_MEM(WarpID_OC_MEM) ,
     .Instr_OC_MEM(Instr_OC_MEM) ,//pass
     .RegWrite_OC_MEM(RegWrite_OC_MEM),
     .Imme_OC_MEM(Imme_OC_MEM) ,//

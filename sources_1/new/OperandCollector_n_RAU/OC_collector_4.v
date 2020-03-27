@@ -8,6 +8,7 @@ module OC_collector_4(
     input wire Valid_RAU_OC ,//use
     input wire [31:0] Instr_RAU_OC ,//pass
 
+    input wire [2:0] WarpID_RAU_OC,
     input wire RegWrite_RAU_OC,
     input wire [15:0] Imme_RAU_OC ,//
     input wire Imme_Valid_RAU_OC ,//
@@ -54,6 +55,7 @@ module OC_collector_4(
     output RDY_0, 
     output valid_0,
 
+    output [2:0] WarpID_OC_Ex_0,
     output Valid_OC_Ex_0 ,//use
     output [31:0] Instr_OC_Ex_0 ,//pass
     output RegWrite_OC_Ex_0,
@@ -75,6 +77,7 @@ module OC_collector_4(
     output RDY_1, 
     output valid_1,
 
+    output [2:0] WarpID_OC_Ex_1,
     output Valid_OC_Ex_1 ,//use
     output [31:0] Instr_OC_Ex_1 ,//pass
     output RegWrite_OC_Ex_1,
@@ -95,6 +98,7 @@ module OC_collector_4(
     output RDY_2, 
     output valid_2,
 
+    output [2:0] WarpID_OC_Ex_2,
     output Valid_OC_Ex_2 ,//use
     output [31:0] Instr_OC_Ex_2 ,//pass
     output RegWrite_OC_Ex_2,
@@ -115,6 +119,7 @@ module OC_collector_4(
     output RDY_3, 
     output valid_3,
 
+    output [2:0] WarpID_OC_Ex_3,
     output Valid_OC_Ex_3 ,//use
     output [31:0] Instr_OC_Ex_3 ,//pass
     output RegWrite_OC_Ex_3,
@@ -187,7 +192,7 @@ OC_collector_unit#(
     .WE(WE_0),
     .RE(RE_0), 
 
-
+    .WarpID_RAU_OC(WarpID_RAU_OC),
     .Valid_RAU_OC(Valid_RAU_OC) ,//use
     .Instr_RAU_OC(Instr_RAU_OC) ,//pass
     .RegWrite_RAU_OC(RegWrite_RAU_OC),
@@ -211,6 +216,7 @@ OC_collector_unit#(
     .Valid_OC_Ex(Valid_OC_Ex_0) ,//use
     .Instr_OC_Ex(Instr_OC_Ex_0) ,//pass
 
+    .WarpID_OC_Ex(WarpID_OC_Ex_0),
     .RegWrite_OC_Ex(RegWrite_OC_Ex_0),
     .Imme_OC_Ex(Imme_OC_Ex_0) ,//
     .Imme_Valid_OC_Ex(Imme_Valid_OC_Ex_0) ,//
@@ -258,6 +264,7 @@ OC_collector_unit#(
     .RE(RE_1), 
 
 
+    .WarpID_RAU_OC(WarpID_RAU_OC),
     .Valid_RAU_OC(Valid_RAU_OC) ,//use
     .Instr_RAU_OC(Instr_RAU_OC) ,//pass
     .RegWrite_RAU_OC(RegWrite_RAU_OC),
@@ -283,6 +290,7 @@ OC_collector_unit#(
     .Valid_OC_Ex(Valid_OC_Ex_1) ,//use
     .Instr_OC_Ex(Instr_OC_Ex_1) ,//pass
 
+    .WarpID_OC_Ex(WarpID_OC_Ex_1),
     .Imme_OC_Ex(Imme_OC_Ex_1) ,//
     .Imme_Valid_OC_Ex(Imme_Valid_OC_Ex_1) ,//
     .ALUop_OC_Ex(ALUop_OC_Ex_1) ,//
@@ -329,6 +337,7 @@ OC_collector_unit#(
     .RE(RE_2), 
 
 
+    .WarpID_RAU_OC(WarpID_RAU_OC),
     .Valid_RAU_OC(Valid_RAU_OC) ,//use
     .Instr_RAU_OC(Instr_RAU_OC) ,//pass
     .RegWrite_RAU_OC(RegWrite_RAU_OC),
@@ -353,6 +362,7 @@ OC_collector_unit#(
     .Valid_OC_Ex(Valid_OC_Ex_2) ,//use
     .Instr_OC_Ex(Instr_OC_Ex_2) ,//pass
 
+    .WarpID_OC_Ex(WarpID_OC_Ex_2),
     .RegWrite_OC_Ex(RegWrite_OC_Ex_2),
     .Imme_OC_Ex(Imme_OC_Ex_2) ,//
     .Imme_Valid_OC_Ex(Imme_Valid_OC_Ex_2) ,//
@@ -399,6 +409,7 @@ OC_collector_unit#(
     .RE(RE_3), 
 
 
+    .WarpID_RAU_OC(WarpID_RAU_OC),
     .Valid_RAU_OC(Valid_RAU_OC) ,//use
     .Instr_RAU_OC(Instr_RAU_OC) ,//pass
     .RegWrite_RAU_OC(RegWrite_RAU_OC),
@@ -423,6 +434,7 @@ OC_collector_unit#(
     .Valid_OC_Ex(Valid_OC_Ex_3) ,//use
     .Instr_OC_Ex(Instr_OC_Ex_3) ,//pass
 
+    .WarpID_OC_Ex(WarpID_OC_Ex_3),
     .RegWrite_OC_Ex(RegWrite_OC_Ex_3),
     .Imme_OC_Ex(Imme_OC_Ex_3) ,//
     .Imme_Valid_OC_Ex(Imme_Valid_OC_Ex_3) ,//

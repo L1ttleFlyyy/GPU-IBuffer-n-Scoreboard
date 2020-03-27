@@ -4,6 +4,7 @@ module MUX_4_1 (
     input wire [255:0] oc_0_data_0,
     input wire [255:0] oc_1_data_0,
 
+    input [2:0] WarpID_OC_Ex_0,
     input [31:0] Instr_OC_Ex_0 ,//pass
     input RegWrite_OC_Ex_0,
     input [15:0] Imme_OC_Ex_0 ,//
@@ -21,6 +22,7 @@ module MUX_4_1 (
     input wire [255:0] oc_0_data_1,
     input wire [255:0] oc_1_data_1,
 
+    input [2:0] WarpID_OC_Ex_1,
     input [31:0] Instr_OC_Ex_1 ,//pass
     input RegWrite_OC_Ex_1,
     input [15:0] Imme_OC_Ex_1 ,//
@@ -38,6 +40,7 @@ module MUX_4_1 (
     input wire [255:0] oc_0_data_2,
     input wire [255:0] oc_1_data_2,
 
+    input [2:0] WarpID_OC_Ex_2,
     input [31:0] Instr_OC_Ex_2 ,//pass
     input RegWrite_OC_Ex_2,
     input [15:0] Imme_OC_Ex_2 ,//
@@ -55,6 +58,7 @@ module MUX_4_1 (
     input wire [255:0] oc_0_data_3,
     input wire [255:0] oc_1_data_3,
 
+    input [2:0] WarpID_OC_Ex_3,
     input [31:0] Instr_OC_Ex_3 ,//pass
     input RegWrite_OC_Ex_3,
     input [15:0] Imme_OC_Ex_3 ,//
@@ -74,6 +78,8 @@ module MUX_4_1 (
     output reg [255:0] oc_1_data,
 
     output reg Valid_OC_Ex,
+    
+    output reg [2:0] WarpID_OC_Ex,
     output reg [31:0] Instr_OC_Ex ,//pass
     output reg RegWrite_OC_Ex,
     output reg [15:0] Imme_OC_Ex ,//
@@ -100,6 +106,7 @@ begin
             oc_0_data = oc_0_data_0;
             oc_1_data = oc_1_data_0;
 
+            WarpID_OC_Ex = WarpID_OC_Ex_0;
             Instr_OC_Ex = Instr_OC_Ex_0 ;//pass
             RegWrite_OC_Ex = RegWrite_OC_Ex_0;
             Imme_OC_Ex = Imme_OC_Ex_0 ;//
@@ -120,6 +127,7 @@ begin
             oc_0_data = oc_0_data_1;
             oc_1_data = oc_1_data_1;
 
+            WarpID_OC_Ex = WarpID_OC_Ex_1;
             Instr_OC_Ex = Instr_OC_Ex_1 ;//pass
             RegWrite_OC_Ex = RegWrite_OC_Ex_1;
             Imme_OC_Ex = Imme_OC_Ex_1 ;//
@@ -140,6 +148,7 @@ begin
             oc_0_data = oc_0_data_2;
             oc_1_data = oc_1_data_2;
 
+            WarpID_OC_Ex = WarpID_OC_Ex_2;
             Instr_OC_Ex = Instr_OC_Ex_2 ;//pass
             RegWrite_OC_Ex = RegWrite_OC_Ex_2;
             Imme_OC_Ex = Imme_OC_Ex_2 ;//
@@ -160,6 +169,7 @@ begin
             oc_0_data = oc_0_data_3;
             oc_1_data = oc_1_data_3;
 
+            WarpID_OC_Ex = WarpID_OC_Ex_3;
             Instr_OC_Ex = Instr_OC_Ex_3 ;//pass
             RegWrite_OC_Ex = RegWrite_OC_Ex_3;
             Imme_OC_Ex = Imme_OC_Ex_3 ;//

@@ -41,20 +41,10 @@ module gpu_top_checking#(
 	input [11:0] FileIO_Addr_ICache,
 	input [31:0] FileIO_Din_ICache,
 	output [31:0] FileIO_Dout_ICache,
-	// From ALU to ID
-	input [32*8-1:0] TargetAddr_ALU_PC_Flattened,
-    
-    // From ALU to SIMT
-    input Br_ALU_SIMT,
-    input [7:0] BrOutcome_ALU_SIMT,
-    input [2:0] WarpID_ALU_SIMT,
 
-    // From ALU/CDB to Scoreboard
-    input [1:0] Clear_ScbID_ALU_Scb, // Clear signal from ALU (branch only)
+    // From CDB to Scoreboard
     input [1:0] Clear_ScbID_CDB_Scb, // Clear signal from CDB (for all regwrite)
-    input [LOGNUM_WARPS-1:0] Clear_WarpID_ALU_Scb,
     input [LOGNUM_WARPS-1:0] Clear_WarpID_CDB_Scb,
-    input Clear_Valid_ALU_Scb,
     input Clear_Valid_CDB_Scb,
 
     // feedback from MEM
@@ -72,31 +62,11 @@ module gpu_top_checking#(
     input [31:0] Instr_CDB_RAU,
     input [7:0] ActiveMask_CDB_RAU,
 
-    // RFOC output
-
-    output [255:0] Src1_Data_ALU,
-    output [255:0] Src2_Data_ALU,
-
-    output Valid_OC_ALU,//use
-    output [31:0] Instr_OC_ALU,//pass
-    output RegWrite_OC_ALU,
-    output [15:0] Imme_OC_ALU,//
-    output Imme_Valid_OC_ALU,//
-    output [3:0] ALUop_OC_ALU,//
-    output MemWrite_OC_ALU,//
-    output MemRead_OC_ALU,//
-    output Shared_Globalbar_OC_ALU,//pass
-    output BEQ_OC_ALU,//pass
-    output BLT_OC_ALU,//pass
-    output [1:0] ScbID_OC_ALU,//pass
-    output [7:0] ActiveMask_OC_ALU,//pass
-    output [4:0] Dst_OC_ALU,
-
-
-    output [255:0]Src1_Data_MEM,
-    output [255:0]Src2_Data_MEM,
+    output [255:0]Src1_Data_OC_MEM,
+    output [255:0]Src2_Data_OC_MEM,
 
     output Valid_OC_MEM,//use
+    output [2:0] WarpID_OC_MEM,
     output [31:0]Instr_OC_MEM,//pass
     output RegWrite_OC_MEM,
     output [15:0]Imme_OC_MEM,//
@@ -109,7 +79,16 @@ module gpu_top_checking#(
     output BLT_OC_MEM,//pass
     output [1:0] ScbID_OC_MEM,//pass
     output [7:0] ActiveMask_OC_MEM,//pass
-    output [4:0] Dst_OC_MEM
+    output [4:0] Dst_OC_MEM,
+
+    // TODO: ALU internal signals
+    
+	output [7:0] ActiveMask_ALU_CDB,
+    output [31:0] Instr_ALU_CDB,
+    output [2:0] WarpID_ALU_CDB, 
+    output RegWrite_ALU_CDB,
+    output [4:0] Dst_ALU_CDB,
+    output [8*32-1:0] Dst_Data_ALU_CDB
     );
 
     // TM to IF_ID
@@ -245,6 +224,40 @@ module gpu_top_checking#(
     wire Exit_IB_RAU_TM;
     wire [7:0] AllocStall_RAU_IB;
 
+    // RFOC output
+
+    wire [255:0] Src1_Data_OC_ALU;
+    wire [255:0] Src2_Data_OC_ALU;
+
+    wire Valid_OC_ALU;//use
+    wire [2:0] WarpID_OC_ALU;
+    wire [31:0] Instr_OC_ALU;//pass
+    wire RegWrite_OC_ALU;
+    wire [15:0] Imme_OC_ALU;//
+    wire Imme_Valid_OC_ALU;//
+    wire [3:0] ALUop_OC_ALU;//
+    wire MemWrite_OC_ALU;//
+    wire MemRead_OC_ALU;//
+    wire Shared_Globalbar_OC_ALU;//pass
+    wire BEQ_OC_ALU;//pass
+    wire BLT_OC_ALU;//pass
+    wire [1:0] ScbID_OC_ALU;//pass
+    wire [7:0] ActiveMask_OC_ALU;//pass
+    wire [4:0] Dst_OC_ALU;
+
+
+	// From ALU to ID
+	wire [32*8-1:0] TargetAddr_ALU_PC_Flattened;
+    
+    // From ALU to SIMT
+    wire Br_ALU_SIMT;
+    wire [7:0] BrOutcome_ALU_SIMT;
+    wire [2:0] WarpID_ALU_SIMT;
+
+    // ALU to Scb
+    wire [1:0] Clear_ScbID_ALU_Scb; // Clear signal from ALU (branch only)
+    wire [LOGNUM_WARPS-1:0] Clear_WarpID_ALU_Scb;
+    wire Clear_Valid_ALU_Scb;
 
     TaskManager TM(
     // Global Signals
@@ -600,10 +613,11 @@ module gpu_top_checking#(
     .Instr_CDB_RAU(Instr_CDB_RAU),
     .ActiveMask_CDB_RAU(ActiveMask_CDB_RAU),
 
-    .Src1_Data_ALU(Src1_Data_ALU),
-    .Src2_Data_ALU(Src2_Data_ALU),
+    .Src1_Data_ALU(Src1_Data_OC_ALU),
+    .Src2_Data_ALU(Src2_Data_OC_ALU),
 
     .Valid_OC_ALU(Valid_OC_ALU),//use
+    .WarpID_OC_ALU(WarpID_OC_ALU),
     .Instr_OC_ALU(Instr_OC_ALU),//pass
     .RegWrite_OC_ALU(RegWrite_OC_ALU),
     .Imme_OC_ALU(Imme_OC_ALU),//
@@ -618,10 +632,11 @@ module gpu_top_checking#(
     .ActiveMask_OC_ALU(ActiveMask_OC_ALU),//pass
     .Dst_OC_ALU(Dst_OC_ALU),
 
-    .Src1_Data_MEM(Src1_Data_MEM),
-    .Src2_Data_MEM(Src2_Data_MEM),
+    .Src1_Data_MEM(Src1_Data_OC_MEM),
+    .Src2_Data_MEM(Src2_Data_OC_MEM),
 
     .Valid_OC_MEM(Valid_OC_MEM),//use
+    .WarpID_OC_MEM(WarpID_OC_MEM),
     .Instr_OC_MEM(Instr_OC_MEM),//pass
     .RegWrite_OC_MEM(RegWrite_OC_MEM),
     .Imme_OC_MEM(Imme_OC_MEM),//
@@ -637,45 +652,45 @@ module gpu_top_checking#(
     .Dst_OC_MEM(Dst_OC_MEM)
     );
 
-    // ALU alu1 (
-    // // interface with OC
-	// .clk(clk),
-	// .rst(rst),
-    // .Valid_OC_ALU(Vali),
-	// .ActiveMask_OC_ALU,
-    // .WarpID_OC_ALU,
-    // .Instr_OC_ALU,
-    // .Src1_Data_OC_ALU,
-    // .Src2_Data_OC_ALU,
-    // .Dst_OC_ALU,
-    // .Imme_OC_ALU,
-    // .Imme_Valid_OC_ALU,
-    // .Write_OC_ALU,
-    // .ALUop_OC_ALU,
-    // .BEQ_OC_ALU,
-    // .BLT_OC_ALU,
-    // .ScbID_OC_ALU, // for BEQ and BLT only, to clear Scb entry
+    ALU alu1 (
+    // interface with OC
+	.clk(clk),
+	.rst(rst),
+    .Valid_OC_ALU(Valid_OC_ALU),
+	.ActiveMask_OC_ALU(ActiveMask_OC_ALU),
+    .WarpID_OC_ALU(WarpID_OC_ALU),
+    .Instr_OC_ALU(Instr_OC_ALU),
+    .Src1_Data_OC_ALU(Src1_Data_OC_ALU),
+    .Src2_Data_OC_ALU(Src2_Data_OC_ALU),
+    .Dst_OC_ALU(Dst_OC_ALU),
+    .Imme_OC_ALU(Imme_OC_ALU),
+    .Imme_Valid_OC_ALU(Imme_Valid_OC_ALU),
+    .RegWrite_OC_ALU(RegWrite_OC_ALU),
+    .ALUop_OC_ALU(ALUop_OC_ALU),
+    .BEQ_OC_ALU(BEQ_OC_ALU),
+    .BLT_OC_ALU(BLT_OC_ALU),
+    .ScbID_OC_ALU(ScbID_OC_ALU), // for BEQ and BLT only, to clear Scb entry
 
-    // // output to Fetch
-    // .TargetAddr_ALU_PC_Flattened,
+    // output to Fetch
+    .TargetAddr_ALU_PC_Flattened(TargetAddr_ALU_PC_Flattened),
 	
-	// // output to SIMT 
-	// .Br_ALU_SIMT,
-	// .BrOutcome_ALU_SIMT,
-	// .WarpID_ALU_SIMT,
+	// output to SIMT 
+	.Br_ALU_SIMT(Br_ALU_SIMT),
+	.BrOutcome_ALU_SIMT(BrOutcome_ALU_SIMT),
+	.WarpID_ALU_SIMT(WarpID_ALU_SIMT),
 
-    // // outputto CDB
-	// .ActiveMask_ALU_CDB,
-    // .Instr_ALU_CDB,
-    // .WarpID_ALU_CDB, 
-    // .Write_ALU_CDB,
-    // .Dst_ALU_CDB,
-    // .Dst_Data_ALU_CDB,
+    // output to CDB
+	.ActiveMask_ALU_CDB(ActiveMask_ALU_CDB),
+    .Instr_ALU_CDB(Instr_ALU_CDB),
+    .WarpID_ALU_CDB(WarpID_ALU_CDB), 
+    .RegWrite_ALU_CDB(RegWrite_ALU_CDB),
+    .Dst_ALU_CDB(Dst_ALU_CDB),
+    .Dst_Data_ALU_CDB(Dst_Data_ALU_CDB),
     
-    // // output to Scb (to clear Scb entry. Branch only, which do not go onto CDB)
-    // .Clear_Valid_ALU_Scb,
-    // .Clear_WarpID_ALU_Scb,
-    // .Clear_ScbID_ALU_Scb
-    // );
+    // output to Scb (to clear Scb entry. Branch only, which do not go onto CDB)
+    .Clear_Valid_ALU_Scb(Clear_Valid_ALU_Scb),
+    .Clear_WarpID_ALU_Scb(Clear_WarpID_ALU_Scb),
+    .Clear_ScbID_ALU_Scb(Clear_ScbID_ALU_Scb)
+    );
 
 endmodule

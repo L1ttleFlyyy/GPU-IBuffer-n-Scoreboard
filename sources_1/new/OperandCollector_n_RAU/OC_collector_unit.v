@@ -34,6 +34,7 @@ input RE,
 input clk, 
 input rst,
 
+input wire [2:0] WarpID_RAU_OC,
 input wire Valid_RAU_OC ,//use
 input wire [31:0] Instr_RAU_OC ,//pass
 
@@ -66,7 +67,7 @@ output reg [255:0] oc_1_data,
 
 output reg Valid_OC_Ex ,//use
 output reg [31:0] Instr_OC_Ex ,//pass
-
+output reg [2:0] WarpID_OC_Ex,
 output reg RegWrite_OC_Ex,
 output reg [15:0] Imme_OC_Ex ,//
 output reg Imme_Valid_OC_Ex ,//
@@ -150,7 +151,7 @@ begin
 				Valid_OC_Ex <= Valid_RAU_OC ;//use
 				Instr_OC_Ex <= Instr_RAU_OC ;//pass
 				
-
+				WarpID_OC_Ex <= WarpID_RAU_OC;
 				RegWrite_OC_Ex <= RegWrite_RAU_OC;
 				Imme_OC_Ex <= Imme_RAU_OC ;//
 				Imme_Valid_OC_Ex <= Imme_Valid_RAU_OC ;//
