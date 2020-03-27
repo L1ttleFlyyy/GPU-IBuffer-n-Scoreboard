@@ -44,6 +44,8 @@ module mem_stage1(
 	
 	always@(PAM or eff_addr[0] or eff_addr[1] or eff_addr[2] or eff_addr[3] or eff_addr[4] or eff_addr[5] or eff_addr[6] or eff_addr[7])
 	begin
+    // FIXME: inferring latches
+	//	thread_select = 0;
 		for(i=7; i>=0; i=i-1)
 		begin
 			if(PAM[i])

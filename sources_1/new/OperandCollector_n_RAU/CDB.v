@@ -41,6 +41,7 @@ begin
         Instr_CDB_RAU = Instr_MEM_CDB;
         ActiveMask_CDB_RAU = ActiveMask_MEM_CDB;
     end
+    // FIXME: inferring latches
 end
 
 endmodule
