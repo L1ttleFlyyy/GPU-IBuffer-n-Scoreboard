@@ -72,29 +72,29 @@ module Mapping(
     output wire WriteValid,
 
     //every
-    output wire Valid_RAU_Collecting ,//use
-    output wire [31:0] Instr_RAU_Collecting ,//pass
+    output wire Valid_RAU_OC ,//use
+    output wire [31:0] Instr_RAU_OC ,//pass
 
-    output wire [15:0] Imme_RAU_Collecting ,//
-    output wire Imme_Valid_RAU_Collecting ,//
-    output wire [3:0] ALUop_RAU_Collecting ,//
-    output wire MemWrite_RAU_Collecting ,//
-    output wire MemRead_RAU_Collecting ,//
-    output wire Shared_Globalbar_RAU_Collecting ,//pass
-    output wire BEQ_RAU_Collecting ,//pass
-    output wire BLT_RAU_Collecting ,//pass
-    output wire [1:0] ScbID_RAU_Collecting ,//pass
-    output wire [7:0] ActiveMask_RAU_Collecting ,//pass
-    output wire RegWrite_RAU_Collecting,
-    output wire [4:0] Dst_RAU_Collecting,
+    output wire [15:0] Imme_RAU_OC ,//
+    output wire Imme_Valid_RAU_OC ,//
+    output wire [3:0] ALUop_RAU_OC ,//
+    output wire MemWrite_RAU_OC ,//
+    output wire MemRead_RAU_OC ,//
+    output wire Shared_Globalbar_RAU_OC ,//pass
+    output wire BEQ_RAU_OC ,//pass
+    output wire BLT_RAU_OC ,//pass
+    output wire [1:0] ScbID_RAU_OC ,//pass
+    output wire [7:0] ActiveMask_RAU_OC ,//pass
+    output wire RegWrite_RAU_OC,
+    output wire [4:0] Dst_RAU_OC,
 
     output wire [255:0]Data_CDB,
     output wire [31:0]Instr_CDB,
 
-    output reg [1:0] SPEslot_RAU_Collecting,
-    output reg [255:0] SPEvalue_RAU_Collecting,
-    output reg [1:0] SPEv2slot_RAU_Collecting,
-    output reg [255:0] SPEv2value_RAU_Collecting
+    output reg [1:0] SPEslot_RAU_OC,
+    output reg [255:0] SPEvalue_RAU_OC,
+    output reg [1:0] SPEv2slot_RAU_OC,
+    output reg [255:0] SPEv2value_RAU_OC
 );
 
 
@@ -298,21 +298,21 @@ assign Src2_OCID_RAU_OC = {OCID_RAU_OC , 1'b1};
 //occupied to OC
 
 
-assign Valid_RAU_Collecting = Valid_IB_RAU;
-assign Instr_RAU_Collecting = Instr_IB_RAU;
+assign Valid_RAU_OC = Valid_IB_RAU;
+assign Instr_RAU_OC = Instr_IB_RAU;
 
-assign Imme_RAU_Collecting =Imme_IB_RAU;
-assign Imme_Valid_RAU_Collecting = Imme_Valid_IB_RAU;
-assign ALUop_RAU_Collecting = ALUop_IB_RAU;
-assign MemWrite_RAU_Collecting = MemWrite_IB_RAU;
-assign MemRead_RAU_Collecting = MemRead_IB_RAU;
-assign Shared_Globalbar_RAU_Collecting = Shared_Globalbar_IB_RAU;
-assign BEQ_RAU_Collecting = BEQ_IB_RAU;
-assign BLT_RAU_Collecting = BLT_IB_RAU;
-assign ScbID_RAU_Collecting = ScbID_IB_RAU;
-assign ActiveMask_RAU_Collecting = ActiveMask_IB_RAU;
-assign RegWrite_RAU_Collecting = RegWrite_IB_OC;
-assign Dst_RAU_Collecting = Dst_IB_OC;
+assign Imme_RAU_OC =Imme_IB_RAU;
+assign Imme_Valid_RAU_OC = Imme_Valid_IB_RAU;
+assign ALUop_RAU_OC = ALUop_IB_RAU;
+assign MemWrite_RAU_OC = MemWrite_IB_RAU;
+assign MemRead_RAU_OC = MemRead_IB_RAU;
+assign Shared_Globalbar_RAU_OC = Shared_Globalbar_IB_RAU;
+assign BEQ_RAU_OC = BEQ_IB_RAU;
+assign BLT_RAU_OC = BLT_IB_RAU;
+assign ScbID_RAU_OC = ScbID_IB_RAU;
+assign ActiveMask_RAU_OC = ActiveMask_IB_RAU;
+assign RegWrite_RAU_OC = RegWrite_IB_OC;
+assign Dst_RAU_OC = Dst_IB_OC;
 
 assign Data_CDB = Data_CDB_RAU;
 assign Instr_CDB = Instr_CDB_RAU;
@@ -320,10 +320,10 @@ assign Instr_CDB = Instr_CDB_RAU;
 
 always @ (posedge clk)
 begin
-    SPEslot_RAU_Collecting <= {Src2_IB_RAU[4], Src1_IB_RAU[4]}; 
-    SPEvalue_RAU_Collecting <= {8{SpecialReg[HWWarp_IB_RAU]}};
-    SPEv2slot_RAU_Collecting <= {Src2_IB_RAU[3], Src1_IB_RAU[3]}; 
-    SPEv2value_RAU_Collecting <= {32'd7,32'd6,32'd5,32'd4,32'd3,32'd2,32'd1,32'd0};
+    SPEslot_RAU_OC <= {Src2_IB_RAU[4], Src1_IB_RAU[4]}; 
+    SPEvalue_RAU_OC <= {8{SpecialReg[HWWarp_IB_RAU]}};
+    SPEv2slot_RAU_OC <= {Src2_IB_RAU[3], Src1_IB_RAU[3]}; 
+    SPEv2value_RAU_OC <= {32'd7,32'd6,32'd5,32'd4,32'd3,32'd2,32'd1,32'd0};
 end
 
 endmodule

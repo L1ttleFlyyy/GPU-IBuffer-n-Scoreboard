@@ -51,38 +51,38 @@ module RFOC(
     output [255:0] Src1_Data_ALU,
     output [255:0] Src2_Data_ALU,
 
-    output Valid_Collecting_ALU,//use
-    output [31:0] Instr_Collecting_ALU,//pass
-    output RegWrite_Collecting_ALU,
-    output [15:0] Imme_Collecting_ALU,//
-    output Imme_Valid_Collecting_ALU,//
-    output [3:0] ALUop_Collecting_ALU,//
-    output MemWrite_Collecting_ALU,//
-    output MemRead_Collecting_ALU,//
-    output Shared_Globalbar_Collecting_ALU,//pass
-    output BEQ_Collecting_ALU,//pass
-    output BLT_Collecting_ALU,//pass
-    output [1:0] ScbID_Collecting_ALU,//pass
-    output [7:0] ActiveMask_Collecting_ALU,//pass
-    output [4:0] Dst_Collecting_ALU,
+    output Valid_OC_ALU,//use
+    output [31:0] Instr_OC_ALU,//pass
+    output RegWrite_OC_ALU,
+    output [15:0] Imme_OC_ALU,//
+    output Imme_Valid_OC_ALU,//
+    output [3:0] ALUop_OC_ALU,//
+    output MemWrite_OC_ALU,//
+    output MemRead_OC_ALU,//
+    output Shared_Globalbar_OC_ALU,//pass
+    output BEQ_OC_ALU,//pass
+    output BLT_OC_ALU,//pass
+    output [1:0] ScbID_OC_ALU,//pass
+    output [7:0] ActiveMask_OC_ALU,//pass
+    output [4:0] Dst_OC_ALU,
 
     output [255:0]Src1_Data_MEM,
     output [255:0]Src2_Data_MEM,
 
-    output Valid_Collecting_MEM,//use
-    output [31:0]Instr_Collecting_MEM,//pass
-    output RegWrite_Collecting_MEM,
-    output [15:0]Imme_Collecting_MEM,//
-    output Imme_Valid_Collecting_MEM,//
-    output [3:0] ALUop_Collecting_MEM,//
-    output MemWrite_Collecting_MEM,//
-    output MemRead_Collecting_MEM,//
-    output Shared_Globalbar_Collecting_MEM,//pass
-    output BEQ_Collecting_MEM,//pass
-    output BLT_Collecting_MEM,//pass
-    output [1:0] ScbID_Collecting_MEM,//pass
-    output [7:0] ActiveMask_Collecting_MEM,//pass
-    output [4:0] Dst_Collecting_MEM
+    output Valid_OC_MEM,//use
+    output [31:0]Instr_OC_MEM,//pass
+    output RegWrite_OC_MEM,
+    output [15:0]Imme_OC_MEM,//
+    output Imme_Valid_OC_MEM,//
+    output [3:0] ALUop_OC_MEM,//
+    output MemWrite_OC_MEM,//
+    output MemRead_OC_MEM,//
+    output Shared_Globalbar_OC_MEM,//pass
+    output BEQ_OC_MEM,//pass
+    output BLT_OC_MEM,//pass
+    output [1:0] ScbID_OC_MEM,//pass
+    output [7:0] ActiveMask_OC_MEM,//pass
+    output [4:0] Dst_OC_MEM
 );
 
 
@@ -100,7 +100,7 @@ wire [2:0] Src1_OCID_RAU_OC;
 wire [2:0] Src2_OCID_RAU_OC;
 wire [255:0]Data_CDB;
 
-wire [7:0] ActiveMask_RAU_Collecting;//pass
+wire [7:0] ActiveMask_RAU_OC;//pass
 
 wire [2:0] RF_Addr_0;
 wire [2:0] RF_Addr_1;
@@ -125,37 +125,37 @@ wire [255:0] WriteData_3;
 wire [3:0] ALU_Grt_Sched_OC;
 wire [3:0] MEM_Grt_Sched_OC;
 
-wire Valid_RAU_Collecting;//use
-wire [31:0]Instr_RAU_Collecting;
-wire [15:0] Imme_RAU_Collecting ;//
-wire Imme_Valid_RAU_Collecting;
-wire [3:0] ALUop_RAU_Collecting ;
-wire RegWrite_RAU_Collecting;
-wire MemWrite_RAU_Collecting;
-wire MemRead_RAU_Collecting;
-wire Shared_Globalbar_RAU_Collecting;
-wire BEQ_RAU_Collecting;//pass
-wire BLT_RAU_Collecting;//pass
-wire [1:0]ScbID_RAU_Collecting;//pass
-wire [4:0]Dst_RAU_Collecting;
+wire Valid_RAU_OC;//use
+wire [31:0]Instr_RAU_OC;
+wire [15:0] Imme_RAU_OC ;//
+wire Imme_Valid_RAU_OC;
+wire [3:0] ALUop_RAU_OC ;
+wire RegWrite_RAU_OC;
+wire MemWrite_RAU_OC;
+wire MemRead_RAU_OC;
+wire Shared_Globalbar_RAU_OC;
+wire BEQ_RAU_OC;//pass
+wire BLT_RAU_OC;//pass
+wire [1:0]ScbID_RAU_OC;//pass
+wire [4:0]Dst_RAU_OC;
 
 wire RDY_0;
 wire RDY_1;
 wire RDY_2;
 wire RDY_3;
 
-wire RegWrite_Collecting_Ex_0; 
-wire RegWrite_Collecting_Ex_1; 
-wire RegWrite_Collecting_Ex_2; 
-wire RegWrite_Collecting_Ex_3; 
-wire MemWrite_Collecting_Ex_0; 
-wire MemWrite_Collecting_Ex_1; 
-wire MemWrite_Collecting_Ex_2; 
-wire MemWrite_Collecting_Ex_3; 
-wire MemRead_Collecting_Ex_0; 
-wire MemRead_Collecting_Ex_1; 
-wire MemRead_Collecting_Ex_2; 
-wire MemRead_Collecting_Ex_3; 
+wire RegWrite_OC_Ex_0; 
+wire RegWrite_OC_Ex_1; 
+wire RegWrite_OC_Ex_2; 
+wire RegWrite_OC_Ex_3; 
+wire MemWrite_OC_Ex_0; 
+wire MemWrite_OC_Ex_1; 
+wire MemWrite_OC_Ex_2; 
+wire MemWrite_OC_Ex_3; 
+wire MemRead_OC_Ex_0; 
+wire MemRead_OC_Ex_1; 
+wire MemRead_OC_Ex_2; 
+wire MemRead_OC_Ex_3; 
 
 wire [255:0] DataOut_0;
 wire [255:0] DataOut_1;
@@ -181,10 +181,10 @@ wire oc_3_empty = ~valid_3;
 
 assign Alloc_BusyBar_RAU_TM = !(|AllocStall_RAU_IB);
 
-wire [1:0] SPEslot_RAU_Collecting;
-wire [255:0] SPEvalue_RAU_Collecting;
-wire [1:0] SPEv2slot_RAU_Collecting;
-wire [255:0] SPEv2value_RAU_Collecting;
+wire [1:0] SPEslot_RAU_OC;
+wire [255:0] SPEvalue_RAU_OC;
+wire [1:0] SPEv2slot_RAU_OC;
+wire [255:0] SPEv2value_RAU_OC;
 
 
 wire [255:0] oc_0_data_0;
@@ -199,53 +199,53 @@ wire [255:0] oc_1_data_2;
 wire [255:0] oc_0_data_3;
 wire [255:0] oc_1_data_3;
 
-wire Valid_Collecting_Ex_0 ;//use
-wire [31:0] Instr_Collecting_Ex_0 ;//pass
-wire [15:0] Imme_Collecting_Ex_0 ;//
-wire Imme_Valid_Collecting_Ex_0 ;//
-wire [3:0] ALUop_Collecting_Ex_0 ;//
-wire Shared_Globalbar_Collecting_Ex_0 ;//pass
-wire BEQ_Collecting_Ex_0 ;//pass
-wire BLT_Collecting_Ex_0 ;//pass
-wire [1:0] ScbID_Collecting_Ex_0 ;//pass
-wire [7:0] ActiveMask_Collecting_Ex_0;//pass
-wire [4:0] Dst_Collecting_Ex_0;
+wire Valid_OC_Ex_0 ;//use
+wire [31:0] Instr_OC_Ex_0 ;//pass
+wire [15:0] Imme_OC_Ex_0 ;//
+wire Imme_Valid_OC_Ex_0 ;//
+wire [3:0] ALUop_OC_Ex_0 ;//
+wire Shared_Globalbar_OC_Ex_0 ;//pass
+wire BEQ_OC_Ex_0 ;//pass
+wire BLT_OC_Ex_0 ;//pass
+wire [1:0] ScbID_OC_Ex_0 ;//pass
+wire [7:0] ActiveMask_OC_Ex_0;//pass
+wire [4:0] Dst_OC_Ex_0;
 
-wire Valid_Collecting_Ex_1 ;//use
-wire [31:0] Instr_Collecting_Ex_1 ;//pass
-wire [15:0] Imme_Collecting_Ex_1 ;//
-wire Imme_Valid_Collecting_Ex_1 ;//
-wire [3:0] ALUop_Collecting_Ex_1 ;//
-wire Shared_Globalbar_Collecting_Ex_1 ;//pass
-wire BEQ_Collecting_Ex_1 ;//pass
-wire BLT_Collecting_Ex_1 ;//pass
-wire [1:0] ScbID_Collecting_Ex_1 ;//pass
-wire [7:0] ActiveMask_Collecting_Ex_1;//pass
-wire [4:0] Dst_Collecting_Ex_1;
+wire Valid_OC_Ex_1 ;//use
+wire [31:0] Instr_OC_Ex_1 ;//pass
+wire [15:0] Imme_OC_Ex_1 ;//
+wire Imme_Valid_OC_Ex_1 ;//
+wire [3:0] ALUop_OC_Ex_1 ;//
+wire Shared_Globalbar_OC_Ex_1 ;//pass
+wire BEQ_OC_Ex_1 ;//pass
+wire BLT_OC_Ex_1 ;//pass
+wire [1:0] ScbID_OC_Ex_1 ;//pass
+wire [7:0] ActiveMask_OC_Ex_1;//pass
+wire [4:0] Dst_OC_Ex_1;
 
-wire Valid_Collecting_Ex_2 ;//use
-wire [31:0] Instr_Collecting_Ex_2 ;//pass
-wire [15:0] Imme_Collecting_Ex_2 ;//
-wire Imme_Valid_Collecting_Ex_2 ;//
-wire [3:0] ALUop_Collecting_Ex_2 ;//
-wire Shared_Globalbar_Collecting_Ex_2 ;//pass
-wire BEQ_Collecting_Ex_2 ;//pass
-wire BLT_Collecting_Ex_2 ;//pass
-wire [1:0] ScbID_Collecting_Ex_2 ;//pass
-wire [7:0] ActiveMask_Collecting_Ex_2;//pass
-wire [4:0] Dst_Collecting_Ex_2;
+wire Valid_OC_Ex_2 ;//use
+wire [31:0] Instr_OC_Ex_2 ;//pass
+wire [15:0] Imme_OC_Ex_2 ;//
+wire Imme_Valid_OC_Ex_2 ;//
+wire [3:0] ALUop_OC_Ex_2 ;//
+wire Shared_Globalbar_OC_Ex_2 ;//pass
+wire BEQ_OC_Ex_2 ;//pass
+wire BLT_OC_Ex_2 ;//pass
+wire [1:0] ScbID_OC_Ex_2 ;//pass
+wire [7:0] ActiveMask_OC_Ex_2;//pass
+wire [4:0] Dst_OC_Ex_2;
 
-wire Valid_Collecting_Ex_3 ;//use
-wire [31:0] Instr_Collecting_Ex_3 ;//pass
-wire [15:0] Imme_Collecting_Ex_3 ;//
-wire Imme_Valid_Collecting_Ex_3 ;//
-wire [3:0] ALUop_Collecting_Ex_3 ;//
-wire Shared_Globalbar_Collecting_Ex_3 ;//pass
-wire BEQ_Collecting_Ex_3 ;//pass
-wire BLT_Collecting_Ex_3 ;//pass
-wire [1:0] ScbID_Collecting_Ex_3 ;//pass
-wire [7:0] ActiveMask_Collecting_Ex_3;//pass
-wire [4:0] Dst_Collecting_Ex_3;
+wire Valid_OC_Ex_3 ;//use
+wire [31:0] Instr_OC_Ex_3 ;//pass
+wire [15:0] Imme_OC_Ex_3 ;//
+wire Imme_Valid_OC_Ex_3 ;//
+wire [3:0] ALUop_OC_Ex_3 ;//
+wire Shared_Globalbar_OC_Ex_3 ;//pass
+wire BEQ_OC_Ex_3 ;//pass
+wire BLT_OC_Ex_3 ;//pass
+wire [1:0] ScbID_OC_Ex_3 ;//pass
+wire [7:0] ActiveMask_OC_Ex_3;//pass
+wire [4:0] Dst_OC_Ex_3;
 
 Mapping MappingUnit(
     .rst(rst),
@@ -321,30 +321,30 @@ Mapping MappingUnit(
     .WriteValid(WriteValid),
 
     //every
-    .Valid_RAU_Collecting(Valid_RAU_Collecting) ,//use
-    .Instr_RAU_Collecting(Instr_RAU_Collecting) ,//pass
+    .Valid_RAU_OC(Valid_RAU_OC) ,//use
+    .Instr_RAU_OC(Instr_RAU_OC) ,//pass
 
-    .Imme_RAU_Collecting(Imme_RAU_Collecting) ,//
-    .Imme_Valid_RAU_Collecting(Imme_Valid_RAU_Collecting) ,//
-    .ALUop_RAU_Collecting(ALUop_RAU_Collecting) ,//
-    .MemWrite_RAU_Collecting(MemWrite_RAU_Collecting) ,//
-    .MemRead_RAU_Collecting(MemRead_RAU_Collecting) ,//
-    .Shared_Globalbar_RAU_Collecting(Shared_Globalbar_RAU_Collecting) ,//pass
-    .BEQ_RAU_Collecting(BEQ_RAU_Collecting) ,//pass
-    .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
-    .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
-    .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
+    .Imme_RAU_OC(Imme_RAU_OC) ,//
+    .Imme_Valid_RAU_OC(Imme_Valid_RAU_OC) ,//
+    .ALUop_RAU_OC(ALUop_RAU_OC) ,//
+    .MemWrite_RAU_OC(MemWrite_RAU_OC) ,//
+    .MemRead_RAU_OC(MemRead_RAU_OC) ,//
+    .Shared_Globalbar_RAU_OC(Shared_Globalbar_RAU_OC) ,//pass
+    .BEQ_RAU_OC(BEQ_RAU_OC) ,//pass
+    .BLT_RAU_OC(BLT_RAU_OC) ,//pass
+    .ScbID_RAU_OC(ScbID_RAU_OC) ,//pass
+    .ActiveMask_RAU_OC(ActiveMask_RAU_OC) ,//pass
 
-    .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
-    .Dst_RAU_Collecting(Dst_RAU_Collecting),
+    .RegWrite_RAU_OC(RegWrite_RAU_OC),
+    .Dst_RAU_OC(Dst_RAU_OC),
 
     .Data_CDB(Data_CDB),
     .Instr_CDB(),  //////////////////////!@DASDUFHEFIUABEIPFULKBASEIUDKIALEBFCILWSBHD
 
-    .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
-    .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
-    .SPEv2slot_RAU_Collecting(SPEv2slot_RAU_Collecting),
-    .SPEv2value_RAU_Collecting(SPEv2value_RAU_Collecting)
+    .SPEslot_RAU_OC(SPEslot_RAU_OC),
+    .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
+    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
+    .SPEv2value_RAU_OC(SPEv2value_RAU_OC)
 );
 
 ReqFIFO_4 ReqFIFO_4(
@@ -433,30 +433,30 @@ OC_collector_4 OC_collector_4(
     .clk(clk),
 
 
-    .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
-    .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
-    .SPEv2slot_RAU_Collecting(SPEv2slot_RAU_Collecting),
-    .SPEv2value_RAU_Collecting(SPEv2value_RAU_Collecting),
+    .SPEslot_RAU_OC(SPEslot_RAU_OC),
+    .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
+    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
+    .SPEv2value_RAU_OC(SPEv2value_RAU_OC),
     
 
     .ALU_Grt_Sched_OC(ALU_Grt_Sched_OC),
     .MEM_Grt_Sched_OC(MEM_Grt_Sched_OC),
 
-    .Valid_RAU_Collecting(Valid_RAU_Collecting),//use
-    .Instr_RAU_Collecting(Instr_RAU_Collecting) ,//pass
+    .Valid_RAU_OC(Valid_RAU_OC),//use
+    .Instr_RAU_OC(Instr_RAU_OC) ,//pass
 
-    .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
-    .Imme_RAU_Collecting(Imme_RAU_Collecting) ,//
-    .Imme_Valid_RAU_Collecting(Imme_Valid_RAU_Collecting) ,//
-    .ALUop_RAU_Collecting(ALUop_RAU_Collecting) ,//
-    .MemWrite_RAU_Collecting(MemWrite_RAU_Collecting) ,//
-    .MemRead_RAU_Collecting(MemRead_RAU_Collecting) ,//
-    .Shared_Globalbar_RAU_Collecting(Shared_Globalbar_RAU_Collecting) ,//pass
-    .BEQ_RAU_Collecting(BEQ_RAU_Collecting) ,//pass
-    .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
-    .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
-    .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
-    .Dst_RAU_Collecting(Dst_RAU_Collecting),
+    .RegWrite_RAU_OC(RegWrite_RAU_OC),
+    .Imme_RAU_OC(Imme_RAU_OC) ,//
+    .Imme_Valid_RAU_OC(Imme_Valid_RAU_OC) ,//
+    .ALUop_RAU_OC(ALUop_RAU_OC) ,//
+    .MemWrite_RAU_OC(MemWrite_RAU_OC) ,//
+    .MemRead_RAU_OC(MemRead_RAU_OC) ,//
+    .Shared_Globalbar_RAU_OC(Shared_Globalbar_RAU_OC) ,//pass
+    .BEQ_RAU_OC(BEQ_RAU_OC) ,//pass
+    .BLT_RAU_OC(BLT_RAU_OC) ,//pass
+    .ScbID_RAU_OC(ScbID_RAU_OC) ,//pass
+    .ActiveMask_RAU_OC(ActiveMask_RAU_OC) ,//pass
+    .Dst_RAU_OC(Dst_RAU_OC),
 
 
     .DataOut_0(DataOut_0),
@@ -487,20 +487,20 @@ OC_collector_4 OC_collector_4(
     .RDY_0(RDY_0), 
     .valid_0(valid_0),
 
-    .Valid_Collecting_Ex_0(Valid_Collecting_Ex_0) ,//use
-    .Instr_Collecting_Ex_0(Instr_Collecting_Ex_0) ,//pass
-    .RegWrite_Collecting_Ex_0(RegWrite_Collecting_Ex_0),
-    .Imme_Collecting_Ex_0(Imme_Collecting_Ex_0) ,//
-    .Imme_Valid_Collecting_Ex_0(Imme_Valid_Collecting_Ex_0) ,//
-    .ALUop_Collecting_Ex_0(ALUop_Collecting_Ex_0) ,//
-    .MemWrite_Collecting_Ex_0(MemWrite_Collecting_Ex_0) ,//
-    .MemRead_Collecting_Ex_0(MemRead_Collecting_Ex_0) ,//
-    .Shared_Globalbar_Collecting_Ex_0(Shared_Globalbar_Collecting_Ex_0) ,//pass
-    .BEQ_Collecting_Ex_0(BEQ_Collecting_Ex_0) ,//pass
-    .BLT_Collecting_Ex_0(BLT_Collecting_Ex_0) ,//pass
-    .ScbID_Collecting_Ex_0(ScbID_Collecting_Ex_0) ,//pass
-    .ActiveMask_Collecting_Ex_0(ActiveMask_Collecting_Ex_0),//pass
-    .Dst_Collecting_Ex_0(Dst_Collecting_Ex_0),
+    .Valid_OC_Ex_0(Valid_OC_Ex_0) ,//use
+    .Instr_OC_Ex_0(Instr_OC_Ex_0) ,//pass
+    .RegWrite_OC_Ex_0(RegWrite_OC_Ex_0),
+    .Imme_OC_Ex_0(Imme_OC_Ex_0) ,//
+    .Imme_Valid_OC_Ex_0(Imme_Valid_OC_Ex_0) ,//
+    .ALUop_OC_Ex_0(ALUop_OC_Ex_0) ,//
+    .MemWrite_OC_Ex_0(MemWrite_OC_Ex_0) ,//
+    .MemRead_OC_Ex_0(MemRead_OC_Ex_0) ,//
+    .Shared_Globalbar_OC_Ex_0(Shared_Globalbar_OC_Ex_0) ,//pass
+    .BEQ_OC_Ex_0(BEQ_OC_Ex_0) ,//pass
+    .BLT_OC_Ex_0(BLT_OC_Ex_0) ,//pass
+    .ScbID_OC_Ex_0(ScbID_OC_Ex_0) ,//pass
+    .ActiveMask_OC_Ex_0(ActiveMask_OC_Ex_0),//pass
+    .Dst_OC_Ex_0(Dst_OC_Ex_0),
 
     .oc_0_data_1(oc_0_data_1),
     .oc_1_data_1(oc_1_data_1),
@@ -508,60 +508,60 @@ OC_collector_4 OC_collector_4(
     .RDY_1(RDY_1), 
     .valid_1(valid_1),
 
-    .Valid_Collecting_Ex_1(Valid_Collecting_Ex_1) ,//use
-    .Instr_Collecting_Ex_1(Instr_Collecting_Ex_1) ,//pass
-    .RegWrite_Collecting_Ex_1(RegWrite_Collecting_Ex_1),
-    .Imme_Collecting_Ex_1(Imme_Collecting_Ex_1) ,//
-    .Imme_Valid_Collecting_Ex_1(Imme_Valid_Collecting_Ex_1) ,//
-    .ALUop_Collecting_Ex_1(ALUop_Collecting_Ex_1) ,//
-    .MemWrite_Collecting_Ex_1(MemWrite_Collecting_Ex_1),//
-    .MemRead_Collecting_Ex_1(MemRead_Collecting_Ex_1) ,//
-    .Shared_Globalbar_Collecting_Ex_1(Shared_Globalbar_Collecting_Ex_1) ,//pass
-    .BEQ_Collecting_Ex_1(BEQ_Collecting_Ex_1) ,//pass
-    .BLT_Collecting_Ex_1(BLT_Collecting_Ex_1) ,//pass
-    .ScbID_Collecting_Ex_1(ScbID_Collecting_Ex_1) ,//pass
-    .ActiveMask_Collecting_Ex_1(ActiveMask_Collecting_Ex_1),//pass
-    .Dst_Collecting_Ex_1(Dst_Collecting_Ex_1),
+    .Valid_OC_Ex_1(Valid_OC_Ex_1) ,//use
+    .Instr_OC_Ex_1(Instr_OC_Ex_1) ,//pass
+    .RegWrite_OC_Ex_1(RegWrite_OC_Ex_1),
+    .Imme_OC_Ex_1(Imme_OC_Ex_1) ,//
+    .Imme_Valid_OC_Ex_1(Imme_Valid_OC_Ex_1) ,//
+    .ALUop_OC_Ex_1(ALUop_OC_Ex_1) ,//
+    .MemWrite_OC_Ex_1(MemWrite_OC_Ex_1),//
+    .MemRead_OC_Ex_1(MemRead_OC_Ex_1) ,//
+    .Shared_Globalbar_OC_Ex_1(Shared_Globalbar_OC_Ex_1) ,//pass
+    .BEQ_OC_Ex_1(BEQ_OC_Ex_1) ,//pass
+    .BLT_OC_Ex_1(BLT_OC_Ex_1) ,//pass
+    .ScbID_OC_Ex_1(ScbID_OC_Ex_1) ,//pass
+    .ActiveMask_OC_Ex_1(ActiveMask_OC_Ex_1),//pass
+    .Dst_OC_Ex_1(Dst_OC_Ex_1),
     .oc_0_data_2(oc_0_data_2),
     .oc_1_data_2(oc_1_data_2),
 
     .RDY_2(RDY_2), 
     .valid_2(valid_2),
 
-    .Valid_Collecting_Ex_2(Valid_Collecting_Ex_2) ,//use
-    .Instr_Collecting_Ex_2(Instr_Collecting_Ex_2) ,//pass
-    .RegWrite_Collecting_Ex_2(RegWrite_Collecting_Ex_2),
-    .Imme_Collecting_Ex_2(Imme_Collecting_Ex_2) ,//
-    .Imme_Valid_Collecting_Ex_2(Imme_Valid_Collecting_Ex_2) ,//
-    .ALUop_Collecting_Ex_2(ALUop_Collecting_Ex_2) ,//
-    .MemWrite_Collecting_Ex_2(MemWrite_Collecting_Ex_2),//
-    .MemRead_Collecting_Ex_2(MemRead_Collecting_Ex_2) ,//
-    .Shared_Globalbar_Collecting_Ex_2(Shared_Globalbar_Collecting_Ex_2) ,//pass
-    .BEQ_Collecting_Ex_2(BEQ_Collecting_Ex_2) ,//pass
-    .BLT_Collecting_Ex_2(BLT_Collecting_Ex_2) ,//pass
-    .ScbID_Collecting_Ex_2(ScbID_Collecting_Ex_2) ,//pass
-    .ActiveMask_Collecting_Ex_2(ActiveMask_Collecting_Ex_2),//pass
-    .Dst_Collecting_Ex_2(Dst_Collecting_Ex_2),
+    .Valid_OC_Ex_2(Valid_OC_Ex_2) ,//use
+    .Instr_OC_Ex_2(Instr_OC_Ex_2) ,//pass
+    .RegWrite_OC_Ex_2(RegWrite_OC_Ex_2),
+    .Imme_OC_Ex_2(Imme_OC_Ex_2) ,//
+    .Imme_Valid_OC_Ex_2(Imme_Valid_OC_Ex_2) ,//
+    .ALUop_OC_Ex_2(ALUop_OC_Ex_2) ,//
+    .MemWrite_OC_Ex_2(MemWrite_OC_Ex_2),//
+    .MemRead_OC_Ex_2(MemRead_OC_Ex_2) ,//
+    .Shared_Globalbar_OC_Ex_2(Shared_Globalbar_OC_Ex_2) ,//pass
+    .BEQ_OC_Ex_2(BEQ_OC_Ex_2) ,//pass
+    .BLT_OC_Ex_2(BLT_OC_Ex_2) ,//pass
+    .ScbID_OC_Ex_2(ScbID_OC_Ex_2) ,//pass
+    .ActiveMask_OC_Ex_2(ActiveMask_OC_Ex_2),//pass
+    .Dst_OC_Ex_2(Dst_OC_Ex_2),
     .oc_0_data_3(oc_0_data_3),
     .oc_1_data_3(oc_1_data_3),
 
     .RDY_3(RDY_3), 
     .valid_3(valid_3),
 
-    .Valid_Collecting_Ex_3(Valid_Collecting_Ex_3) ,//use
-    .Instr_Collecting_Ex_3(Instr_Collecting_Ex_3) ,//pass
-    .RegWrite_Collecting_Ex_3(RegWrite_Collecting_Ex_3),
-    .Imme_Collecting_Ex_3(Imme_Collecting_Ex_3) ,//
-    .Imme_Valid_Collecting_Ex_3(Imme_Valid_Collecting_Ex_3) ,//
-    .ALUop_Collecting_Ex_3(ALUop_Collecting_Ex_3) ,//
-    .MemWrite_Collecting_Ex_3(MemWrite_Collecting_Ex_3) ,//
-    .MemRead_Collecting_Ex_3(MemRead_Collecting_Ex_3) ,//
-    .Shared_Globalbar_Collecting_Ex_3(Shared_Globalbar_Collecting_Ex_3) ,//pass
-    .BEQ_Collecting_Ex_3(BEQ_Collecting_Ex_3) ,//pass
-    .BLT_Collecting_Ex_3(BLT_Collecting_Ex_3) ,//pass
-    .ScbID_Collecting_Ex_3(ScbID_Collecting_Ex_3) ,//pass
-    .ActiveMask_Collecting_Ex_3(ActiveMask_Collecting_Ex_3),//pass
-    .Dst_Collecting_Ex_3(Dst_Collecting_Ex_3)
+    .Valid_OC_Ex_3(Valid_OC_Ex_3) ,//use
+    .Instr_OC_Ex_3(Instr_OC_Ex_3) ,//pass
+    .RegWrite_OC_Ex_3(RegWrite_OC_Ex_3),
+    .Imme_OC_Ex_3(Imme_OC_Ex_3) ,//
+    .Imme_Valid_OC_Ex_3(Imme_Valid_OC_Ex_3) ,//
+    .ALUop_OC_Ex_3(ALUop_OC_Ex_3) ,//
+    .MemWrite_OC_Ex_3(MemWrite_OC_Ex_3) ,//
+    .MemRead_OC_Ex_3(MemRead_OC_Ex_3) ,//
+    .Shared_Globalbar_OC_Ex_3(Shared_Globalbar_OC_Ex_3) ,//pass
+    .BEQ_OC_Ex_3(BEQ_OC_Ex_3) ,//pass
+    .BLT_OC_Ex_3(BLT_OC_Ex_3) ,//pass
+    .ScbID_OC_Ex_3(ScbID_OC_Ex_3) ,//pass
+    .ActiveMask_OC_Ex_3(ActiveMask_OC_Ex_3),//pass
+    .Dst_OC_Ex_3(Dst_OC_Ex_3)
 );
 
 scheduler_4 sched_4(
@@ -571,18 +571,18 @@ scheduler_4 sched_4(
     .RDY_1(RDY_1),
     .RDY_2(RDY_2),
     .RDY_3(RDY_3),
-    .RegWrite_Collecting_Ex_0(RegWrite_Collecting_Ex_0),
-    .RegWrite_Collecting_Ex_1(RegWrite_Collecting_Ex_1),
-    .RegWrite_Collecting_Ex_2(RegWrite_Collecting_Ex_2),
-    .RegWrite_Collecting_Ex_3(RegWrite_Collecting_Ex_3),
-    .MemWrite_Collecting_Ex_0(MemWrite_Collecting_Ex_0),
-    .MemWrite_Collecting_Ex_1(MemWrite_Collecting_Ex_1),
-    .MemWrite_Collecting_Ex_2(MemWrite_Collecting_Ex_2),
-    .MemWrite_Collecting_Ex_3(MemWrite_Collecting_Ex_3),
-    .MemRead_Collecting_Ex_0(MemRead_Collecting_Ex_0),
-    .MemRead_Collecting_Ex_1(MemRead_Collecting_Ex_1),
-    .MemRead_Collecting_Ex_2(MemRead_Collecting_Ex_2),
-    .MemRead_Collecting_Ex_3(MemRead_Collecting_Ex_3),
+    .RegWrite_OC_Ex_0(RegWrite_OC_Ex_0),
+    .RegWrite_OC_Ex_1(RegWrite_OC_Ex_1),
+    .RegWrite_OC_Ex_2(RegWrite_OC_Ex_2),
+    .RegWrite_OC_Ex_3(RegWrite_OC_Ex_3),
+    .MemWrite_OC_Ex_0(MemWrite_OC_Ex_0),
+    .MemWrite_OC_Ex_1(MemWrite_OC_Ex_1),
+    .MemWrite_OC_Ex_2(MemWrite_OC_Ex_2),
+    .MemWrite_OC_Ex_3(MemWrite_OC_Ex_3),
+    .MemRead_OC_Ex_0(MemRead_OC_Ex_0),
+    .MemRead_OC_Ex_1(MemRead_OC_Ex_1),
+    .MemRead_OC_Ex_2(MemRead_OC_Ex_2),
+    .MemRead_OC_Ex_3(MemRead_OC_Ex_3),
 
     
     .ALU_Grt_Sched_OC(ALU_Grt_Sched_OC),
@@ -596,107 +596,107 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .oc_0_data_0(oc_0_data_0),
     .oc_1_data_0(oc_1_data_0),
 
-    .Instr_Collecting_Ex_0(Instr_Collecting_Ex_0) ,//pass
-    .RegWrite_Collecting_Ex_0(RegWrite_Collecting_Ex_0),
-    .Imme_Collecting_Ex_0(Imme_Collecting_Ex_0) ,//
-    .Imme_Valid_Collecting_Ex_0(Imme_Valid_Collecting_Ex_0) ,//
-    .ALUop_Collecting_Ex_0(ALUop_Collecting_Ex_0) ,//
-    .MemWrite_Collecting_Ex_0(MemWrite_Collecting_Ex_0) ,//
-    .MemRead_Collecting_Ex_0(MemRead_Collecting_Ex_0) ,//
-    .Shared_Globalbar_Collecting_Ex_0(Shared_Globalbar_Collecting_Ex_0) ,//pass
-    .BEQ_Collecting_Ex_0(BEQ_Collecting_Ex_0) ,//pass
-    .BLT_Collecting_Ex_0(BLT_Collecting_Ex_0) ,//pass
-    .ScbID_Collecting_Ex_0(ScbID_Collecting_Ex_0) ,//pass
-    .ActiveMask_Collecting_Ex_0(ActiveMask_Collecting_Ex_0),//pass
-    .Dst_Collecting_Ex_0(Dst_Collecting_Ex_0),
+    .Instr_OC_Ex_0(Instr_OC_Ex_0) ,//pass
+    .RegWrite_OC_Ex_0(RegWrite_OC_Ex_0),
+    .Imme_OC_Ex_0(Imme_OC_Ex_0) ,//
+    .Imme_Valid_OC_Ex_0(Imme_Valid_OC_Ex_0) ,//
+    .ALUop_OC_Ex_0(ALUop_OC_Ex_0) ,//
+    .MemWrite_OC_Ex_0(MemWrite_OC_Ex_0) ,//
+    .MemRead_OC_Ex_0(MemRead_OC_Ex_0) ,//
+    .Shared_Globalbar_OC_Ex_0(Shared_Globalbar_OC_Ex_0) ,//pass
+    .BEQ_OC_Ex_0(BEQ_OC_Ex_0) ,//pass
+    .BLT_OC_Ex_0(BLT_OC_Ex_0) ,//pass
+    .ScbID_OC_Ex_0(ScbID_OC_Ex_0) ,//pass
+    .ActiveMask_OC_Ex_0(ActiveMask_OC_Ex_0),//pass
+    .Dst_OC_Ex_0(Dst_OC_Ex_0),
 
     .oc_0_data_1(oc_0_data_1),
     .oc_1_data_1(oc_1_data_1),
 
-    .Instr_Collecting_Ex_1(Instr_Collecting_Ex_1) ,//pass
-    .RegWrite_Collecting_Ex_1(RegWrite_Collecting_Ex_1),
-    .Imme_Collecting_Ex_1(Imme_Collecting_Ex_1) ,//
-    .Imme_Valid_Collecting_Ex_1(Imme_Valid_Collecting_Ex_1) ,//
-    .ALUop_Collecting_Ex_1(ALUop_Collecting_Ex_1) ,//
-    .MemWrite_Collecting_Ex_1(MemWrite_Collecting_Ex_1) ,//
-    .MemRead_Collecting_Ex_1(MemRead_Collecting_Ex_1) ,//
-    .Shared_Globalbar_Collecting_Ex_1(Shared_Globalbar_Collecting_Ex_1) ,//pass
-    .BEQ_Collecting_Ex_1(BEQ_Collecting_Ex_1) ,//pass
-    .BLT_Collecting_Ex_1(BLT_Collecting_Ex_1) ,//pass
-    .ScbID_Collecting_Ex_1(ScbID_Collecting_Ex_1) ,//pass
-    .ActiveMask_Collecting_Ex_1(ActiveMask_Collecting_Ex_1),//pass
-    .Dst_Collecting_Ex_1(Dst_Collecting_Ex_1),
+    .Instr_OC_Ex_1(Instr_OC_Ex_1) ,//pass
+    .RegWrite_OC_Ex_1(RegWrite_OC_Ex_1),
+    .Imme_OC_Ex_1(Imme_OC_Ex_1) ,//
+    .Imme_Valid_OC_Ex_1(Imme_Valid_OC_Ex_1) ,//
+    .ALUop_OC_Ex_1(ALUop_OC_Ex_1) ,//
+    .MemWrite_OC_Ex_1(MemWrite_OC_Ex_1) ,//
+    .MemRead_OC_Ex_1(MemRead_OC_Ex_1) ,//
+    .Shared_Globalbar_OC_Ex_1(Shared_Globalbar_OC_Ex_1) ,//pass
+    .BEQ_OC_Ex_1(BEQ_OC_Ex_1) ,//pass
+    .BLT_OC_Ex_1(BLT_OC_Ex_1) ,//pass
+    .ScbID_OC_Ex_1(ScbID_OC_Ex_1) ,//pass
+    .ActiveMask_OC_Ex_1(ActiveMask_OC_Ex_1),//pass
+    .Dst_OC_Ex_1(Dst_OC_Ex_1),
 
     .oc_0_data_2(oc_0_data_2),
     .oc_1_data_2(oc_1_data_2),
 
-    .Instr_Collecting_Ex_2(Instr_Collecting_Ex_2) ,//pass
-    .RegWrite_Collecting_Ex_2(RegWrite_Collecting_Ex_2),
-    .Imme_Collecting_Ex_2(Imme_Collecting_Ex_2) ,//
-    .Imme_Valid_Collecting_Ex_2(Imme_Valid_Collecting_Ex_2) ,//
-    .ALUop_Collecting_Ex_2(ALUop_Collecting_Ex_2) ,//
-    .MemWrite_Collecting_Ex_2(MemWrite_Collecting_Ex_2) ,//
-    .MemRead_Collecting_Ex_2(MemRead_Collecting_Ex_2) ,//
-    .Shared_Globalbar_Collecting_Ex_2(Shared_Globalbar_Collecting_Ex_2) ,//pass
-    .BEQ_Collecting_Ex_2(BEQ_Collecting_Ex_2) ,//pass
-    .BLT_Collecting_Ex_2(BLT_Collecting_Ex_2) ,//pass
-    .ScbID_Collecting_Ex_2(ScbID_Collecting_Ex_2) ,//pass
-    .ActiveMask_Collecting_Ex_2(ActiveMask_Collecting_Ex_2),//pass
-    .Dst_Collecting_Ex_2(Dst_Collecting_Ex_2),
+    .Instr_OC_Ex_2(Instr_OC_Ex_2) ,//pass
+    .RegWrite_OC_Ex_2(RegWrite_OC_Ex_2),
+    .Imme_OC_Ex_2(Imme_OC_Ex_2) ,//
+    .Imme_Valid_OC_Ex_2(Imme_Valid_OC_Ex_2) ,//
+    .ALUop_OC_Ex_2(ALUop_OC_Ex_2) ,//
+    .MemWrite_OC_Ex_2(MemWrite_OC_Ex_2) ,//
+    .MemRead_OC_Ex_2(MemRead_OC_Ex_2) ,//
+    .Shared_Globalbar_OC_Ex_2(Shared_Globalbar_OC_Ex_2) ,//pass
+    .BEQ_OC_Ex_2(BEQ_OC_Ex_2) ,//pass
+    .BLT_OC_Ex_2(BLT_OC_Ex_2) ,//pass
+    .ScbID_OC_Ex_2(ScbID_OC_Ex_2) ,//pass
+    .ActiveMask_OC_Ex_2(ActiveMask_OC_Ex_2),//pass
+    .Dst_OC_Ex_2(Dst_OC_Ex_2),
 
     .oc_0_data_3(oc_0_data_3),
     .oc_1_data_3(oc_1_data_3),
 
-    .Instr_Collecting_Ex_3(Instr_Collecting_Ex_3) ,//pass
-    .RegWrite_Collecting_Ex_3(RegWrite_Collecting_Ex_3),
-    .Imme_Collecting_Ex_3(Imme_Collecting_Ex_3) ,//
-    .Imme_Valid_Collecting_Ex_3(Imme_Valid_Collecting_Ex_3) ,//
-    .ALUop_Collecting_Ex_3(ALUop_Collecting_Ex_3) ,//
-    .MemWrite_Collecting_Ex_3(MemWrite_Collecting_Ex_3) ,//
-    .MemRead_Collecting_Ex_3(MemRead_Collecting_Ex_3) ,//
-    .Shared_Globalbar_Collecting_Ex_3(Shared_Globalbar_Collecting_Ex_3) ,//pass
-    .BEQ_Collecting_Ex_3(BEQ_Collecting_Ex_3) ,//pass
-    .BLT_Collecting_Ex_3(BLT_Collecting_Ex_3) ,//pass
-    .ScbID_Collecting_Ex_3(ScbID_Collecting_Ex_3) ,//pass
-    .ActiveMask_Collecting_Ex_3(ActiveMask_Collecting_Ex_3),//pass
-    .Dst_Collecting_Ex_3(Dst_Collecting_Ex_3),
+    .Instr_OC_Ex_3(Instr_OC_Ex_3) ,//pass
+    .RegWrite_OC_Ex_3(RegWrite_OC_Ex_3),
+    .Imme_OC_Ex_3(Imme_OC_Ex_3) ,//
+    .Imme_Valid_OC_Ex_3(Imme_Valid_OC_Ex_3) ,//
+    .ALUop_OC_Ex_3(ALUop_OC_Ex_3) ,//
+    .MemWrite_OC_Ex_3(MemWrite_OC_Ex_3) ,//
+    .MemRead_OC_Ex_3(MemRead_OC_Ex_3) ,//
+    .Shared_Globalbar_OC_Ex_3(Shared_Globalbar_OC_Ex_3) ,//pass
+    .BEQ_OC_Ex_3(BEQ_OC_Ex_3) ,//pass
+    .BLT_OC_Ex_3(BLT_OC_Ex_3) ,//pass
+    .ScbID_OC_Ex_3(ScbID_OC_Ex_3) ,//pass
+    .ActiveMask_OC_Ex_3(ActiveMask_OC_Ex_3),//pass
+    .Dst_OC_Ex_3(Dst_OC_Ex_3),
 
 
     .Src1_Data_ALU(Src1_Data_ALU),
     .Src2_Data_ALU(Src2_Data_ALU),
 
-    .Valid_Collecting_ALU(Valid_Collecting_ALU) ,//use
-    .Instr_Collecting_ALU(Instr_Collecting_ALU) ,//pass
-    .RegWrite_Collecting_ALU(RegWrite_Collecting_ALU),
-    .Imme_Collecting_ALU(Imme_Collecting_ALU) ,//
-    .Imme_Valid_Collecting_ALU(Imme_Valid_Collecting_ALU) ,//
-    .ALUop_Collecting_ALU(ALUop_Collecting_ALU) ,//
-    .MemWrite_Collecting_ALU(MemWrite_Collecting_ALU) ,//
-    .MemRead_Collecting_ALU(MemRead_Collecting_ALU) ,//
-    .Shared_Globalbar_Collecting_ALU(Shared_Globalbar_Collecting_ALU) ,//pass
-    .BEQ_Collecting_ALU(BEQ_Collecting_ALU) ,//pass
-    .BLT_Collecting_ALU(BLT_Collecting_ALU) ,//pass
-    .ScbID_Collecting_ALU(ScbID_Collecting_ALU) ,//pass
-    .ActiveMask_Collecting_ALU(ActiveMask_Collecting_ALU),//pass
-    .Dst_Collecting_ALU(Dst_Collecting_ALU),
+    .Valid_OC_ALU(Valid_OC_ALU) ,//use
+    .Instr_OC_ALU(Instr_OC_ALU) ,//pass
+    .RegWrite_OC_ALU(RegWrite_OC_ALU),
+    .Imme_OC_ALU(Imme_OC_ALU) ,//
+    .Imme_Valid_OC_ALU(Imme_Valid_OC_ALU) ,//
+    .ALUop_OC_ALU(ALUop_OC_ALU) ,//
+    .MemWrite_OC_ALU(MemWrite_OC_ALU) ,//
+    .MemRead_OC_ALU(MemRead_OC_ALU) ,//
+    .Shared_Globalbar_OC_ALU(Shared_Globalbar_OC_ALU) ,//pass
+    .BEQ_OC_ALU(BEQ_OC_ALU) ,//pass
+    .BLT_OC_ALU(BLT_OC_ALU) ,//pass
+    .ScbID_OC_ALU(ScbID_OC_ALU) ,//pass
+    .ActiveMask_OC_ALU(ActiveMask_OC_ALU),//pass
+    .Dst_OC_ALU(Dst_OC_ALU),
 
     .Src1_Data_MEM(Src1_Data_MEM),
     .Src2_Data_MEM(Src2_Data_MEM),
 
-    .Valid_Collecting_MEM(Valid_Collecting_MEM) ,//use
-    .Instr_Collecting_MEM(Instr_Collecting_MEM) ,//pass
-    .RegWrite_Collecting_MEM(RegWrite_Collecting_MEM),
-    .Imme_Collecting_MEM(Imme_Collecting_MEM) ,//
-    .Imme_Valid_Collecting_MEM(Imme_Valid_Collecting_MEM) ,//
-    .ALUop_Collecting_MEM(ALUop_Collecting_MEM) ,//
-    .MemWrite_Collecting_MEM(MemWrite_Collecting_MEM) ,//
-    .MemRead_Collecting_MEM(MemRead_Collecting_MEM) ,//
-    .Shared_Globalbar_Collecting_MEM(Shared_Globalbar_Collecting_MEM) ,//pass
-    .BEQ_Collecting_MEM(BEQ_Collecting_MEM) ,//pass
-    .BLT_Collecting_MEM(BLT_Collecting_MEM) ,//pass
-    .ScbID_Collecting_MEM(ScbID_Collecting_MEM) ,//pass
-    .ActiveMask_Collecting_MEM(ActiveMask_Collecting_MEM),//pass
-    .Dst_Collecting_MEM(Dst_Collecting_MEM)
+    .Valid_OC_MEM(Valid_OC_MEM) ,//use
+    .Instr_OC_MEM(Instr_OC_MEM) ,//pass
+    .RegWrite_OC_MEM(RegWrite_OC_MEM),
+    .Imme_OC_MEM(Imme_OC_MEM) ,//
+    .Imme_Valid_OC_MEM(Imme_Valid_OC_MEM) ,//
+    .ALUop_OC_MEM(ALUop_OC_MEM) ,//
+    .MemWrite_OC_MEM(MemWrite_OC_MEM) ,//
+    .MemRead_OC_MEM(MemRead_OC_MEM) ,//
+    .Shared_Globalbar_OC_MEM(Shared_Globalbar_OC_MEM) ,//pass
+    .BEQ_OC_MEM(BEQ_OC_MEM) ,//pass
+    .BLT_OC_MEM(BLT_OC_MEM) ,//pass
+    .ScbID_OC_MEM(ScbID_OC_MEM) ,//pass
+    .ActiveMask_OC_MEM(ActiveMask_OC_MEM),//pass
+    .Dst_OC_MEM(Dst_OC_MEM)
 );
 
 endmodule

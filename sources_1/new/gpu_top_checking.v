@@ -77,39 +77,39 @@ module gpu_top_checking#(
     output [255:0] Src1_Data_ALU,
     output [255:0] Src2_Data_ALU,
 
-    output Valid_Collecting_ALU,//use
-    output [31:0] Instr_Collecting_ALU,//pass
-    output RegWrite_Collecting_ALU,
-    output [15:0] Imme_Collecting_ALU,//
-    output Imme_Valid_Collecting_ALU,//
-    output [3:0] ALUop_Collecting_ALU,//
-    output MemWrite_Collecting_ALU,//
-    output MemRead_Collecting_ALU,//
-    output Shared_Globalbar_Collecting_ALU,//pass
-    output BEQ_Collecting_ALU,//pass
-    output BLT_Collecting_ALU,//pass
-    output [1:0] ScbID_Collecting_ALU,//pass
-    output [7:0] ActiveMask_Collecting_ALU,//pass
-    output [4:0] Dst_Collecting_ALU,
+    output Valid_OC_ALU,//use
+    output [31:0] Instr_OC_ALU,//pass
+    output RegWrite_OC_ALU,
+    output [15:0] Imme_OC_ALU,//
+    output Imme_Valid_OC_ALU,//
+    output [3:0] ALUop_OC_ALU,//
+    output MemWrite_OC_ALU,//
+    output MemRead_OC_ALU,//
+    output Shared_Globalbar_OC_ALU,//pass
+    output BEQ_OC_ALU,//pass
+    output BLT_OC_ALU,//pass
+    output [1:0] ScbID_OC_ALU,//pass
+    output [7:0] ActiveMask_OC_ALU,//pass
+    output [4:0] Dst_OC_ALU,
 
 
     output [255:0]Src1_Data_MEM,
     output [255:0]Src2_Data_MEM,
 
-    output Valid_Collecting_MEM,//use
-    output [31:0]Instr_Collecting_MEM,//pass
-    output RegWrite_Collecting_MEM,
-    output [15:0]Imme_Collecting_MEM,//
-    output Imme_Valid_Collecting_MEM,//
-    output [3:0] ALUop_Collecting_MEM,//
-    output MemWrite_Collecting_MEM,//
-    output MemRead_Collecting_MEM,//
-    output Shared_Globalbar_Collecting_MEM,//pass
-    output BEQ_Collecting_MEM,//pass
-    output BLT_Collecting_MEM,//pass
-    output [1:0] ScbID_Collecting_MEM,//pass
-    output [7:0] ActiveMask_Collecting_MEM,//pass
-    output [4:0] Dst_Collecting_MEM
+    output Valid_OC_MEM,//use
+    output [31:0]Instr_OC_MEM,//pass
+    output RegWrite_OC_MEM,
+    output [15:0]Imme_OC_MEM,//
+    output Imme_Valid_OC_MEM,//
+    output [3:0] ALUop_OC_MEM,//
+    output MemWrite_OC_MEM,//
+    output MemRead_OC_MEM,//
+    output Shared_Globalbar_OC_MEM,//pass
+    output BEQ_OC_MEM,//pass
+    output BLT_OC_MEM,//pass
+    output [1:0] ScbID_OC_MEM,//pass
+    output [7:0] ActiveMask_OC_MEM,//pass
+    output [4:0] Dst_OC_MEM
     );
 
     // TM to IF_ID
@@ -603,38 +603,79 @@ module gpu_top_checking#(
     .Src1_Data_ALU(Src1_Data_ALU),
     .Src2_Data_ALU(Src2_Data_ALU),
 
-    .Valid_Collecting_ALU(Valid_Collecting_ALU),//use
-    .Instr_Collecting_ALU(Instr_Collecting_ALU),//pass
-    .RegWrite_Collecting_ALU(RegWrite_Collecting_ALU),
-    .Imme_Collecting_ALU(Imme_Collecting_ALU),//
-    .Imme_Valid_Collecting_ALU(Imme_Valid_Collecting_ALU),//
-    .ALUop_Collecting_ALU(ALUop_Collecting_ALU),//
-    .MemWrite_Collecting_ALU(MemWrite_Collecting_ALU),//
-    .MemRead_Collecting_ALU(MemRead_Collecting_ALU),//
-    .Shared_Globalbar_Collecting_ALU(Shared_Globalbar_Collecting_ALU),//pass
-    .BEQ_Collecting_ALU(BEQ_Collecting_ALU),//pass
-    .BLT_Collecting_ALU(BLT_Collecting_ALU),//pass
-    .ScbID_Collecting_ALU(ScbID_Collecting_ALU),//pass
-    .ActiveMask_Collecting_ALU(ActiveMask_Collecting_ALU),//pass
-    .Dst_Collecting_ALU(Dst_Collecting_ALU),
+    .Valid_OC_ALU(Valid_OC_ALU),//use
+    .Instr_OC_ALU(Instr_OC_ALU),//pass
+    .RegWrite_OC_ALU(RegWrite_OC_ALU),
+    .Imme_OC_ALU(Imme_OC_ALU),//
+    .Imme_Valid_OC_ALU(Imme_Valid_OC_ALU),//
+    .ALUop_OC_ALU(ALUop_OC_ALU),//
+    .MemWrite_OC_ALU(MemWrite_OC_ALU),//
+    .MemRead_OC_ALU(MemRead_OC_ALU),//
+    .Shared_Globalbar_OC_ALU(Shared_Globalbar_OC_ALU),//pass
+    .BEQ_OC_ALU(BEQ_OC_ALU),//pass
+    .BLT_OC_ALU(BLT_OC_ALU),//pass
+    .ScbID_OC_ALU(ScbID_OC_ALU),//pass
+    .ActiveMask_OC_ALU(ActiveMask_OC_ALU),//pass
+    .Dst_OC_ALU(Dst_OC_ALU),
 
     .Src1_Data_MEM(Src1_Data_MEM),
     .Src2_Data_MEM(Src2_Data_MEM),
 
-    .Valid_Collecting_MEM(Valid_Collecting_MEM),//use
-    .Instr_Collecting_MEM(Instr_Collecting_MEM),//pass
-    .RegWrite_Collecting_MEM(RegWrite_Collecting_MEM),
-    .Imme_Collecting_MEM(Imme_Collecting_MEM),//
-    .Imme_Valid_Collecting_MEM(Imme_Valid_Collecting_MEM),//
-    .ALUop_Collecting_MEM(ALUop_Collecting_MEM),//
-    .MemWrite_Collecting_MEM(MemWrite_Collecting_MEM),//
-    .MemRead_Collecting_MEM(MemRead_Collecting_MEM),//
-    .Shared_Globalbar_Collecting_MEM(Shared_Globalbar_Collecting_MEM),//pass
-    .BEQ_Collecting_MEM(BEQ_Collecting_MEM),//pass
-    .BLT_Collecting_MEM(BLT_Collecting_MEM),//pass
-    .ScbID_Collecting_MEM(ScbID_Collecting_MEM),//pass
-    .ActiveMask_Collecting_MEM(ActiveMask_Collecting_MEM),//pass
-    .Dst_Collecting_MEM(Dst_Collecting_MEM)
+    .Valid_OC_MEM(Valid_OC_MEM),//use
+    .Instr_OC_MEM(Instr_OC_MEM),//pass
+    .RegWrite_OC_MEM(RegWrite_OC_MEM),
+    .Imme_OC_MEM(Imme_OC_MEM),//
+    .Imme_Valid_OC_MEM(Imme_Valid_OC_MEM),//
+    .ALUop_OC_MEM(ALUop_OC_MEM),//
+    .MemWrite_OC_MEM(MemWrite_OC_MEM),//
+    .MemRead_OC_MEM(MemRead_OC_MEM),//
+    .Shared_Globalbar_OC_MEM(Shared_Globalbar_OC_MEM),//pass
+    .BEQ_OC_MEM(BEQ_OC_MEM),//pass
+    .BLT_OC_MEM(BLT_OC_MEM),//pass
+    .ScbID_OC_MEM(ScbID_OC_MEM),//pass
+    .ActiveMask_OC_MEM(ActiveMask_OC_MEM),//pass
+    .Dst_OC_MEM(Dst_OC_MEM)
     );
+
+    // ALU alu1 (
+    // // interface with OC
+	// .clk(clk),
+	// .rst(rst),
+    // .Valid_OC_ALU(Vali),
+	// .ActiveMask_OC_ALU,
+    // .WarpID_OC_ALU,
+    // .Instr_OC_ALU,
+    // .Src1_Data_OC_ALU,
+    // .Src2_Data_OC_ALU,
+    // .Dst_OC_ALU,
+    // .Imme_OC_ALU,
+    // .Imme_Valid_OC_ALU,
+    // .Write_OC_ALU,
+    // .ALUop_OC_ALU,
+    // .BEQ_OC_ALU,
+    // .BLT_OC_ALU,
+    // .ScbID_OC_ALU, // for BEQ and BLT only, to clear Scb entry
+
+    // // output to Fetch
+    // .TargetAddr_ALU_PC_Flattened,
+	
+	// // output to SIMT 
+	// .Br_ALU_SIMT,
+	// .BrOutcome_ALU_SIMT,
+	// .WarpID_ALU_SIMT,
+
+    // // outputto CDB
+	// .ActiveMask_ALU_CDB,
+    // .Instr_ALU_CDB,
+    // .WarpID_ALU_CDB, 
+    // .Write_ALU_CDB,
+    // .Dst_ALU_CDB,
+    // .Dst_Data_ALU_CDB,
+    
+    // // output to Scb (to clear Scb entry. Branch only, which do not go onto CDB)
+    // .Clear_Valid_ALU_Scb,
+    // .Clear_WarpID_ALU_Scb,
+    // .Clear_ScbID_ALU_Scb
+    // );
 
 endmodule

@@ -5,21 +5,21 @@ module OC_collector_4(
     input wire [3:0] ALU_Grt_Sched_OC,
     input wire [3:0] MEM_Grt_Sched_OC,
 
-    input wire Valid_RAU_Collecting ,//use
-    input wire [31:0] Instr_RAU_Collecting ,//pass
+    input wire Valid_RAU_OC ,//use
+    input wire [31:0] Instr_RAU_OC ,//pass
 
-    input wire RegWrite_RAU_Collecting,
-    input wire [15:0] Imme_RAU_Collecting ,//
-    input wire Imme_Valid_RAU_Collecting ,//
-    input wire [3:0] ALUop_RAU_Collecting ,//
-    input wire MemWrite_RAU_Collecting ,//
-    input wire MemRead_RAU_Collecting ,//
-    input wire Shared_Globalbar_RAU_Collecting ,//pass
-    input wire BEQ_RAU_Collecting ,//pass
-    input wire BLT_RAU_Collecting ,//pass
-    input wire [1:0] ScbID_RAU_Collecting ,//pass
-    input wire [7:0] ActiveMask_RAU_Collecting ,//pass
-    input wire [4:0] Dst_RAU_Collecting,
+    input wire RegWrite_RAU_OC,
+    input wire [15:0] Imme_RAU_OC ,//
+    input wire Imme_Valid_RAU_OC ,//
+    input wire [3:0] ALUop_RAU_OC ,//
+    input wire MemWrite_RAU_OC ,//
+    input wire MemRead_RAU_OC ,//
+    input wire Shared_Globalbar_RAU_OC ,//pass
+    input wire BEQ_RAU_OC ,//pass
+    input wire BLT_RAU_OC ,//pass
+    input wire [1:0] ScbID_RAU_OC ,//pass
+    input wire [7:0] ActiveMask_RAU_OC ,//pass
+    input wire [4:0] Dst_RAU_OC,
 
     input [2:0] Src1_OCID_RAU_OC,
     input [2:0] Src2_OCID_RAU_OC,
@@ -43,10 +43,10 @@ module OC_collector_4(
     input wire [1:0]Src1_Phy_Bank_ID,
     input wire [1:0]Src2_Phy_Bank_ID,
 
-    input wire [1:0] SPEslot_RAU_Collecting,
-    input wire [255:0] SPEvalue_RAU_Collecting,
-    input wire [1:0] SPEv2slot_RAU_Collecting,
-    input wire [255:0] SPEv2value_RAU_Collecting,
+    input wire [1:0] SPEslot_RAU_OC,
+    input wire [255:0] SPEvalue_RAU_OC,
+    input wire [1:0] SPEv2slot_RAU_OC,
+    input wire [255:0] SPEv2value_RAU_OC,
 
     output wire [255:0] oc_0_data_0,
     output wire [255:0] oc_1_data_0,
@@ -54,20 +54,20 @@ module OC_collector_4(
     output RDY_0, 
     output valid_0,
 
-    output Valid_Collecting_Ex_0 ,//use
-    output [31:0] Instr_Collecting_Ex_0 ,//pass
-    output RegWrite_Collecting_Ex_0,
-    output [15:0] Imme_Collecting_Ex_0 ,//
-    output Imme_Valid_Collecting_Ex_0 ,//
-    output [3:0] ALUop_Collecting_Ex_0 ,//
-    output MemWrite_Collecting_Ex_0 ,//
-    output MemRead_Collecting_Ex_0 ,//
-    output Shared_Globalbar_Collecting_Ex_0 ,//pass
-    output BEQ_Collecting_Ex_0 ,//pass
-    output BLT_Collecting_Ex_0 ,//pass
-    output [1:0] ScbID_Collecting_Ex_0 ,//pass
-    output [7:0] ActiveMask_Collecting_Ex_0,//pass
-    output [4:0] Dst_Collecting_Ex_0,
+    output Valid_OC_Ex_0 ,//use
+    output [31:0] Instr_OC_Ex_0 ,//pass
+    output RegWrite_OC_Ex_0,
+    output [15:0] Imme_OC_Ex_0 ,//
+    output Imme_Valid_OC_Ex_0 ,//
+    output [3:0] ALUop_OC_Ex_0 ,//
+    output MemWrite_OC_Ex_0 ,//
+    output MemRead_OC_Ex_0 ,//
+    output Shared_Globalbar_OC_Ex_0 ,//pass
+    output BEQ_OC_Ex_0 ,//pass
+    output BLT_OC_Ex_0 ,//pass
+    output [1:0] ScbID_OC_Ex_0 ,//pass
+    output [7:0] ActiveMask_OC_Ex_0,//pass
+    output [4:0] Dst_OC_Ex_0,
 
     output wire [255:0] oc_0_data_1,
     output wire [255:0] oc_1_data_1,
@@ -75,60 +75,60 @@ module OC_collector_4(
     output RDY_1, 
     output valid_1,
 
-    output Valid_Collecting_Ex_1 ,//use
-    output [31:0] Instr_Collecting_Ex_1 ,//pass
-    output RegWrite_Collecting_Ex_1,
-    output [15:0] Imme_Collecting_Ex_1 ,//
-    output Imme_Valid_Collecting_Ex_1 ,//
-    output [3:0] ALUop_Collecting_Ex_1 ,//
-    output MemWrite_Collecting_Ex_1 ,//
-    output MemRead_Collecting_Ex_1 ,//
-    output Shared_Globalbar_Collecting_Ex_1 ,//pass
-    output BEQ_Collecting_Ex_1 ,//pass
-    output BLT_Collecting_Ex_1 ,//pass
-    output [1:0] ScbID_Collecting_Ex_1 ,//pass
-    output [7:0] ActiveMask_Collecting_Ex_1,//pass
-    output [4:0] Dst_Collecting_Ex_1,
+    output Valid_OC_Ex_1 ,//use
+    output [31:0] Instr_OC_Ex_1 ,//pass
+    output RegWrite_OC_Ex_1,
+    output [15:0] Imme_OC_Ex_1 ,//
+    output Imme_Valid_OC_Ex_1 ,//
+    output [3:0] ALUop_OC_Ex_1 ,//
+    output MemWrite_OC_Ex_1 ,//
+    output MemRead_OC_Ex_1 ,//
+    output Shared_Globalbar_OC_Ex_1 ,//pass
+    output BEQ_OC_Ex_1 ,//pass
+    output BLT_OC_Ex_1 ,//pass
+    output [1:0] ScbID_OC_Ex_1 ,//pass
+    output [7:0] ActiveMask_OC_Ex_1,//pass
+    output [4:0] Dst_OC_Ex_1,
     output wire [255:0] oc_0_data_2,
     output wire [255:0] oc_1_data_2,
 
     output RDY_2, 
     output valid_2,
 
-    output Valid_Collecting_Ex_2 ,//use
-    output [31:0] Instr_Collecting_Ex_2 ,//pass
-    output RegWrite_Collecting_Ex_2,
-    output [15:0] Imme_Collecting_Ex_2 ,//
-    output Imme_Valid_Collecting_Ex_2 ,//
-    output [3:0] ALUop_Collecting_Ex_2 ,//
-    output MemWrite_Collecting_Ex_2 ,//
-    output MemRead_Collecting_Ex_2 ,//
-    output Shared_Globalbar_Collecting_Ex_2 ,//pass
-    output BEQ_Collecting_Ex_2 ,//pass
-    output BLT_Collecting_Ex_2 ,//pass
-    output [1:0] ScbID_Collecting_Ex_2 ,//pass
-    output [7:0] ActiveMask_Collecting_Ex_2,//pass
-    output [4:0] Dst_Collecting_Ex_2,
+    output Valid_OC_Ex_2 ,//use
+    output [31:0] Instr_OC_Ex_2 ,//pass
+    output RegWrite_OC_Ex_2,
+    output [15:0] Imme_OC_Ex_2 ,//
+    output Imme_Valid_OC_Ex_2 ,//
+    output [3:0] ALUop_OC_Ex_2 ,//
+    output MemWrite_OC_Ex_2 ,//
+    output MemRead_OC_Ex_2 ,//
+    output Shared_Globalbar_OC_Ex_2 ,//pass
+    output BEQ_OC_Ex_2 ,//pass
+    output BLT_OC_Ex_2 ,//pass
+    output [1:0] ScbID_OC_Ex_2 ,//pass
+    output [7:0] ActiveMask_OC_Ex_2,//pass
+    output [4:0] Dst_OC_Ex_2,
     output wire [255:0] oc_0_data_3,
     output wire [255:0] oc_1_data_3,
 
     output RDY_3, 
     output valid_3,
 
-    output Valid_Collecting_Ex_3 ,//use
-    output [31:0] Instr_Collecting_Ex_3 ,//pass
-    output RegWrite_Collecting_Ex_3,
-    output [15:0] Imme_Collecting_Ex_3 ,//
-    output Imme_Valid_Collecting_Ex_3 ,//
-    output [3:0] ALUop_Collecting_Ex_3 ,//
-    output MemWrite_Collecting_Ex_3 ,//
-    output MemRead_Collecting_Ex_3 ,//
-    output Shared_Globalbar_Collecting_Ex_3 ,//pass
-    output BEQ_Collecting_Ex_3 ,//pass
-    output BLT_Collecting_Ex_3 ,//pass
-    output [1:0] ScbID_Collecting_Ex_3 ,//pass
-    output [7:0] ActiveMask_Collecting_Ex_3,//pass
-    output [4:0] Dst_Collecting_Ex_3
+    output Valid_OC_Ex_3 ,//use
+    output [31:0] Instr_OC_Ex_3 ,//pass
+    output RegWrite_OC_Ex_3,
+    output [15:0] Imme_OC_Ex_3 ,//
+    output Imme_Valid_OC_Ex_3 ,//
+    output [3:0] ALUop_OC_Ex_3 ,//
+    output MemWrite_OC_Ex_3 ,//
+    output MemRead_OC_Ex_3 ,//
+    output Shared_Globalbar_OC_Ex_3 ,//pass
+    output BEQ_OC_Ex_3 ,//pass
+    output BLT_OC_Ex_3 ,//pass
+    output [1:0] ScbID_OC_Ex_3 ,//pass
+    output [7:0] ActiveMask_OC_Ex_3,//pass
+    output [4:0] Dst_OC_Ex_3
 
 );
 
@@ -137,14 +137,14 @@ wire bank_1_valiud = ocid_1[3];
 wire bank_2_valiud = ocid_2[3];
 wire bank_3_valiud = ocid_3[3];
 
-wire [1:0]WE_0 = {((ocid_0 == 3'b001) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b001) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b001) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b001) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[1] | SPEv2slot_RAU_Collecting[1]) & (Src2_OCID_RAU_OC== 3'b001)),
-             ((ocid_0 == 3'b000) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b000) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b000) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b000) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[0] | SPEv2slot_RAU_Collecting[0]) & (Src1_OCID_RAU_OC== 3'b000))};
-wire [1:0]WE_1 = {((ocid_0 == 3'b011) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b011) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b011) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b011) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[1] | SPEv2slot_RAU_Collecting[1]) & (Src2_OCID_RAU_OC== 3'b011)),
-             ((ocid_0 == 3'b010) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b010) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b010) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b010) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[0] | SPEv2slot_RAU_Collecting[0]) & (Src1_OCID_RAU_OC== 3'b010))};
-wire [1:0]WE_2 = {((ocid_0 == 3'b101) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b101) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b101) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b101) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[1] | SPEv2slot_RAU_Collecting[1]) & (Src2_OCID_RAU_OC== 3'b101)),
-             ((ocid_0 == 3'b100) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b100) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b100) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b100) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[0] | SPEv2slot_RAU_Collecting[0]) & (Src1_OCID_RAU_OC== 3'b100))};
-wire [1:0]WE_3 = {((ocid_0 == 3'b111) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b111) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b111) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b111) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[1] | SPEv2slot_RAU_Collecting[1]) & (Src2_OCID_RAU_OC== 3'b111)),
-             ((ocid_0 == 3'b110) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b110) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b110) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b110) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_Collecting[0] | SPEv2slot_RAU_Collecting[0]) & (Src1_OCID_RAU_OC== 3'b110))};
+wire [1:0]WE_0 = {((ocid_0 == 3'b001) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b001) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b001) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b001) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[1] | SPEv2slot_RAU_OC[1]) & (Src2_OCID_RAU_OC== 3'b001)),
+             ((ocid_0 == 3'b000) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b000) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b000) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b000) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[0] | SPEv2slot_RAU_OC[0]) & (Src1_OCID_RAU_OC== 3'b000))};
+wire [1:0]WE_1 = {((ocid_0 == 3'b011) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b011) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b011) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b011) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[1] | SPEv2slot_RAU_OC[1]) & (Src2_OCID_RAU_OC== 3'b011)),
+             ((ocid_0 == 3'b010) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b010) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b010) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b010) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[0] | SPEv2slot_RAU_OC[0]) & (Src1_OCID_RAU_OC== 3'b010))};
+wire [1:0]WE_2 = {((ocid_0 == 3'b101) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b101) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b101) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b101) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[1] | SPEv2slot_RAU_OC[1]) & (Src2_OCID_RAU_OC== 3'b101)),
+             ((ocid_0 == 3'b100) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b100) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b100) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b100) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[0] | SPEv2slot_RAU_OC[0]) & (Src1_OCID_RAU_OC== 3'b100))};
+wire [1:0]WE_3 = {((ocid_0 == 3'b111) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b111) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b111) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b111) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[1] | SPEv2slot_RAU_OC[1]) & (Src2_OCID_RAU_OC== 3'b111)),
+             ((ocid_0 == 3'b110) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b110) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b110) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b110) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[0] | SPEv2slot_RAU_OC[0]) & (Src1_OCID_RAU_OC== 3'b110))};
 
 
 
@@ -160,10 +160,10 @@ OC_collector_unit#(
 ) unit0(
     .clk(clk), 
     .rst(rst),
-    .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
-    .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
-    .SPEv2slot_RAU_Collecting(SPEv2slot_RAU_Collecting),
-    .SPEv2value_RAU_Collecting(SPEv2value_RAU_Collecting),
+    .SPEslot_RAU_OC(SPEslot_RAU_OC),
+    .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
+    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
+    .SPEv2value_RAU_OC(SPEv2value_RAU_OC),
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
 
@@ -188,41 +188,41 @@ OC_collector_unit#(
     .RE(RE_0), 
 
 
-    .Valid_RAU_Collecting(Valid_RAU_Collecting) ,//use
-    .Instr_RAU_Collecting(Instr_RAU_Collecting) ,//pass
-    .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
-    .Imme_RAU_Collecting(Imme_RAU_Collecting) ,//
-    .Imme_Valid_RAU_Collecting(Imme_Valid_RAU_Collecting) ,//
-    .ALUop_RAU_Collecting(ALUop_RAU_Collecting) ,//
-    .MemWrite_RAU_Collecting(MemWrite_RAU_Collecting) ,//
-    .MemRead_RAU_Collecting(MemRead_RAU_Collecting) ,//
-    .Shared_Globalbar_RAU_Collecting(Shared_Globalbar_RAU_Collecting) ,//pass
-    .BEQ_RAU_Collecting(BEQ_RAU_Collecting) ,//pass
-    .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
-    .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
-    .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
-    .Dst_RAU_Collecting(Dst_RAU_Collecting),  
+    .Valid_RAU_OC(Valid_RAU_OC) ,//use
+    .Instr_RAU_OC(Instr_RAU_OC) ,//pass
+    .RegWrite_RAU_OC(RegWrite_RAU_OC),
+    .Imme_RAU_OC(Imme_RAU_OC) ,//
+    .Imme_Valid_RAU_OC(Imme_Valid_RAU_OC) ,//
+    .ALUop_RAU_OC(ALUop_RAU_OC) ,//
+    .MemWrite_RAU_OC(MemWrite_RAU_OC) ,//
+    .MemRead_RAU_OC(MemRead_RAU_OC) ,//
+    .Shared_Globalbar_RAU_OC(Shared_Globalbar_RAU_OC) ,//pass
+    .BEQ_RAU_OC(BEQ_RAU_OC) ,//pass
+    .BLT_RAU_OC(BLT_RAU_OC) ,//pass
+    .ScbID_RAU_OC(ScbID_RAU_OC) ,//pass
+    .ActiveMask_RAU_OC(ActiveMask_RAU_OC) ,//pass
+    .Dst_RAU_OC(Dst_RAU_OC),  
     .RDY(RDY_0), 
     .valid(valid_0),
 
     .oc_0_data(oc_0_data_0),
     .oc_1_data(oc_1_data_0),
 
-    .Valid_Collecting_Ex(Valid_Collecting_Ex_0) ,//use
-    .Instr_Collecting_Ex(Instr_Collecting_Ex_0) ,//pass
+    .Valid_OC_Ex(Valid_OC_Ex_0) ,//use
+    .Instr_OC_Ex(Instr_OC_Ex_0) ,//pass
 
-    .RegWrite_Collecting_Ex(RegWrite_Collecting_Ex_0),
-    .Imme_Collecting_Ex(Imme_Collecting_Ex_0) ,//
-    .Imme_Valid_Collecting_Ex(Imme_Valid_Collecting_Ex_0) ,//
-    .ALUop_Collecting_Ex(ALUop_Collecting_Ex_0) ,//
-    .MemWrite_Collecting_Ex(MemWrite_Collecting_Ex_0) ,//
-    .MemRead_Collecting_Ex(MemRead_Collecting_Ex_0) ,//  
-    .Shared_Globalbar_Collecting_Ex(Shared_Globalbar_Collecting_Ex_0) ,//pass
-    .BEQ_Collecting_Ex(BEQ_Collecting_Ex_0) ,//pass
-    .BLT_Collecting_Ex(BLT_Collecting_Ex_0) ,//pass
-    .ScbID_Collecting_Ex(ScbID_Collecting_Ex_0) ,//pass
-    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_0),//pass
-    .Dst_Collecting_Ex(Dst_Collecting_Ex_0)
+    .RegWrite_OC_Ex(RegWrite_OC_Ex_0),
+    .Imme_OC_Ex(Imme_OC_Ex_0) ,//
+    .Imme_Valid_OC_Ex(Imme_Valid_OC_Ex_0) ,//
+    .ALUop_OC_Ex(ALUop_OC_Ex_0) ,//
+    .MemWrite_OC_Ex(MemWrite_OC_Ex_0) ,//
+    .MemRead_OC_Ex(MemRead_OC_Ex_0) ,//  
+    .Shared_Globalbar_OC_Ex(Shared_Globalbar_OC_Ex_0) ,//pass
+    .BEQ_OC_Ex(BEQ_OC_Ex_0) ,//pass
+    .BLT_OC_Ex(BLT_OC_Ex_0) ,//pass
+    .ScbID_OC_Ex(ScbID_OC_Ex_0) ,//pass
+    .ActiveMask_OC_Ex(ActiveMask_OC_Ex_0),//pass
+    .Dst_OC_Ex(Dst_OC_Ex_0)
 );
 
 OC_collector_unit#(
@@ -230,10 +230,10 @@ OC_collector_unit#(
 ) unit1(
     .clk(clk), 
     .rst(rst),
-    .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
-    .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
-    .SPEv2slot_RAU_Collecting(SPEv2slot_RAU_Collecting),
-    .SPEv2value_RAU_Collecting(SPEv2value_RAU_Collecting),
+    .SPEslot_RAU_OC(SPEslot_RAU_OC),
+    .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
+    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
+    .SPEv2value_RAU_OC(SPEv2value_RAU_OC),
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
 
@@ -258,42 +258,42 @@ OC_collector_unit#(
     .RE(RE_1), 
 
 
-    .Valid_RAU_Collecting(Valid_RAU_Collecting) ,//use
-    .Instr_RAU_Collecting(Instr_RAU_Collecting) ,//pass
-    .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
+    .Valid_RAU_OC(Valid_RAU_OC) ,//use
+    .Instr_RAU_OC(Instr_RAU_OC) ,//pass
+    .RegWrite_RAU_OC(RegWrite_RAU_OC),
 
-    .RegWrite_Collecting_Ex(RegWrite_Collecting_Ex_1),
-    .Imme_RAU_Collecting(Imme_RAU_Collecting) ,//
-    .Imme_Valid_RAU_Collecting(Imme_Valid_RAU_Collecting) ,//
-    .ALUop_RAU_Collecting(ALUop_RAU_Collecting) ,//
-    .MemWrite_RAU_Collecting(MemWrite_RAU_Collecting) ,//
-    .MemRead_RAU_Collecting(MemRead_RAU_Collecting) ,//
-    .Shared_Globalbar_RAU_Collecting(Shared_Globalbar_RAU_Collecting) ,//pass
-    .BEQ_RAU_Collecting(BEQ_RAU_Collecting) ,//pass
-    .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
-    .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
-    .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
-    .Dst_RAU_Collecting(Dst_RAU_Collecting),
+    .RegWrite_OC_Ex(RegWrite_OC_Ex_1),
+    .Imme_RAU_OC(Imme_RAU_OC) ,//
+    .Imme_Valid_RAU_OC(Imme_Valid_RAU_OC) ,//
+    .ALUop_RAU_OC(ALUop_RAU_OC) ,//
+    .MemWrite_RAU_OC(MemWrite_RAU_OC) ,//
+    .MemRead_RAU_OC(MemRead_RAU_OC) ,//
+    .Shared_Globalbar_RAU_OC(Shared_Globalbar_RAU_OC) ,//pass
+    .BEQ_RAU_OC(BEQ_RAU_OC) ,//pass
+    .BLT_RAU_OC(BLT_RAU_OC) ,//pass
+    .ScbID_RAU_OC(ScbID_RAU_OC) ,//pass
+    .ActiveMask_RAU_OC(ActiveMask_RAU_OC) ,//pass
+    .Dst_RAU_OC(Dst_RAU_OC),
     .RDY(RDY_1), 
     .valid(valid_1),
 
     .oc_0_data(oc_0_data_1),
     .oc_1_data(oc_1_data_1),
 
-    .Valid_Collecting_Ex(Valid_Collecting_Ex_1) ,//use
-    .Instr_Collecting_Ex(Instr_Collecting_Ex_1) ,//pass
+    .Valid_OC_Ex(Valid_OC_Ex_1) ,//use
+    .Instr_OC_Ex(Instr_OC_Ex_1) ,//pass
 
-    .Imme_Collecting_Ex(Imme_Collecting_Ex_1) ,//
-    .Imme_Valid_Collecting_Ex(Imme_Valid_Collecting_Ex_1) ,//
-    .ALUop_Collecting_Ex(ALUop_Collecting_Ex_1) ,//
-    .MemWrite_Collecting_Ex(MemWrite_Collecting_Ex_1) ,//
-    .MemRead_Collecting_Ex(MemRead_Collecting_Ex_1) ,//  
-    .Shared_Globalbar_Collecting_Ex(Shared_Globalbar_Collecting_Ex_1) ,//pass
-    .BEQ_Collecting_Ex(BEQ_Collecting_Ex_1) ,//pass
-    .BLT_Collecting_Ex(BLT_Collecting_Ex_1) ,//pass
-    .ScbID_Collecting_Ex(ScbID_Collecting_Ex_1) ,//pass
-    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_1),//pass
-    .Dst_Collecting_Ex(Dst_Collecting_Ex_1)
+    .Imme_OC_Ex(Imme_OC_Ex_1) ,//
+    .Imme_Valid_OC_Ex(Imme_Valid_OC_Ex_1) ,//
+    .ALUop_OC_Ex(ALUop_OC_Ex_1) ,//
+    .MemWrite_OC_Ex(MemWrite_OC_Ex_1) ,//
+    .MemRead_OC_Ex(MemRead_OC_Ex_1) ,//  
+    .Shared_Globalbar_OC_Ex(Shared_Globalbar_OC_Ex_1) ,//pass
+    .BEQ_OC_Ex(BEQ_OC_Ex_1) ,//pass
+    .BLT_OC_Ex(BLT_OC_Ex_1) ,//pass
+    .ScbID_OC_Ex(ScbID_OC_Ex_1) ,//pass
+    .ActiveMask_OC_Ex(ActiveMask_OC_Ex_1),//pass
+    .Dst_OC_Ex(Dst_OC_Ex_1)
 );
 
 OC_collector_unit#(
@@ -301,10 +301,10 @@ OC_collector_unit#(
 ) unit2(
     .clk(clk), 
     .rst(rst),
-    .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
-    .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
-    .SPEv2slot_RAU_Collecting(SPEv2slot_RAU_Collecting),
-    .SPEv2value_RAU_Collecting(SPEv2value_RAU_Collecting),
+    .SPEslot_RAU_OC(SPEslot_RAU_OC),
+    .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
+    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
+    .SPEv2value_RAU_OC(SPEv2value_RAU_OC),
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
 
@@ -329,52 +329,52 @@ OC_collector_unit#(
     .RE(RE_2), 
 
 
-    .Valid_RAU_Collecting(Valid_RAU_Collecting) ,//use
-    .Instr_RAU_Collecting(Instr_RAU_Collecting) ,//pass
-    .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
+    .Valid_RAU_OC(Valid_RAU_OC) ,//use
+    .Instr_RAU_OC(Instr_RAU_OC) ,//pass
+    .RegWrite_RAU_OC(RegWrite_RAU_OC),
 
-    .Imme_RAU_Collecting(Imme_RAU_Collecting) ,//
-    .Imme_Valid_RAU_Collecting(Imme_Valid_RAU_Collecting) ,//
-    .ALUop_RAU_Collecting(ALUop_RAU_Collecting) ,//
-    .MemWrite_RAU_Collecting(MemWrite_RAU_Collecting) ,//
-    .MemRead_RAU_Collecting(MemRead_RAU_Collecting) ,//
-    .Shared_Globalbar_RAU_Collecting(Shared_Globalbar_RAU_Collecting) ,//pass
-    .BEQ_RAU_Collecting(BEQ_RAU_Collecting) ,//pass
-    .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
-    .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
-    .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
-    .Dst_RAU_Collecting(Dst_RAU_Collecting),
+    .Imme_RAU_OC(Imme_RAU_OC) ,//
+    .Imme_Valid_RAU_OC(Imme_Valid_RAU_OC) ,//
+    .ALUop_RAU_OC(ALUop_RAU_OC) ,//
+    .MemWrite_RAU_OC(MemWrite_RAU_OC) ,//
+    .MemRead_RAU_OC(MemRead_RAU_OC) ,//
+    .Shared_Globalbar_RAU_OC(Shared_Globalbar_RAU_OC) ,//pass
+    .BEQ_RAU_OC(BEQ_RAU_OC) ,//pass
+    .BLT_RAU_OC(BLT_RAU_OC) ,//pass
+    .ScbID_RAU_OC(ScbID_RAU_OC) ,//pass
+    .ActiveMask_RAU_OC(ActiveMask_RAU_OC) ,//pass
+    .Dst_RAU_OC(Dst_RAU_OC),
     .RDY(RDY_2), 
     .valid(valid_2),
 
     .oc_0_data(oc_0_data_2),
     .oc_1_data(oc_1_data_2),
 
-    .Valid_Collecting_Ex(Valid_Collecting_Ex_2) ,//use
-    .Instr_Collecting_Ex(Instr_Collecting_Ex_2) ,//pass
+    .Valid_OC_Ex(Valid_OC_Ex_2) ,//use
+    .Instr_OC_Ex(Instr_OC_Ex_2) ,//pass
 
-    .RegWrite_Collecting_Ex(RegWrite_Collecting_Ex_2),
-    .Imme_Collecting_Ex(Imme_Collecting_Ex_2) ,//
-    .Imme_Valid_Collecting_Ex(Imme_Valid_Collecting_Ex_2) ,//
-    .ALUop_Collecting_Ex(ALUop_Collecting_Ex_2) ,//
-    .MemWrite_Collecting_Ex(MemWrite_Collecting_Ex_2) ,//
-    .MemRead_Collecting_Ex(MemRead_Collecting_Ex_2) ,//  
-    .Shared_Globalbar_Collecting_Ex(Shared_Globalbar_Collecting_Ex_2) ,//pass
-    .BEQ_Collecting_Ex(BEQ_Collecting_Ex_2) ,//pass
-    .BLT_Collecting_Ex(BLT_Collecting_Ex_2) ,//pass
-    .ScbID_Collecting_Ex(ScbID_Collecting_Ex_2) ,//pass
-    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_2),//pass
-    .Dst_Collecting_Ex(Dst_Collecting_Ex_2)
+    .RegWrite_OC_Ex(RegWrite_OC_Ex_2),
+    .Imme_OC_Ex(Imme_OC_Ex_2) ,//
+    .Imme_Valid_OC_Ex(Imme_Valid_OC_Ex_2) ,//
+    .ALUop_OC_Ex(ALUop_OC_Ex_2) ,//
+    .MemWrite_OC_Ex(MemWrite_OC_Ex_2) ,//
+    .MemRead_OC_Ex(MemRead_OC_Ex_2) ,//  
+    .Shared_Globalbar_OC_Ex(Shared_Globalbar_OC_Ex_2) ,//pass
+    .BEQ_OC_Ex(BEQ_OC_Ex_2) ,//pass
+    .BLT_OC_Ex(BLT_OC_Ex_2) ,//pass
+    .ScbID_OC_Ex(ScbID_OC_Ex_2) ,//pass
+    .ActiveMask_OC_Ex(ActiveMask_OC_Ex_2),//pass
+    .Dst_OC_Ex(Dst_OC_Ex_2)
 );
 OC_collector_unit#(
     .ocid(3)
 ) unit3(
     .clk(clk), 
     .rst(rst),
-    .SPEslot_RAU_Collecting(SPEslot_RAU_Collecting),
-    .SPEvalue_RAU_Collecting(SPEvalue_RAU_Collecting),
-    .SPEv2slot_RAU_Collecting(SPEv2slot_RAU_Collecting),
-    .SPEv2value_RAU_Collecting(SPEv2value_RAU_Collecting),
+    .SPEslot_RAU_OC(SPEslot_RAU_OC),
+    .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
+    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
+    .SPEv2value_RAU_OC(SPEv2value_RAU_OC),
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
 
@@ -399,41 +399,41 @@ OC_collector_unit#(
     .RE(RE_3), 
 
 
-    .Valid_RAU_Collecting(Valid_RAU_Collecting) ,//use
-    .Instr_RAU_Collecting(Instr_RAU_Collecting) ,//pass
-    .RegWrite_RAU_Collecting(RegWrite_RAU_Collecting),
+    .Valid_RAU_OC(Valid_RAU_OC) ,//use
+    .Instr_RAU_OC(Instr_RAU_OC) ,//pass
+    .RegWrite_RAU_OC(RegWrite_RAU_OC),
 
-    .Imme_RAU_Collecting(Imme_RAU_Collecting) ,//
-    .Imme_Valid_RAU_Collecting(Imme_Valid_RAU_Collecting) ,//
-    .ALUop_RAU_Collecting(ALUop_RAU_Collecting) ,//
-    .MemWrite_RAU_Collecting(MemWrite_RAU_Collecting) ,//
-    .MemRead_RAU_Collecting(MemRead_RAU_Collecting) ,//
-    .Shared_Globalbar_RAU_Collecting(Shared_Globalbar_RAU_Collecting) ,//pass
-    .BEQ_RAU_Collecting(BEQ_RAU_Collecting) ,//pass
-    .BLT_RAU_Collecting(BLT_RAU_Collecting) ,//pass
-    .ScbID_RAU_Collecting(ScbID_RAU_Collecting) ,//pass
-    .ActiveMask_RAU_Collecting(ActiveMask_RAU_Collecting) ,//pass
-    .Dst_RAU_Collecting(Dst_RAU_Collecting),
+    .Imme_RAU_OC(Imme_RAU_OC) ,//
+    .Imme_Valid_RAU_OC(Imme_Valid_RAU_OC) ,//
+    .ALUop_RAU_OC(ALUop_RAU_OC) ,//
+    .MemWrite_RAU_OC(MemWrite_RAU_OC) ,//
+    .MemRead_RAU_OC(MemRead_RAU_OC) ,//
+    .Shared_Globalbar_RAU_OC(Shared_Globalbar_RAU_OC) ,//pass
+    .BEQ_RAU_OC(BEQ_RAU_OC) ,//pass
+    .BLT_RAU_OC(BLT_RAU_OC) ,//pass
+    .ScbID_RAU_OC(ScbID_RAU_OC) ,//pass
+    .ActiveMask_RAU_OC(ActiveMask_RAU_OC) ,//pass
+    .Dst_RAU_OC(Dst_RAU_OC),
     .RDY(RDY_3), 
     .valid(valid_3),
 
     .oc_0_data(oc_0_data_3),
     .oc_1_data(oc_1_data_3),
 
-    .Valid_Collecting_Ex(Valid_Collecting_Ex_3) ,//use
-    .Instr_Collecting_Ex(Instr_Collecting_Ex_3) ,//pass
+    .Valid_OC_Ex(Valid_OC_Ex_3) ,//use
+    .Instr_OC_Ex(Instr_OC_Ex_3) ,//pass
 
-    .RegWrite_Collecting_Ex(RegWrite_Collecting_Ex_3),
-    .Imme_Collecting_Ex(Imme_Collecting_Ex_3) ,//
-    .Imme_Valid_Collecting_Ex(Imme_Valid_Collecting_Ex_3) ,//
-    .ALUop_Collecting_Ex(ALUop_Collecting_Ex_3) ,//
-    .MemWrite_Collecting_Ex(MemWrite_Collecting_Ex_3) ,//
-    .MemRead_Collecting_Ex(MemRead_Collecting_Ex_3) ,//  
-    .Shared_Globalbar_Collecting_Ex(Shared_Globalbar_Collecting_Ex_3) ,//pass
-    .BEQ_Collecting_Ex(BEQ_Collecting_Ex_3) ,//pass
-    .BLT_Collecting_Ex(BLT_Collecting_Ex_3) ,//pass
-    .ScbID_Collecting_Ex(ScbID_Collecting_Ex_3) ,//pass
-    .ActiveMask_Collecting_Ex(ActiveMask_Collecting_Ex_3),//pass
-    .Dst_Collecting_Ex(Dst_Collecting_Ex_3)
+    .RegWrite_OC_Ex(RegWrite_OC_Ex_3),
+    .Imme_OC_Ex(Imme_OC_Ex_3) ,//
+    .Imme_Valid_OC_Ex(Imme_Valid_OC_Ex_3) ,//
+    .ALUop_OC_Ex(ALUop_OC_Ex_3) ,//
+    .MemWrite_OC_Ex(MemWrite_OC_Ex_3) ,//
+    .MemRead_OC_Ex(MemRead_OC_Ex_3) ,//  
+    .Shared_Globalbar_OC_Ex(Shared_Globalbar_OC_Ex_3) ,//pass
+    .BEQ_OC_Ex(BEQ_OC_Ex_3) ,//pass
+    .BLT_OC_Ex(BLT_OC_Ex_3) ,//pass
+    .ScbID_OC_Ex(ScbID_OC_Ex_3) ,//pass
+    .ActiveMask_OC_Ex(ActiveMask_OC_Ex_3),//pass
+    .Dst_OC_Ex(Dst_OC_Ex_3)
 );
 endmodule

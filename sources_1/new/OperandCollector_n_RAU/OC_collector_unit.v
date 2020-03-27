@@ -34,28 +34,28 @@ input RE,
 input clk, 
 input rst,
 
-input wire Valid_RAU_Collecting ,//use
-input wire [31:0] Instr_RAU_Collecting ,//pass
+input wire Valid_RAU_OC ,//use
+input wire [31:0] Instr_RAU_OC ,//pass
 
-input wire RegWrite_RAU_Collecting,
+input wire RegWrite_RAU_OC,
 
-input wire [15:0] Imme_RAU_Collecting ,//
-input wire Imme_Valid_RAU_Collecting ,//
-input wire [3:0] ALUop_RAU_Collecting ,//
-input wire MemWrite_RAU_Collecting ,//
-input wire MemRead_RAU_Collecting ,//
-input wire Shared_Globalbar_RAU_Collecting ,//pass
-input wire BEQ_RAU_Collecting ,//pass
-input wire BLT_RAU_Collecting ,//pass
-input wire [1:0] ScbID_RAU_Collecting ,//pass
-input wire [7:0] ActiveMask_RAU_Collecting ,//pass
-input wire [4:0] Dst_RAU_Collecting,
+input wire [15:0] Imme_RAU_OC ,//
+input wire Imme_Valid_RAU_OC ,//
+input wire [3:0] ALUop_RAU_OC ,//
+input wire MemWrite_RAU_OC ,//
+input wire MemRead_RAU_OC ,//
+input wire Shared_Globalbar_RAU_OC ,//pass
+input wire BEQ_RAU_OC ,//pass
+input wire BLT_RAU_OC ,//pass
+input wire [1:0] ScbID_RAU_OC ,//pass
+input wire [7:0] ActiveMask_RAU_OC ,//pass
+input wire [4:0] Dst_RAU_OC,
 
 
-input wire [1:0] SPEslot_RAU_Collecting,
-input wire [255:0] SPEvalue_RAU_Collecting,
-input wire [1:0] SPEv2slot_RAU_Collecting,
-input wire [255:0] SPEv2value_RAU_Collecting,
+input wire [1:0] SPEslot_RAU_OC,
+input wire [255:0] SPEvalue_RAU_OC,
+input wire [1:0] SPEv2slot_RAU_OC,
+input wire [255:0] SPEv2value_RAU_OC,
 
 
 output RDY, 
@@ -64,21 +64,21 @@ output reg valid,
 output reg [255:0] oc_0_data,
 output reg [255:0] oc_1_data,
 
-output reg Valid_Collecting_Ex ,//use
-output reg [31:0] Instr_Collecting_Ex ,//pass
+output reg Valid_OC_Ex ,//use
+output reg [31:0] Instr_OC_Ex ,//pass
 
-output reg RegWrite_Collecting_Ex,
-output reg [15:0] Imme_Collecting_Ex ,//
-output reg Imme_Valid_Collecting_Ex ,//
-output reg [3:0] ALUop_Collecting_Ex ,//
-output reg MemWrite_Collecting_Ex ,//
-output reg MemRead_Collecting_Ex ,//
-output reg Shared_Globalbar_Collecting_Ex ,//pass
-output reg BEQ_Collecting_Ex ,//pass
-output reg BLT_Collecting_Ex ,//pass
-output reg [1:0] ScbID_Collecting_Ex ,//pass
-output reg [7:0] ActiveMask_Collecting_Ex,//pass
-output reg [4:0] Dst_Collecting_Ex
+output reg RegWrite_OC_Ex,
+output reg [15:0] Imme_OC_Ex ,//
+output reg Imme_Valid_OC_Ex ,//
+output reg [3:0] ALUop_OC_Ex ,//
+output reg MemWrite_OC_Ex ,//
+output reg MemRead_OC_Ex ,//
+output reg Shared_Globalbar_OC_Ex ,//pass
+output reg BEQ_OC_Ex ,//pass
+output reg BLT_OC_Ex ,//pass
+output reg [1:0] ScbID_OC_Ex ,//pass
+output reg [7:0] ActiveMask_OC_Ex,//pass
+output reg [4:0] Dst_OC_Ex
 );
 /*---------wire/reg-------*/
 reg [1:0] oc_0_banksel;
@@ -100,11 +100,11 @@ assign RDY = valid && ~(oc_0_valid && ~oc_0_rdy) && ~(oc_1_valid && ~oc_1_rdy);
 assign OC_0_WE = ((bk_0_ocid == ocid << 1) &&  !bk_0_bz && bk_0_vld)|| 
 				 ((bk_1_ocid == ocid << 1) &&  !bk_1_bz && bk_1_vld)|| 
 				 ((bk_2_ocid == ocid << 1) &&  !bk_2_bz && bk_2_vld)|| 
-				 ((bk_3_ocid == ocid << 1) &&  !bk_3_bz && bk_3_vld)||SPEslot_RAU_Collecting[0]||SPEv2slot_RAU_Collecting[0];
+				 ((bk_3_ocid == ocid << 1) &&  !bk_3_bz && bk_3_vld)||SPEslot_RAU_OC[0]||SPEv2slot_RAU_OC[0];
 assign OC_1_WE = ((bk_0_ocid == ocid << 1 + 1) &&  !bk_0_bz && bk_0_vld)|| 
 				 ((bk_1_ocid == ocid << 1 + 1) &&  !bk_1_bz && bk_1_vld)|| 
 				 ((bk_2_ocid == ocid << 1 + 1) &&  !bk_2_bz && bk_2_vld)|| 
-				 ((bk_3_ocid == ocid << 1 + 1) &&  !bk_3_bz && bk_3_vld)||SPEslot_RAU_Collecting[1]||SPEv2slot_RAU_Collecting[1];
+				 ((bk_3_ocid == ocid << 1 + 1) &&  !bk_3_bz && bk_3_vld)||SPEslot_RAU_OC[1]||SPEv2slot_RAU_OC[1];
 always @ *
 begin 
 	case (oc_0_banksel)
@@ -114,10 +114,10 @@ begin
 		2'b11:	oc_0_data_in = bk_3_data;
 		default: oc_0_data_in = 32'bz;
 	endcase
-	if (SPEslot_RAU_Collecting[0])
-		oc_0_data_in = SPEvalue_RAU_Collecting;
-	else if (SPEv2slot_RAU_Collecting[0])
-		oc_0_data_in = SPEv2value_RAU_Collecting;
+	if (SPEslot_RAU_OC[0])
+		oc_0_data_in = SPEvalue_RAU_OC;
+	else if (SPEv2slot_RAU_OC[0])
+		oc_0_data_in = SPEv2value_RAU_OC;
 	case (oc_1_banksel)
 		2'b00:  oc_1_data_in =bk_0_data;
 		2'b01:	oc_1_data_in =bk_1_data;
@@ -125,10 +125,10 @@ begin
 		2'b11:	oc_1_data_in =bk_3_data;
 		default: oc_1_data_in = 32'bz;
 	endcase
-	if (SPEslot_RAU_Collecting[1])
-		oc_0_data_in = SPEvalue_RAU_Collecting;
-	else if (SPEv2slot_RAU_Collecting[1])
-		oc_0_data_in = SPEv2value_RAU_Collecting;
+	if (SPEslot_RAU_OC[1])
+		oc_0_data_in = SPEvalue_RAU_OC;
+	else if (SPEv2slot_RAU_OC[1])
+		oc_0_data_in = SPEv2value_RAU_OC;
 end
 
 always @ (posedge clk)
@@ -147,22 +147,22 @@ begin
 				valid <= 1;
 				oc_0_rdy <= 0;
 				oc_1_rdy <= 0;
-				Valid_Collecting_Ex <= Valid_RAU_Collecting ;//use
-				Instr_Collecting_Ex <= Instr_RAU_Collecting ;//pass
+				Valid_OC_Ex <= Valid_RAU_OC ;//use
+				Instr_OC_Ex <= Instr_RAU_OC ;//pass
 				
 
-				RegWrite_Collecting_Ex <= RegWrite_RAU_Collecting;
-				Imme_Collecting_Ex <= Imme_RAU_Collecting ;//
-				Imme_Valid_Collecting_Ex <= Imme_Valid_RAU_Collecting ;//
-				ALUop_Collecting_Ex <= ALUop_RAU_Collecting ;//
-				MemWrite_Collecting_Ex <= MemWrite_RAU_Collecting ;//
-				MemRead_Collecting_Ex <= MemRead_RAU_Collecting ;//
-				Shared_Globalbar_Collecting_Ex <= Shared_Globalbar_RAU_Collecting ;//pass
-				BEQ_Collecting_Ex <= BEQ_RAU_Collecting ;//pass
-				BLT_Collecting_Ex <= BLT_RAU_Collecting ;//pass
-				ScbID_Collecting_Ex <= ScbID_RAU_Collecting ;//pass
-				ActiveMask_Collecting_Ex <= ActiveMask_RAU_Collecting ;//pass
-				Dst_Collecting_Ex <= Dst_RAU_Collecting;
+				RegWrite_OC_Ex <= RegWrite_RAU_OC;
+				Imme_OC_Ex <= Imme_RAU_OC ;//
+				Imme_Valid_OC_Ex <= Imme_Valid_RAU_OC ;//
+				ALUop_OC_Ex <= ALUop_RAU_OC ;//
+				MemWrite_OC_Ex <= MemWrite_RAU_OC ;//
+				MemRead_OC_Ex <= MemRead_RAU_OC ;//
+				Shared_Globalbar_OC_Ex <= Shared_Globalbar_RAU_OC ;//pass
+				BEQ_OC_Ex <= BEQ_RAU_OC ;//pass
+				BLT_OC_Ex <= BLT_RAU_OC ;//pass
+				ScbID_OC_Ex <= ScbID_RAU_OC ;//pass
+				ActiveMask_OC_Ex <= ActiveMask_RAU_OC ;//pass
+				Dst_OC_Ex <= Dst_RAU_OC;
 				
 
 				if (WE[0] == 1)
