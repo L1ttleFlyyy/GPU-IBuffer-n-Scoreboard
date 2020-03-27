@@ -23,7 +23,12 @@
 module gpu_top_checking#(
     parameter NUM_WARPS = 8,
     parameter NUM_THREADS = 8,
-    parameter LOGNUM_WARPS = $clog2(NUM_WARPS)
+    parameter LOGNUM_WARPS = $clog2(NUM_WARPS),
+	parameter mem_size = 256,
+	parameter shmem_size = 256,
+	parameter cache_size = 32,
+	localparam addr_width = $clog2(mem_size+shmem_size),
+	localparam mem_addr_width = $clog2(mem_size)
     )(
     input clk,
     input rst,
@@ -42,53 +47,15 @@ module gpu_top_checking#(
 	input [31:0] FileIO_Din_ICache,
 	output [31:0] FileIO_Dout_ICache,
 
-    // From CDB to Scoreboard
-    input [1:0] Clear_ScbID_CDB_Scb, // Clear signal from CDB (for all regwrite)
-    input [LOGNUM_WARPS-1:0] Clear_WarpID_CDB_Scb,
-    input Clear_Valid_CDB_Scb,
+    // FileIO to MEM
+	input FIO_MEMWRITE,
+	input [addr_width-1:0] FIO_ADDR,
+	input [255:0] FIO_WRITE_DATA,
+	
+	input FIO_CACHE_LAT_WRITE,
+	input [4:0] FIO_CACHE_LAT_VALUE,
+	input [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR
 
-    // feedback from MEM
-    input [NUM_THREADS-1:0] PosFB_MEM_IB,
-    input PosFB_Valid_MEM_IB,
-    input ZeroFB_Valid_MEM_IB,
-    input [LOGNUM_WARPS-1:0] PosFB_WarpID_MEM_IB,
-    input [LOGNUM_WARPS-1:0] ZeroFB_WarpID_MEM_IB,
-
-    //Write
-    input RegWrite_CDB_RAU,
-    input [2:0] WriteAddr_CDB_RAU,
-    input [2:0] HWWarp_CDB_RAU,
-    input [255:0] Data_CDB_RAU,
-    input [31:0] Instr_CDB_RAU,
-    input [7:0] ActiveMask_CDB_RAU,
-
-    output [255:0]Src1_Data_OC_MEM,
-    output [255:0]Src2_Data_OC_MEM,
-
-    output Valid_OC_MEM,//use
-    output [2:0] WarpID_OC_MEM,
-    output [31:0]Instr_OC_MEM,//pass
-    output RegWrite_OC_MEM,
-    output [15:0]Imme_OC_MEM,//
-    output Imme_Valid_OC_MEM,//
-    output [3:0] ALUop_OC_MEM,//
-    output MemWrite_OC_MEM,//
-    output MemRead_OC_MEM,//
-    output Shared_Globalbar_OC_MEM,//pass
-    output BEQ_OC_MEM,//pass
-    output BLT_OC_MEM,//pass
-    output [1:0] ScbID_OC_MEM,//pass
-    output [7:0] ActiveMask_OC_MEM,//pass
-    output [4:0] Dst_OC_MEM,
-
-    // TODO: ALU internal signals
-    
-	output [7:0] ActiveMask_ALU_CDB,
-    output [31:0] Instr_ALU_CDB,
-    output [2:0] WarpID_ALU_CDB, 
-    output RegWrite_ALU_CDB,
-    output [4:0] Dst_ALU_CDB,
-    output [8*32-1:0] Dst_Data_ALU_CDB
     );
 
     // TM to IF_ID
@@ -219,6 +186,28 @@ module gpu_top_checking#(
     wire [1:0] ScbID_IB_OC;
     wire [7:0] ActiveMask_IB_OC;
 
+    // OC to MEM
+    wire [255:0]Src1_Data_OC_MEM;
+    wire [255:0]Src2_Data_OC_MEM;
+
+    wire Valid_OC_MEM;
+    wire [2:0] WarpID_OC_MEM;
+    wire [31:0]Instr_OC_MEM;
+    wire [15:0]Imme_OC_MEM;
+    wire MemWrite_OC_MEM;
+    wire MemRead_OC_MEM;
+    wire Shared_Globalbar_OC_MEM;
+    wire [1:0] ScbID_OC_MEM;
+    wire [7:0] ActiveMask_OC_MEM;
+    wire [4:0] Dst_OC_MEM;
+
+    // MEM to IB
+    wire [NUM_THREADS-1:0] PosFB_MEM_IB;
+    wire PosFB_Valid_MEM_IB;
+    wire ZeroFB_Valid_MEM_IB;
+    wire [LOGNUM_WARPS-1:0] PosFB_WarpID_MEM_IB;
+    wire [LOGNUM_WARPS-1:0] ZeroFB_WarpID_MEM_IB;
+
     // IB to RAU/TM
     wire [2:0] Exit_WarpID_IB_RAU_TM;
     wire Exit_IB_RAU_TM;
@@ -258,6 +247,36 @@ module gpu_top_checking#(
     wire [1:0] Clear_ScbID_ALU_Scb; // Clear signal from ALU (branch only)
     wire [LOGNUM_WARPS-1:0] Clear_WarpID_ALU_Scb;
     wire Clear_Valid_ALU_Scb;
+
+    // ALU to CDB
+    
+	wire [7:0] ActiveMask_ALU_CDB;
+    wire [31:0] Instr_ALU_CDB;
+    wire [2:0] WarpID_ALU_CDB; 
+    wire RegWrite_ALU_CDB;
+    wire [4:0] Dst_ALU_CDB;
+    wire [8*32-1:0] Dst_Data_ALU_CDB;
+
+    // MEM to CDB
+    wire [2:0] WarpID_MEM_CDB; 
+    wire RegWrite_MEM_CDB;
+    wire [4:0] Dst_MEM_CDB;
+    wire [255:0] Dst_Data_MEM_CDB;
+    wire [31:0] Instr_MEM_CDB;
+    wire [7:0] ActiveMask_MEM_CDB;
+
+    // From CDB to Scb
+    wire [1:0] Clear_ScbID_CDB_Scb; // Clear signal from CDB (for all regwrite)
+    wire [LOGNUM_WARPS-1:0] Clear_WarpID_CDB_Scb;
+    wire Clear_Valid_CDB_Scb;
+
+    // From CDB to RAU
+    wire RegWrite_CDB_RAU;
+    wire [2:0] WriteAddr_CDB_RAU;
+    wire [2:0] HWWarp_CDB_RAU;
+    wire [255:0] Data_CDB_RAU;
+    wire [31:0] Instr_CDB_RAU;
+    wire [7:0] ActiveMask_CDB_RAU;
 
     TaskManager TM(
     // Global Signals
@@ -638,15 +657,15 @@ module gpu_top_checking#(
     .Valid_OC_MEM(Valid_OC_MEM),//use
     .WarpID_OC_MEM(WarpID_OC_MEM),
     .Instr_OC_MEM(Instr_OC_MEM),//pass
-    .RegWrite_OC_MEM(RegWrite_OC_MEM),
+    .RegWrite_OC_MEM(),
     .Imme_OC_MEM(Imme_OC_MEM),//
-    .Imme_Valid_OC_MEM(Imme_Valid_OC_MEM),//
-    .ALUop_OC_MEM(ALUop_OC_MEM),//
+    .Imme_Valid_OC_MEM(),//
+    .ALUop_OC_MEM(),//
     .MemWrite_OC_MEM(MemWrite_OC_MEM),//
     .MemRead_OC_MEM(MemRead_OC_MEM),//
     .Shared_Globalbar_OC_MEM(Shared_Globalbar_OC_MEM),//pass
-    .BEQ_OC_MEM(BEQ_OC_MEM),//pass
-    .BLT_OC_MEM(BLT_OC_MEM),//pass
+    .BEQ_OC_MEM(),//pass
+    .BLT_OC_MEM(),//pass
     .ScbID_OC_MEM(ScbID_OC_MEM),//pass
     .ActiveMask_OC_MEM(ActiveMask_OC_MEM),//pass
     .Dst_OC_MEM(Dst_OC_MEM)
@@ -692,5 +711,69 @@ module gpu_top_checking#(
     .Clear_WarpID_ALU_Scb(Clear_WarpID_ALU_Scb),
     .Clear_ScbID_ALU_Scb(Clear_ScbID_ALU_Scb)
     );
+
+    mem_unit MEM (
+	.clk(clk), 
+    .rst(rst), 
+    .Instr_valid_OC_MEM(Valid_OC_MEM), 
+    .MemRead_OC_MEM(MemRead_OC_MEM),
+    .MemWrite_OC_MEM(MemRead_OC_MEM), 
+    .shared_global_bar_OC_MEM(Shared_Globalbar_OC_MEM),
+	.PAM_OC_MEM(ActiveMask_OC_MEM),
+	.warp_ID_OC_MEM(WarpID_OC_MEM),
+	.scb_ID_o_OC_MEM(ScbID_OC_MEM),
+	.rs_data_OC_MEM(Src1_Data_OC_MEM), 
+    .rt_data_OC_MEM(Src2_Data_OC_MEM),
+	.offset_OC_MEM(Imme_OC_MEM),
+	.reg_addr_OC_MEM(Dst_OC_MEM),
+    .Instr_OC_MEM(Instr_OC_MEM),
+	
+	
+	.FIO_MEMWRITE(FIO_MEMWRITE),
+	.FIO_ADDR(FIO_ADDR),
+	.FIO_WRITE_DATA(FIO_WRITE_DATA),
+	
+	.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE),
+	.FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE),
+	.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR),
+	
+    .WarpID_MEM_CDB(WarpID_MEM_CDB),
+    .Instr_MEM_CDB(Instr_MEM_CDB),
+	.neg_feedback_valid_o_MEM_Scb(ZeroFB_Valid_MEM_IB), 
+    .pos_feedback_valid_o_MEM_Scb(PosFB_Valid_MEM_IB), 
+	.neg_feedback_warpID_o_MEM_Scb(ZeroFB_WarpID_MEM_IB), 
+    .pos_feedback_warpID_o_MEM_Scb(PosFB_WarpID_MEM_IB),
+	.neg_feedback_scbID_o_MEM_Scb(), 
+    .pos_feedback_scbID_o_MEM_Scb(),
+	.pos_feedback_mask_o_MEM_Scb(PosFB_MEM_IB), 
+    .cdb_regwrite_MEM_CDB(RegWrite_MEM_CDB),
+    .cdb_write_mask_MEM_CDB(ActiveMask_MEM_CDB),
+	.cdb_write_data_MEM_CDB(Dst_Data_MEM_CDB),
+	.cdb_reg_addr_MEM_CDB(Dst_MEM_CDB)
+    );
+
+    CDB cdb1(
+    .WarpID_ALU_CDB(WarpID_ALU_CDB), 
+    .RegWrite_ALU_CDB(RegWrite_ALU_CDB),
+    .Dst_ALU_CDB(Dst_ALU_CDB),
+    .Dst_Data_ALU_CDB(Dst_Data_ALU_CDB),
+    .Instr_ALU_CDB(Instr_ALU_CDB),
+    .ActiveMask_ALU_CDB(ActiveMask_ALU_CDB),
+
+    .WarpID_MEM_CDB(WarpID_MEM_CDB),
+    .RegWrite_MEM_CDB(RegWrite_MEM_CDB),
+    .Dst_MEM_CDB(Dst_MEM_CDB),
+    .Dst_Data_MEM_CDB(Dst_Data_MEM_CDB),
+    .Instr_MEM_CDB(Instr_MEM_CDB),
+    .ActiveMask_MEM_CDB(ActiveMask_MEM_CDB),
+
+    .HWWarp_CDB_RAU(HWWarp_CDB_RAU),
+    .RegWrite_CDB_RAU(RegWrite_CDB_RAU),
+    .WriteAddr_CDB_RAU(WriteAddr_CDB_RAU),
+    .Data_CDB_RAU(Data_CDB_RAU),
+    .Instr_CDB_RAU(Instr_CDB_RAU),
+    .ActiveMask_CDB_RAU(ActiveMask_CDB_RAU)
+);
+
 
 endmodule

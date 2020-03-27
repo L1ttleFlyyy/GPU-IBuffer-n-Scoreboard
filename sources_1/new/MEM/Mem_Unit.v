@@ -18,6 +18,8 @@ module mem_unit
 	input [255:0] rs_data_OC_MEM, rt_data_OC_MEM,
 	input [15:0] offset_OC_MEM,
 	input [4:0] reg_addr_OC_MEM,
+    // FIXME: Instr_OC_MEM
+	input [31:0] Instr_OC_MEM,
 	
 	
 	input FIO_MEMWRITE,
@@ -28,6 +30,10 @@ module mem_unit
 	input [4:0] FIO_CACHE_LAT_VALUE,
 	input [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR,
 	
+    // FIXME: WarpID_MEM_CDB
+	output [2:0] WarpID_MEM_CDB,
+    // FIXME: Instr_MEM_CDB
+	output [31:0] Instr_MEM_CDB,
 	output neg_feedback_valid_o_MEM_Scb, pos_feedback_valid_o_MEM_Scb, cdb_regwrite_MEM_CDB,
 	output [2:0] neg_feedback_warpID_o_MEM_Scb, pos_feedback_warpID_o_MEM_Scb,
 	output [1:0] neg_feedback_scbID_o_MEM_Scb, pos_feedback_scbID_o_MEM_Scb,
