@@ -4,7 +4,6 @@ module MUX_4_1 (
     input wire [255:0] oc_0_data_0,
     input wire [255:0] oc_1_data_0,
 
-    input Valid_Collecting_Ex_0 ,//use
     input [31:0] Instr_Collecting_Ex_0 ,//pass
     input RegWrite_Collecting_Ex_0,
     input [15:0] Imme_Collecting_Ex_0 ,//
@@ -22,7 +21,6 @@ module MUX_4_1 (
     input wire [255:0] oc_0_data_1,
     input wire [255:0] oc_1_data_1,
 
-    input Valid_Collecting_Ex_1 ,//use
     input [31:0] Instr_Collecting_Ex_1 ,//pass
     input RegWrite_Collecting_Ex_1,
     input [15:0] Imme_Collecting_Ex_1 ,//
@@ -40,7 +38,6 @@ module MUX_4_1 (
     input wire [255:0] oc_0_data_2,
     input wire [255:0] oc_1_data_2,
 
-    input Valid_Collecting_Ex_2 ,//use
     input [31:0] Instr_Collecting_Ex_2 ,//pass
     input RegWrite_Collecting_Ex_2,
     input [15:0] Imme_Collecting_Ex_2 ,//
@@ -58,7 +55,6 @@ module MUX_4_1 (
     input wire [255:0] oc_0_data_3,
     input wire [255:0] oc_1_data_3,
 
-    input Valid_Collecting_Ex_3 ,//use
     input [31:0] Instr_Collecting_Ex_3 ,//pass
     input RegWrite_Collecting_Ex_3,
     input [15:0] Imme_Collecting_Ex_3 ,//
@@ -77,7 +73,7 @@ module MUX_4_1 (
     output reg [255:0] oc_0_data,
     output reg [255:0] oc_1_data,
 
-    output reg Valid_Collecting_Ex ,//use
+    output reg Valid_Collecting_Ex,
     output reg [31:0] Instr_Collecting_Ex ,//pass
     output reg RegWrite_Collecting_Ex,
     output reg [15:0] Imme_Collecting_Ex ,//
@@ -90,14 +86,13 @@ module MUX_4_1 (
     output reg BLT_Collecting_Ex ,//pass
     output reg [1:0] ScbID_Collecting_Ex ,//pass
     output reg [7:0] ActiveMask_Collecting_Ex,//pass
-    output reg [4:0] Dst_Collecting_Ex,
+    output reg [4:0] Dst_Collecting_Ex
 
-    output reg Valid_EX
 );
 
 always @ (*)
 begin
-    Valid_EX = |Grt;
+    Valid_Collecting_Ex = |Grt;
 
     case (Grt)
     4'b0001:
@@ -105,7 +100,6 @@ begin
             oc_0_data = oc_0_data_0;
             oc_1_data = oc_1_data_0;
 
-            Valid_Collecting_Ex = Valid_Collecting_Ex_0 ;//use
             Instr_Collecting_Ex = Instr_Collecting_Ex_0 ;//pass
             RegWrite_Collecting_Ex = RegWrite_Collecting_Ex_0;
             Imme_Collecting_Ex = Imme_Collecting_Ex_0 ;//
@@ -126,7 +120,6 @@ begin
             oc_0_data = oc_0_data_1;
             oc_1_data = oc_1_data_1;
 
-            Valid_Collecting_Ex = Valid_Collecting_Ex_1 ;//use
             Instr_Collecting_Ex = Instr_Collecting_Ex_1 ;//pass
             RegWrite_Collecting_Ex = RegWrite_Collecting_Ex_1;
             Imme_Collecting_Ex = Imme_Collecting_Ex_1 ;//
@@ -147,7 +140,6 @@ begin
             oc_0_data = oc_0_data_2;
             oc_1_data = oc_1_data_2;
 
-            Valid_Collecting_Ex = Valid_Collecting_Ex_2 ;//use
             Instr_Collecting_Ex = Instr_Collecting_Ex_2 ;//pass
             RegWrite_Collecting_Ex = RegWrite_Collecting_Ex_2;
             Imme_Collecting_Ex = Imme_Collecting_Ex_2 ;//
@@ -168,7 +160,6 @@ begin
             oc_0_data = oc_0_data_3;
             oc_1_data = oc_1_data_3;
 
-            Valid_Collecting_Ex = Valid_Collecting_Ex_3 ;//use
             Instr_Collecting_Ex = Instr_Collecting_Ex_3 ;//pass
             RegWrite_Collecting_Ex = RegWrite_Collecting_Ex_3;
             Imme_Collecting_Ex = Imme_Collecting_Ex_3 ;//

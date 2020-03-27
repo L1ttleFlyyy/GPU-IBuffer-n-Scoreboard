@@ -48,8 +48,8 @@ module RFOC(
     input wire [7:0] ActiveMask_CDB_RAU,
 
 
-    output [255:0] oc_0_data_ALU,
-    output [255:0] oc_1_data_ALU,
+    output [255:0] Src1_Data_ALU,
+    output [255:0] Src2_Data_ALU,
 
     output Valid_Collecting_ALU,//use
     output [31:0] Instr_Collecting_ALU,//pass
@@ -66,10 +66,8 @@ module RFOC(
     output [7:0] ActiveMask_Collecting_ALU,//pass
     output [4:0] Dst_Collecting_ALU,
 
-    output Valid_ALU,
-
-    output [255:0]oc_0_data_MEM,
-    output [255:0]oc_1_data_MEM,
+    output [255:0]Src1_Data_MEM,
+    output [255:0]Src2_Data_MEM,
 
     output Valid_Collecting_MEM,//use
     output [31:0]Instr_Collecting_MEM,//pass
@@ -84,9 +82,7 @@ module RFOC(
     output BLT_Collecting_MEM,//pass
     output [1:0] ScbID_Collecting_MEM,//pass
     output [7:0] ActiveMask_Collecting_MEM,//pass
-    output [4:0] Dst_Collecting_MEM,
-
-    output Valid_MEM
+    output [4:0] Dst_Collecting_MEM
 );
 
 
@@ -600,7 +596,6 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .oc_0_data_0(oc_0_data_0),
     .oc_1_data_0(oc_1_data_0),
 
-    .Valid_Collecting_Ex_0(Valid_Collecting_Ex_0) ,//use
     .Instr_Collecting_Ex_0(Instr_Collecting_Ex_0) ,//pass
     .RegWrite_Collecting_Ex_0(RegWrite_Collecting_Ex_0),
     .Imme_Collecting_Ex_0(Imme_Collecting_Ex_0) ,//
@@ -618,7 +613,6 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .oc_0_data_1(oc_0_data_1),
     .oc_1_data_1(oc_1_data_1),
 
-    .Valid_Collecting_Ex_1(Valid_Collecting_Ex_1) ,//use
     .Instr_Collecting_Ex_1(Instr_Collecting_Ex_1) ,//pass
     .RegWrite_Collecting_Ex_1(RegWrite_Collecting_Ex_1),
     .Imme_Collecting_Ex_1(Imme_Collecting_Ex_1) ,//
@@ -636,7 +630,6 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .oc_0_data_2(oc_0_data_2),
     .oc_1_data_2(oc_1_data_2),
 
-    .Valid_Collecting_Ex_2(Valid_Collecting_Ex_2) ,//use
     .Instr_Collecting_Ex_2(Instr_Collecting_Ex_2) ,//pass
     .RegWrite_Collecting_Ex_2(RegWrite_Collecting_Ex_2),
     .Imme_Collecting_Ex_2(Imme_Collecting_Ex_2) ,//
@@ -654,7 +647,6 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .oc_0_data_3(oc_0_data_3),
     .oc_1_data_3(oc_1_data_3),
 
-    .Valid_Collecting_Ex_3(Valid_Collecting_Ex_3) ,//use
     .Instr_Collecting_Ex_3(Instr_Collecting_Ex_3) ,//pass
     .RegWrite_Collecting_Ex_3(RegWrite_Collecting_Ex_3),
     .Imme_Collecting_Ex_3(Imme_Collecting_Ex_3) ,//
@@ -670,8 +662,8 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .Dst_Collecting_Ex_3(Dst_Collecting_Ex_3),
 
 
-    .oc_0_data_ALU(oc_0_data_ALU),
-    .oc_1_data_ALU(oc_1_data_ALU),
+    .Src1_Data_ALU(Src1_Data_ALU),
+    .Src2_Data_ALU(Src2_Data_ALU),
 
     .Valid_Collecting_ALU(Valid_Collecting_ALU) ,//use
     .Instr_Collecting_ALU(Instr_Collecting_ALU) ,//pass
@@ -688,10 +680,8 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .ActiveMask_Collecting_ALU(ActiveMask_Collecting_ALU),//pass
     .Dst_Collecting_ALU(Dst_Collecting_ALU),
 
-    .Valid_ALU(Valid_ALU),
-
-    .oc_0_data_MEM(oc_0_data_MEM),
-    .oc_1_data_MEM(oc_1_data_MEM),
+    .Src1_Data_MEM(Src1_Data_MEM),
+    .Src2_Data_MEM(Src2_Data_MEM),
 
     .Valid_Collecting_MEM(Valid_Collecting_MEM) ,//use
     .Instr_Collecting_MEM(Instr_Collecting_MEM) ,//pass
@@ -706,9 +696,7 @@ MUX_ALU_MEM MUX_ALU_MEM(
     .BLT_Collecting_MEM(BLT_Collecting_MEM) ,//pass
     .ScbID_Collecting_MEM(ScbID_Collecting_MEM) ,//pass
     .ActiveMask_Collecting_MEM(ActiveMask_Collecting_MEM),//pass
-    .Dst_Collecting_MEM(Dst_Collecting_MEM),
-
-    .Valid_MEM(Valid_MEM)
+    .Dst_Collecting_MEM(Dst_Collecting_MEM)
 );
 
 endmodule
