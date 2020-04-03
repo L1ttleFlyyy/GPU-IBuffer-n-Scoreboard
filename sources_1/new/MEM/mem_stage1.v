@@ -8,6 +8,7 @@ module mem_stage1(
 	input [255:0] rs_reg_data,
 	input [15:0] offset,
 	input [255:0] write_data,
+	input [31:0] Instr,
 	
 	
 	output MemRead_o, MemWrite_o, shared_global_bar_o,
@@ -16,7 +17,8 @@ module mem_stage1(
 	output [7:0] PAM_o,
 	output [255:0] eff_addr_o, write_data_o,
 	output [4:0] reg_addr_o,
-	output [26:0] addr_sel_o
+	output [26:0] addr_sel_o,
+	output [31:0] Instr_o
 );
 	
 	
@@ -45,7 +47,7 @@ module mem_stage1(
 	always@(PAM or eff_addr[0] or eff_addr[1] or eff_addr[2] or eff_addr[3] or eff_addr[4] or eff_addr[5] or eff_addr[6] or eff_addr[7])
 	begin
     // FIXME: inferring latches
-	//	thread_select = 0;
+		thread_select = 0;
 		for(i=7; i>=0; i=i-1)
 		begin
 			if(PAM[i])
@@ -80,7 +82,7 @@ module mem_stage1(
 	assign write_data_o			=	write_data;
 	assign reg_addr_o			=	reg_addr;
 	assign addr_sel_o			=	addr_sel;
-			
+	assign Instr_o				=	Instr;
 	
 	
 	

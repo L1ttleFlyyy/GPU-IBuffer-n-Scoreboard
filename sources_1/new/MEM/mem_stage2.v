@@ -15,6 +15,7 @@ module mem_stage2
 	input [255:0] eff_addr, write_data,
 	input [4:0] reg_addr,
 	input [26:0] addr_sel, mshr_neg_feedback_addr,
+	input [31:0] Instr,
 	
 	input FIO_CACHE_LAT_WRITE,
 	input [4:0] FIO_CACHE_LAT_VALUE,
@@ -30,7 +31,8 @@ module mem_stage2
 	output [23:0] word_offset_o,
 	output [4:0] reg_addr_o,
 	output [7:0] thread_mask_o,
-	output [4:0] miss_latency_o
+	output [4:0] miss_latency_o,
+	output reg [31:0] Instr_o
 );
 	
 	
@@ -176,6 +178,7 @@ module mem_stage2
 			//OUTPUT REG
 			
 			addr_valid_o		<=	cache_addr_valid;
+			Instr_o				<=	Instr;
 			
 			
 		end

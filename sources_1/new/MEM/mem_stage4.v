@@ -8,6 +8,7 @@ module mem_stage4(
 	input [4:0] reg_addr,
 	input [7:0] thread_mask,
 	input [23:0] word_offset,
+	input [31:0] Instr,
 	
 	
 	
@@ -15,6 +16,7 @@ module mem_stage4(
 	output reg [4:0] reg_addr_o,
 	output reg [7:0] thread_mask_o,
 	output reg [255:0] reg_write_data_o,
+	output reg [31:0] Instr_o,
 	
 	
 	output reg [7:0] pos_feedback_mask_o,
@@ -69,6 +71,7 @@ module mem_stage4(
 		reg_write_o		=	reg_write;
 		reg_addr_o		=	reg_addr;
 		thread_mask_o	=	thread_mask;
+		Instr_o			=	Instr;
 		
 		
 		pos_feedback_warpID_o		=	warp_ID;

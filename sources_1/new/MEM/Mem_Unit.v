@@ -18,21 +18,19 @@ module mem_unit
 	input [255:0] rs_data_OC_MEM, rt_data_OC_MEM,
 	input [15:0] offset_OC_MEM,
 	input [4:0] reg_addr_OC_MEM,
-    // FIXME: Instr_OC_MEM
 	input [31:0] Instr_OC_MEM,
 	
 	
 	input FIO_MEMWRITE,
 	input [addr_width-1:0] FIO_ADDR,
 	input [255:0] FIO_WRITE_DATA,
+	output [255:0] FIO_READ_DATA,
 	
 	input FIO_CACHE_LAT_WRITE,
 	input [4:0] FIO_CACHE_LAT_VALUE,
 	input [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR,
 	
-    // FIXME: WarpID_MEM_CDB
 	output [2:0] WarpID_MEM_CDB,
-    // FIXME: Instr_MEM_CDB
 	output [31:0] Instr_MEM_CDB,
 	output neg_feedback_valid_o_MEM_Scb, pos_feedback_valid_o_MEM_Scb, cdb_regwrite_MEM_CDB,
 	output [2:0] neg_feedback_warpID_o_MEM_Scb, pos_feedback_warpID_o_MEM_Scb,
@@ -63,6 +61,7 @@ module mem_unit
 	wire [255:0] stage12_write_data;
 	wire [4:0] stage12_reg_addr;
 	wire [26:0] stage12_addr_sel;
+	wire [31:0] stage12_Instr;
 	
 	
 	wire stage32_neg_feedback_valid;
@@ -79,6 +78,7 @@ module mem_unit
 	wire [4:0] stage23_reg_addr;
 	wire [7:0] stage23_thread_mask;
 	wire [4:0] stage23_miss_latency;
+	wire [31:0] stage23_Instr;
 	
 	
 	
@@ -89,21 +89,28 @@ module mem_unit
 	wire [4:0] stage34_reg_addr;
 	wire [7:0] stage34_thread_mask;
 	wire [23:0] stage34_word_offset;
+	wire [31:0] stage34_Instr;
+	
+	
+	
+	wire [2:0] stage4_warp_ID;
 	
 	
 	
 	assign neg_feedback_valid_o_MEM_Scb = stage32_neg_feedback_valid;
+	assign pos_feedback_warpID_o_MEM_Scb = stage4_warp_ID;
+	assign WarpID_MEM_CDB = stage4_warp_ID;
 	
 	
 	
 	mem_stage1 stage1_inst(.clk(clk), .resetb(rst), .MemRead(MemRead_q), .MemWrite(MemWrite_q), .shared_global_bar(shared_global_bar_q),
 							.warp_ID(warp_ID_q), .scb_ID(scb_ID_q), .PAM(PAM_q), .reg_addr(reg_addr_q), .rs_reg_data(rs_data_q), .offset(offset_q), 
-							.write_data(rt_data_q),
+							.write_data(rt_data_q), .Instr(Instr_OC_MEM), 
 	
 	
 							.MemRead_o(stage12_MemRead), .MemWrite_o(stage12_MemWrite), .shared_global_bar_o(stage12_shared_global_bar), 
 							.warp_ID_o(stage12_warp_ID), .scb_ID_o(stage12_scb_ID), .PAM_o(stage12_PAM), .eff_addr_o(stage12_eff_addr), 
-							.write_data_o(stage12_write_data), .reg_addr_o(stage12_reg_addr), .addr_sel_o(stage12_addr_sel)
+							.write_data_o(stage12_write_data), .reg_addr_o(stage12_reg_addr), .addr_sel_o(stage12_addr_sel), .Instr_o(stage12_Instr)
 	);
 	
 	
@@ -117,7 +124,7 @@ module mem_unit
 							.PAM(stage12_PAM),
 							.eff_addr(stage12_eff_addr), .write_data(stage12_write_data),
 							.reg_addr(stage12_reg_addr),
-							.addr_sel(stage12_addr_sel), .mshr_neg_feedback_addr(stage32_neg_feedback_addr),
+							.addr_sel(stage12_addr_sel), .mshr_neg_feedback_addr(stage32_neg_feedback_addr), .Instr(stage12_Instr), 
 							
 							.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE), .FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE),
 							.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR),
@@ -133,7 +140,8 @@ module mem_unit
 							.word_offset_o(stage23_word_offset),
 							.reg_addr_o(stage23_reg_addr),
 							.thread_mask_o(stage23_thread_mask),
-							.miss_latency_o(stage23_miss_latency)
+							.miss_latency_o(stage23_miss_latency), 
+							.Instr_o(stage23_Instr)
 	
 	);
 	
@@ -150,11 +158,12 @@ module mem_unit
 							.word_offset(stage23_word_offset),
 							.reg_addr(stage23_reg_addr),
 							.thread_mask(stage23_thread_mask),
-							.miss_latency(stage23_miss_latency),
+							.miss_latency(stage23_miss_latency), .Instr(stage23_Instr), 
 							
 							.FIO_MEMWRITE(FIO_MEMWRITE),
 							.FIO_ADDR(FIO_ADDR),
 							.FIO_WRITE_DATA(FIO_WRITE_DATA),
+							.FIO_READ_DATA(FIO_READ_DATA),
 							
 							
 							.reg_write_o(stage34_reg_write), .write_fb_valid_o(stage34_write_fb_valid),
@@ -164,6 +173,7 @@ module mem_unit
 							.reg_addr_o(stage34_reg_addr),
 							.thread_mask_o(stage34_thread_mask),
 							.word_offset_o(stage34_word_offset),
+							.Instr_o(stage34_Instr),
 							
 							.mshr_neg_feedback_addr_o(stage32_neg_feedback_addr),
 							.mshr_neg_feedback_valid_o(stage32_neg_feedback_valid),
@@ -181,18 +191,20 @@ module mem_unit
 							.reg_addr(stage34_reg_addr),
 							.thread_mask(stage34_thread_mask),
 							.word_offset(stage34_word_offset),
+							.Instr(stage34_Instr), 
 							
 							
 							
 							.reg_write_o(cdb_regwrite_MEM_CDB),
 							.reg_addr_o(cdb_reg_addr_MEM_CDB),
 							.thread_mask_o(cdb_write_mask_MEM_CDB),
-							.reg_write_data_o(cdb_write_data_MEM_CDB),
+							.reg_write_data_o(cdb_write_data_MEM_CDB), 
+							.Instr_o(Instr_MEM_CDB),
 							
 							
 							.pos_feedback_mask_o(pos_feedback_mask_o_MEM_Scb),
 							.pos_feedback_valid_o(pos_feedback_valid_o_MEM_Scb),
-							.pos_feedback_warpID_o(pos_feedback_warpID_o_MEM_Scb),
+							.pos_feedback_warpID_o(stage4_warp_ID),
 							.pos_feedback_scbID_o(pos_feedback_scbID_o_MEM_Scb)
 	);
 	
