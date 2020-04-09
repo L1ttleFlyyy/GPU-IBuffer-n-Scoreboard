@@ -51,6 +51,7 @@ module gpu_top_checking#(
 	input FIO_MEMWRITE,
 	input [addr_width-1:0] FIO_ADDR,
 	input [255:0] FIO_WRITE_DATA,
+    output [255:0] FIO_READ_DATA,
 	
 	input FIO_CACHE_LAT_WRITE,
 	input [4:0] FIO_CACHE_LAT_VALUE,
@@ -256,6 +257,7 @@ module gpu_top_checking#(
     wire RegWrite_ALU_CDB;
     wire [4:0] Dst_ALU_CDB;
     wire [8*32-1:0] Dst_Data_ALU_CDB;
+    wire [1:0] Clear_ScbID_ALU_CDB;
 
     // MEM to CDB
     wire [2:0] WarpID_MEM_CDB; 
@@ -264,6 +266,7 @@ module gpu_top_checking#(
     wire [255:0] Dst_Data_MEM_CDB;
     wire [31:0] Instr_MEM_CDB;
     wire [7:0] ActiveMask_MEM_CDB;
+    wire [1:0] Clear_ScbID_MEM_CDB;
 
     // From CDB to Scb
     wire [1:0] Clear_ScbID_CDB_Scb; // Clear signal from CDB (for all regwrite)
@@ -705,6 +708,7 @@ module gpu_top_checking#(
     .RegWrite_ALU_CDB(RegWrite_ALU_CDB),
     .Dst_ALU_CDB(Dst_ALU_CDB),
     .Dst_Data_ALU_CDB(Dst_Data_ALU_CDB),
+    .Clear_ScbID_ALU_CDB(Clear_ScbID_ALU_CDB),
     
     // output to Scb (to clear Scb entry. Branch only, which do not go onto CDB)
     .Clear_Valid_ALU_Scb(Clear_Valid_ALU_Scb),
@@ -732,6 +736,7 @@ module gpu_top_checking#(
 	.FIO_MEMWRITE(FIO_MEMWRITE),
 	.FIO_ADDR(FIO_ADDR),
 	.FIO_WRITE_DATA(FIO_WRITE_DATA),
+    .FIO_READ_DATA(FIO_READ_DATA),
 	
 	.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE),
 	.FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE),
@@ -749,7 +754,8 @@ module gpu_top_checking#(
     .cdb_regwrite_MEM_CDB(RegWrite_MEM_CDB),
     .cdb_write_mask_MEM_CDB(ActiveMask_MEM_CDB),
 	.cdb_write_data_MEM_CDB(Dst_Data_MEM_CDB),
-	.cdb_reg_addr_MEM_CDB(Dst_MEM_CDB)
+	.cdb_reg_addr_MEM_CDB(Dst_MEM_CDB),
+    .cdb_scbID_MEM_CDB(Clear_ScbID_MEM_CDB)
     );
 
     CDB cdb1(
@@ -766,6 +772,14 @@ module gpu_top_checking#(
     .Dst_Data_MEM_CDB(Dst_Data_MEM_CDB),
     .Instr_MEM_CDB(Instr_MEM_CDB),
     .ActiveMask_MEM_CDB(ActiveMask_MEM_CDB),
+
+    
+    .Clear_ScbID_ALU_CDB(Clear_ScbID_ALU_CDB),
+    .Clear_ScbID_MEM_CDB(Clear_ScbID_MEM_CDB),
+
+    .Clear_ScbID_CDB_Scb(Clear_ScbID_CDB_Scb),
+    .Clear_WarpID_CDB_Scb(Clear_WarpID_CDB_Scb),
+    .Clear_Valid_CDB_Scb(Clear_Valid_CDB_Scb),
 
     .HWWarp_CDB_RAU(HWWarp_CDB_RAU),
     .RegWrite_CDB_RAU(RegWrite_CDB_RAU),

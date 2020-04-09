@@ -22,9 +22,9 @@ module CDB(
     output reg [255:0] Data_CDB_RAU,
     output reg [31:0] Instr_CDB_RAU,
     output reg [7:0] ActiveMask_CDB_RAU,
-    output wire [1:0] Clear_ScbID_CDB_Scb,
-    output wire [2:0] Clear_WarpID_CDB_Scb,
-    output wire Clear_Valid_CDB_Scb,
+    output reg [1:0] Clear_ScbID_CDB_Scb,
+    output reg [2:0] Clear_WarpID_CDB_Scb,
+    output reg Clear_Valid_CDB_Scb
 
 );
 

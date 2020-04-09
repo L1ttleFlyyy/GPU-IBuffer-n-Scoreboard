@@ -20,21 +20,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-	// input [7:0] ActiveMask_OC_ALU,
-    // input Valid_OC_ALU,
-    // input [2:0] WarpID_OC_ALU,
-    // input [31:0] Instr_OC_ALU,
-    // input [32*8-1:0] Src1_Data_OC_ALU,
-    // input [32*8-1:0] Src2_Data_OC_ALU,
-    // input [4:0] Dst_OC_ALU,
-    // input [15:0] Imme_OC_ALU,
-    // input Imme_Valid_OC_ALU,
-    // input RegWrite_OC_ALU,
-    // input [3:0] ALUop_OC_ALU,
-    // input BEQ_OC_ALU,
-    // input BLT_OC_ALU,
-    // input [1:0] ScbID_OC_ALU, // for BEQ and BLT only, to clear Scb entry
-
 module ALU (
     // interface with OC
 	input clk,
@@ -69,6 +54,8 @@ module ALU (
     output RegWrite_ALU_CDB,
     output [4:0] Dst_ALU_CDB,
     output reg [8*32-1:0] Dst_Data_ALU_CDB,
+    output [1:0] Clear_ScbID_ALU_CDB,
+
     
     // output to Scb (to clear Scb entry. Branch only, which do not go onto CDB)
     output Clear_Valid_ALU_Scb,
@@ -129,6 +116,7 @@ module ALU (
 	assign ActiveMask_ALU_CDB = ActiveMask_reg;
 	assign Shamt_reg = Imme_reg[11:7];
 	assign Clear_ScbID_ALU_Scb = ScbID_reg;
+	assign Clear_ScbID_ALU_CDB = ScbID_reg;
 	assign Clear_WarpID_ALU_Scb = WarpID_reg;
 	assign WarpID_ALU_CDB = WarpID_reg;
 	assign Instr_ALU_CDB = Instr_reg;

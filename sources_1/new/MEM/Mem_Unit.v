@@ -37,7 +37,8 @@ module mem_unit
 	output [1:0] neg_feedback_scbID_o_MEM_Scb, pos_feedback_scbID_o_MEM_Scb,
 	output [7:0] pos_feedback_mask_o_MEM_Scb, cdb_write_mask_MEM_CDB,
 	output [255:0] cdb_write_data_MEM_CDB,
-	output [4:0] cdb_reg_addr_MEM_CDB
+	output [4:0] cdb_reg_addr_MEM_CDB,
+	output [1:0] cdb_scbID_MEM_CDB
 	
 );
 	
@@ -101,7 +102,8 @@ module mem_unit
 	assign pos_feedback_warpID_o_MEM_Scb = stage4_warp_ID;
 	assign WarpID_MEM_CDB = stage4_warp_ID;
 	
-	
+	// TODO: this needs to confirm with Dipayan
+	assign cdb_scbID_MEM_CDB = pos_feedback_scbID_o_MEM_Scb;
 	
 	mem_stage1 stage1_inst(.clk(clk), .resetb(rst), .MemRead(MemRead_q), .MemWrite(MemWrite_q), .shared_global_bar(shared_global_bar_q),
 							.warp_ID(warp_ID_q), .scb_ID(scb_ID_q), .PAM(PAM_q), .reg_addr(reg_addr_q), .rs_reg_data(rs_data_q), .offset(offset_q), 
