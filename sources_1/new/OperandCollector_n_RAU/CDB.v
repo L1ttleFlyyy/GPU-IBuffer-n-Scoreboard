@@ -41,6 +41,14 @@ begin
         Instr_CDB_RAU = Instr_MEM_CDB;
         ActiveMask_CDB_RAU = ActiveMask_MEM_CDB;
     end
+    else
+    begin
+        WriteAddr_CDB_RAU = Dst_ALU_CDB[2:0];
+        HWWarp_CDB_RAU = WarpID_ALU_CDB;
+        Data_CDB_RAU = Dst_Data_ALU_CDB;
+        Instr_CDB_RAU = Instr_ALU_CDB;
+        ActiveMask_CDB_RAU = ActiveMask_ALU_CDB;  
+    end
     // FIXME: inferring latches
 end
 
