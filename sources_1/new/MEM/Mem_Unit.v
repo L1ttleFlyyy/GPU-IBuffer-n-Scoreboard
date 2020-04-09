@@ -212,7 +212,21 @@ module mem_unit
 	
 	
 	
-	
+	always@(posedge clk)
+	begin
+		if(Instr_valid_OC_MEM)
+		begin
+			shared_global_bar_q		<=	shared_global_bar_OC_MEM;
+			PAM_q					<=	PAM_OC_MEM;
+			warp_ID_q				<=	warp_ID_OC_MEM;
+			scb_ID_q				<=	scb_ID_o_OC_MEM;
+			rs_data_q				<=	rs_data_OC_MEM;
+			rt_data_q				<=	rt_data_OC_MEM;
+			offset_q				<=	offset_OC_MEM;
+			reg_addr_q				<=	reg_addr_OC_MEM;
+			
+		end
+	end
 	
 	
 	always@(posedge clk, negedge rst)
@@ -230,18 +244,8 @@ module mem_unit
 			
 			if(Instr_valid_OC_MEM)
 			begin
-			
 				MemRead_q 				<= 	MemRead_OC_MEM;
 				MemWrite_q				<=	MemWrite_OC_MEM;
-				shared_global_bar_q		<=	shared_global_bar_OC_MEM;
-				PAM_q					<=	PAM_OC_MEM;
-				warp_ID_q				<=	warp_ID_OC_MEM;
-				scb_ID_q				<=	scb_ID_o_OC_MEM;
-				rs_data_q				<=	rs_data_OC_MEM;
-				rt_data_q				<=	rt_data_OC_MEM;
-				offset_q				<=	offset_OC_MEM;
-				reg_addr_q				<=	reg_addr_OC_MEM;
-				
 			end
 		end
 		

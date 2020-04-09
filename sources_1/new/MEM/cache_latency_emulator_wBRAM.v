@@ -50,6 +50,8 @@ latency, hit_missbar, miss_wait);
 	begin
 		hit_missbar = 0;
 		tag_match = 0;
+		// TODO: confirm with Dipayan
+		miss_wait = 0;
 		if(addr_valid_R)
 		begin
 		
@@ -85,7 +87,9 @@ latency, hit_missbar, miss_wait);
 			end
 			wp<=0;
 			addr_valid_R <= 0;
-			addr_response_R <= 0;
+			addr_response_valid_R <= 1'bx; // confirm with Dipayan
+			addr_R <= {27{1'bx}};
+			addr_response_R <= {27{1'bx}};
 		end
 		else
 		begin

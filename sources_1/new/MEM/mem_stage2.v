@@ -139,7 +139,30 @@ module mem_stage2
 		begin
 			MemRead_R <= 1'b0;
 			MemWrite_R <= 1'b0;
-			
+			eff_addr_int[0]	<= {32{1'bx}};
+			eff_addr_int[1] <= {32{1'bx}};
+			eff_addr_int[2] <= {32{1'bx}};
+			eff_addr_int[3] <= {32{1'bx}};
+			eff_addr_int[4] <= {32{1'bx}};
+			eff_addr_int[5] <= {32{1'bx}};
+			eff_addr_int[6] <= {32{1'bx}};
+			eff_addr_int[7] <= {32{1'bx}};
+			write_data_int[0] <= {32{1'bx}};
+			write_data_int[1] <= {32{1'bx}};
+			write_data_int[2] <= {32{1'bx}};
+			write_data_int[3] <= {32{1'bx}};
+			write_data_int[4] <= {32{1'bx}};
+			write_data_int[5] <= {32{1'bx}};
+			write_data_int[6] <= {32{1'bx}};
+			write_data_int[7] <= {32{1'bx}};
+			shared_global_bar_R <= 1'bx;
+			warp_ID_R			<=	{3{1'bx}};
+			scb_ID_R			<=	{2{1'bx}};
+			PAM_R				<=	{8{1'bx}};
+			reg_addr_R			<=	{5{1'bx}};
+			addr_sel_R			<=	{27{1'bx}};
+			addr_valid_o		<=	1'bx;
+			Instr_o				<=	{32{1'bx}};
 		end
 		else
 		begin

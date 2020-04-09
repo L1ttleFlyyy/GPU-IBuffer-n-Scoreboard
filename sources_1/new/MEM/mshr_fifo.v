@@ -35,14 +35,19 @@ module mshr_fifo(clk, resetb, cle_hit_missbar, scbID, warpID, cle_addr, cle_late
 	assign neg_feedback_warpID	=	fifo_warpID[rp];
 	
 	assign neg_feedback_valid 	=	(fifo_latency[rp]==5'b00001 && !empty);
-	
+	integer i;
 	always@(posedge clk, negedge resetb)
 	begin
 		if(!resetb)
 		begin
 			rp <= 0;
 			wp <= 0;
-			
+			for(i = 0; i < 8; i = i + 1) begin: fifo_reset
+				fifo_scbID[i] <= {2{1'bx}};
+				fifo_warpID[i] <= {3{1'bx}};
+				fifo_addr[i] <= {27{1'bx}};
+				fifo_latency[i] <= {5{1'bx}};
+			end
 		end
 		else
 		begin

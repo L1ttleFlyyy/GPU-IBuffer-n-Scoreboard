@@ -137,6 +137,25 @@ module mem_stage3
 		if(!resetb)
 		begin
 			reg_write_o <= 0;
+			
+			read_data_o <= {255{1'bx}};
+
+			MemRead_R 			<= 1'bx;
+			MemWrite_R 			<= 1'bx;
+			word_offset_R 		<= {24{1'bx}};
+			reg_addr_R 			<= {5{1'bx}};
+			thread_mask_R 		<= {8{1'bx}};
+			warp_ID_R 			<= {3{1'bx}};
+			scb_ID_R 			<= {2{1'bx}};
+			Instr_R 			<= {32{1'bx}};
+
+			write_fb_valid_o 	<=	1'bx;
+			warp_ID_o 			<= 	{3{1'bx}};;
+			scb_ID_o 			<= 	{2{1'bx}};
+			reg_addr_o 			<= 	{5{1'bx}};
+			thread_mask_o 		<= 	{8{1'bx}};
+			word_offset_o 		<= 	{24{1'bx}};
+			Instr_o				<=	{32{1'bx}};
 		end
 		else
 		begin
