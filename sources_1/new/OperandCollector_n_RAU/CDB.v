@@ -36,6 +36,7 @@ begin
     begin
         WriteAddr_CDB_RAU = Dst_ALU_CDB[2:0];
         HWWarp_CDB_RAU = WarpID_ALU_CDB;
+        Clear_WarpID_CDB_Scb = WarpID_ALU_CDB;
         Data_CDB_RAU = Dst_Data_ALU_CDB;
         Instr_CDB_RAU = Instr_ALU_CDB;
         ActiveMask_CDB_RAU = ActiveMask_ALU_CDB;
@@ -46,6 +47,7 @@ begin
     begin
         WriteAddr_CDB_RAU = Dst_MEM_CDB[2:0];
         HWWarp_CDB_RAU = WarpID_MEM_CDB;
+        Clear_WarpID_CDB_Scb = WarpID_MEM_CDB;
         Data_CDB_RAU = Dst_Data_MEM_CDB;
         Instr_CDB_RAU = Instr_MEM_CDB;
         ActiveMask_CDB_RAU = ActiveMask_MEM_CDB;
@@ -56,16 +58,16 @@ begin
     begin
         WriteAddr_CDB_RAU = Dst_ALU_CDB[2:0];
         HWWarp_CDB_RAU = WarpID_ALU_CDB;
+        Clear_WarpID_CDB_Scb = WarpID_ALU_CDB;
         Data_CDB_RAU = Dst_Data_ALU_CDB;
         Instr_CDB_RAU = Instr_ALU_CDB;
         ActiveMask_CDB_RAU = ActiveMask_ALU_CDB;
-        Clear_Valid_CDB_Scb = RegWrite_ALU_CDB;
+        Clear_Valid_CDB_Scb = 0;
         Clear_ScbID_CDB_Scb = Clear_ScbID_ALU_CDB;
     end
     // FIXME: inferring latches
 end
 
-assign Clear_WarpID_CDB_Scb = WarpID_ALU_CDB;
 
 
 endmodule
