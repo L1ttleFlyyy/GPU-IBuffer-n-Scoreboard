@@ -1,6 +1,10 @@
 `timescale 1ns/100ps
 
 module testbench;
+parameter mem_size = 256;
+parameter shmem_size = 256;
+localparam addr_width = $clog2(mem_size+shmem_size);
+localparam mem_addr_width = $clog2(mem_size);
 reg clk_tb;
 reg rst_tb;
     
@@ -20,24 +24,25 @@ wire [31:0] FileIO_Dout_ICache_tb;
 
     // FileIO to MEM
 reg FIO_MEMWRITE_tb;
-reg FIO_ADDR_tb;                    //default
+reg [addr_width-1:0] FIO_ADDR_tb;                    //default
 reg [255:0] FIO_WRITE_DATA_tb;
 wire [255:0] FIO_READ_DATA_tb;
 	
 reg FIO_CACHE_LAT_WRITE_tb;
 reg [4:0] FIO_CACHE_LAT_VALUE_tb;
-reg FIO_CACHE_MEM_ADDR_tb;          //default
+reg [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR_tb;          //default
 
 reg [31:0] temp_ICache [0:4095];
 reg [255:0] temp_MEM [0:255];
-reg [4:0] temp_EMU [0:511];
-reg [28:0] temp_TM;
+reg [7:0] temp_EMU [0:511];
+reg [31:0] temp_TM [0:7];
 
 reg [255:0] Read_temp;
  
-reg [11:0] i_ICache;
-reg [7:0] i_MEM;
-reg [8:0] i_EMU;
+reg [15:0] i_ICache;
+reg [15:0] i_MEM;
+reg [15:0] i_EMU;
+reg [15:0] i_TM;
 
 
 
@@ -58,17 +63,19 @@ initial
 
 initial                             //MEM_INIT
     begin
-    $readmemb("TM_init.txt", temp_TM);
-    $readmemb("ICache_init.txt", temp_ICache);
-    $readmemb("MEM_init.txt", temp_MEM);
-    $readmemb("EMU_init.txt", temp_EMU);
+    $readmemh("TM_init.txt", temp_TM);
+    $readmemh("ICache_init.txt", temp_ICache);
+    $readmemh("MEM_init.txt", temp_MEM);
+    $readmemh("EMU_init.txt", temp_EMU);
     end
 
 initial
     begin:  TM_INIT
-        Write_Enable_FIO_TM_tb = 1;
-        @ (posedge clk_tb);
-        Write_Data_FIO_TM_tb = temp_TM;
+        
+        for(i_TM = 0; i_TM <= 7; i_TM = i_TM+1)
+            @ (posedge clk_tb);
+            Write_Enable_FIO_TM_tb = 1;
+            Write_Data_FIO_TM_tb = temp_TM[i_TM][28:0];
         @ (posedge clk_tb);
         Write_Enable_FIO_TM_tb = 0;
     end
@@ -109,7 +116,7 @@ initial
             begin
                 @ (posedge clk_tb);
                 FIO_CACHE_MEM_ADDR_tb = i_EMU;
-                FIO_CACHE_LAT_VALUE_tb = temp_EMU[i_MEM];
+                FIO_CACHE_LAT_VALUE_tb = temp_EMU[i_EMU][4:0];
             end
         @ (posedge clk_tb);
         FIO_CACHE_LAT_WRITE_tb = 0;
@@ -118,12 +125,12 @@ initial
 
 initial
     begin:  DUMP_MEM
-        wait (finished_TM_FIO_tb);
+        wait (~FIO_MEMWRITE_tb);
             for(i_MEM = 0; i_MEM <= 255; i_MEM = i_MEM+1)
                 @(posedge clk_tb)
                 FIO_ADDR_tb = i_MEM;
                 Read_temp = FIO_READ_DATA_tb;
-                $display ("Addr before 2 clk = %d, Data = %b", i_MEM, Read_temp)
+                $display ("Addr before 2 clk = %d, Data = %b", i_MEM, Read_temp);
     end
 
 
