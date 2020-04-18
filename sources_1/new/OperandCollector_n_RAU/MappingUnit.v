@@ -213,7 +213,7 @@ begin
 
         ALLO: begin // regular and special
             LUT_Addr <= LUT_Addr + 1;//for loop statement//不能用<=??associative？
-            Nreq <= Nreq - 2;
+            Nreq <= Nreq - 1;
             if (Nreq != 0) begin
                 LUT[LUT_Addr] <= {1'b1, LUT_RF_Row, LUT_RF_Bank};
                 //Available_RAU_TM <= Available_RAU_TM - 2;
