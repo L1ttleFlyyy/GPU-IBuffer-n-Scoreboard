@@ -71,17 +71,22 @@ initial                             //MEM_INIT
 
 initial
     begin:  TM_INIT
-        
+        @ (posedge clk_tb);
+        clear_FIO_TM_tb = 0;
+        wait(rst_tb);
         for(i_TM = 0; i_TM <= 7; i_TM = i_TM+1)
+        begin
             @ (posedge clk_tb);
             Write_Enable_FIO_TM_tb = 1;
             Write_Data_FIO_TM_tb = temp_TM[i_TM][28:0];
+        end
         @ (posedge clk_tb);
         Write_Enable_FIO_TM_tb = 0;
     end
 
 initial
     begin:  I_CACHE_INIT
+        wait(rst_tb);
         start_FIO_TM_tb = 0;
         FileIO_Wen_ICache_tb = 1;
         for(i_ICache = 0; i_ICache <= 4095; i_ICache = i_ICache+1)
@@ -97,6 +102,7 @@ initial
 
 initial
     begin:  MEM_INIT
+        wait(rst_tb);
         FIO_MEMWRITE_tb = 1;
         for(i_MEM = 0; i_MEM <= 255; i_MEM = i_MEM+1)
             begin
@@ -110,7 +116,7 @@ initial
 
 initial
     begin:  EMU_INIT
-        
+        wait(rst_tb);
         FIO_CACHE_LAT_WRITE_tb = 1;
         for(i_EMU = 0; i_EMU <= 511; i_EMU = i_EMU+1)
             begin
