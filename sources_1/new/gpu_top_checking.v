@@ -281,6 +281,74 @@ module gpu_top_checking#(
     wire [31:0] Instr_CDB_RAU;
     wire [7:0] ActiveMask_CDB_RAU;
 
+	// synthesis translate_off
+	wire [8*20:1] instruction_out_ID0_IB;
+	wire [8*20:1] instruction_out_ID1_IB;
+	wire [8*20:1] instruction_out_IB_OC;
+	wire [8*20:1] instruction_out_OC_ALU;
+	wire [8*20:1] instruction_out_OC_MEM;
+	wire [8*20:1] instruction_out_ALU_CDB;
+	wire [8*20:1] instruction_out_MEM_CDB;
+	wire [8*20:1] instruction_out_CDB_RAU;
+	wire [15:0] immediate_ID0_IB;
+	wire [15:0] immediate_ID1_IB;
+	wire [15:0] immediate_IB_OC;
+	wire [15:0] immediate_OC_ALU;
+	wire [15:0] immediate_OC_MEM;
+	wire [15:0] immediate_ALU_CDB;
+	wire [15:0] immediate_MEM_CDB;
+	wire [15:0] immediate_CDB_RAU;
+	wire [25:0] j_address_ID0_IB;
+	wire [25:0] j_address_ID1_IB;
+	wire [25:0] j_address_IB_OC;
+	wire [25:0] j_address_OC_ALU;
+	wire [25:0] j_address_OC_MEM;
+	wire [25:0] j_address_ALU_CDB;
+	wire [25:0] j_address_MEM_CDB;
+	wire [25:0] j_address_CDB_RAU;
+	reg [31:0] PC_reg;
+	reverse_assembler rvasm_ID0_IB(
+	.clk(clk), .rst_n(rst),	.PC(PC_reg), .warp_ID(), .PC_value(),
+	.one_hot_warp_ID(Valid_ID0_IB_SIMT), .instruction_in(Instr_ID0_IB), .module_name("ID0"),
+	.instruction_out(instruction_out_ID0_IB), .immediate(immediate_ID0_IB), .j_address(j_address_ID0_IB)
+    );
+	reverse_assembler rvasm_ID1_IB(
+	.clk(clk), .rst_n(rst),	.PC(PC_reg), .warp_ID(), .PC_value(),
+	.one_hot_warp_ID(Valid_ID1_IB_SIMT), .instruction_in(Instr_ID1_IB), .module_name("ID1"),
+	.instruction_out(instruction_out_ID1_IB), .immediate(immediate_ID1_IB), .j_address(j_address_ID1_IB)
+    );
+	reverse_assembler rvasm_IB_OC(
+	.clk(clk), .rst_n(rst),	.PC(PC_reg), .warp_ID(), .PC_value(),
+	.one_hot_warp_ID(WarpID_IB_OC), .instruction_in(Instr_IB_OC), .module_name("IB_OC"),
+	.instruction_out(instruction_out_IB_OC), .immediate(immediate_IB_OC), .j_address(j_address_IB_OC)
+    );
+	reverse_assembler rvasm_OC_ALU(
+	.clk(clk), .rst_n(rst),	.PC(PC_reg), .warp_ID(), .PC_value(),
+	.one_hot_warp_ID(WarpID_OC_ALU), .instruction_in(Instr_OC_ALU), .module_name("OC_ALU"),
+	.instruction_out(instruction_out_OC_ALU), .immediate(immediate_OC_ALU), .j_address(j_address_OC_ALU)
+    );
+	reverse_assembler rvasm_OC_MEM(
+	.clk(clk), .rst_n(rst),	.PC(PC_reg), .warp_ID(), .PC_value(),
+	.one_hot_warp_ID(WarpID_OC_MEM), .instruction_in(Instr_OC_MEM), .module_name("OC_MEM"),
+	.instruction_out(instruction_out_OC_MEM), .immediate(immediate_OC_MEM), .j_address(j_address_OC_MEM)
+    );
+    reverse_assembler rvasm_ALU_CDB(
+	.clk(clk), .rst_n(rst),	.PC(PC_reg), .warp_ID(), .PC_value(),
+	.one_hot_warp_ID(WarpID_ALU_CDB), .instruction_in(Instr_ALU_CDB), .module_name("ALU_CDB"),
+	.instruction_out(instruction_out_ALU_CDB), .immediate(immediate_ALU_CDB), .j_address(j_address_ALU_CDB)
+    );
+    reverse_assembler rvasm_MEM_CDB(
+	.clk(clk), .rst_n(rst),	.PC(PC_reg), .warp_ID(), .PC_value(),
+	.one_hot_warp_ID(WarpID_MEM_CDB), .instruction_in(Instr_MEM_CDB), .module_name("MEM_CDB"),
+	.instruction_out(instruction_out_MEM_CDB), .immediate(immediate_MEM_CDB), .j_address(j_address_MEM_CDB)
+    );    
+    reverse_assembler rvasm_CDB_RAU(
+	.clk(clk), .rst_n(rst),	.PC(PC_reg), .warp_ID(), .PC_value(),
+	.one_hot_warp_ID(WarpID_CDB_RAU), .instruction_in(Instr_CDB_RAU), .module_name("CDB_RAU"),
+	.instruction_out(instruction_out_CDB_RAU), .immediate(immediate_CDB_RAU), .j_address(j_address_CDB_RAU)
+    );
+	// synthesis translate_on
+
     TaskManager TM(
     // Global Signals
     .clk(clk),
