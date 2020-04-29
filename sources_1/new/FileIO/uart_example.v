@@ -370,57 +370,102 @@ module uart_example (
 
   /************************* Custom Parameters *************************/
   localparam NUM_MEMS = 4;
-  localparam WIDTH = 8*4; // = 32, The WIDTH must be a multiple of 4
-  localparam DEPTH = 8; // = 8
+  localparam WIDTH0 = 8*4; // Task manager: 29 * 256
+  localparam DEPTH0 = 256;
+  localparam WIDTH1 = 8*4; // I-Cache: 32 * 4096
+  localparam DEPTH1 = 4096;
+  localparam WIDTH2 = 64*4; // Data Memory: 255 * 512
+  localparam DEPTH2 = 512;
+  localparam WIDTH3 = 2*4; // Cache Emulator: 5 * 256
+  localparam DEPTH3 = 256;
   /************************* Custom Parameters *************************/
 
   /************************* Derived Parameters ************************/
   localparam LOG_NUM_MEMS = $clog2(NUM_MEMS);
-  localparam NUM_NIBBLES = WIDTH/4; // = 8
-  localparam LOG_NUM_NIBBLES = $clog2(NUM_NIBBLES); // = 3
-  localparam LOG_DEPTH = $clog2(DEPTH); // = 3
+  localparam NUM_NIBBLES0 = WIDTH0/4; // 8
+  localparam NUM_NIBBLES1 = WIDTH1/4; // 8
+  localparam NUM_NIBBLES2 = WIDTH2/4; // 64
+  localparam NUM_NIBBLES3 = WIDTH3/4; // 2
+  localparam LOG_NUM_NIBBLES = $clog2(WIDTH2); // log2(256) = 8
+  localparam LOG_DEPTH = $clog2(DEPTH1); // log2(4096) = 12
+  
+  /* MAX value here */
+  localparam CNT_ROW_MAX0 = NUM_NIBBLES0 + 2; // + 2 (CR LF) = 10
+  localparam CNT_ROW_MAX1 = NUM_NIBBLES1 + 2; // + 2 (CR LF) = 10
+  localparam CNT_ROW_MAX2 = NUM_NIBBLES2 + 2; // + 2 (CR LF) = 66
+  localparam CNT_ROW_MAX3 = NUM_NIBBLES3 + 2; // + 2 (CR LF) = 4
 
-  localparam CNT_ROW_MAX = NUM_NIBBLES + 2; // NUM_NIBBLES + 2 (CR LF) = 10
-  localparam LOG_CNT_ROW_MAX = $clog2(CNT_ROW_MAX); // = 4
-  localparam CNT_MAX = 4 + DEPTH * CNT_ROW_MAX + 1; // 4 (header) + DEPTH * (NUM_NIBBLES + 2 (CR LF)) + EOF = 85
-  localparam LOG_CNT_MAX = $clog2(CNT_MAX); // = 7
+  localparam LOG_CNT_ROW_MAX = $clog2(CNT_ROW_MAX2); // clog2(66) = 7
+
+  localparam CNT_MAX0 = 4 + DEPTH0 * CNT_ROW_MAX0 + 1; // 4 (header) + DEPTH * (NUM_NIBBLES + 2 (CR LF)) + EOF = 2565
+  localparam CNT_MAX1 = 4 + DEPTH1 * CNT_ROW_MAX1 + 1; // 4 (header) + DEPTH * (NUM_NIBBLES + 2 (CR LF)) + EOF = 40965
+  localparam CNT_MAX2 = 4 + DEPTH2 * CNT_ROW_MAX2 + 1; // 4 (header) + DEPTH * (NUM_NIBBLES + 2 (CR LF)) + EOF = 33797
+  localparam CNT_MAX3 = 4 + DEPTH3 * CNT_ROW_MAX3 + 1; // 4 (header) + DEPTH * (NUM_NIBBLES + 2 (CR LF)) + EOF = 1029
+  
+  localparam LOG_CNT_MAX = $clog2(CNT_MAX1); // clog2(40969) = 16
   /************************* Derived Parameters ************************/
 
+  reg [LOG_NUM_MEMS-1:0] mem_sel;
+  wire [LOG_CNT_MAX-1:0]        cnt_max_mux = (mem_sel == 3)? CNT_MAX3:
+                                              (mem_sel == 2)? CNT_MAX2:
+                                              (mem_sel == 1)? CNT_MAX1:
+                                                              CNT_MAX0;
   reg [LOG_CNT_MAX-1:0]         cnt_send;
+  wire [LOG_CNT_ROW_MAX-1:0]         cnt_send_row_max_mux = (mem_sel == 3)? CNT_ROW_MAX3:
+                                                            (mem_sel == 2)? CNT_ROW_MAX2:
+                                                            (mem_sel == 1)? CNT_ROW_MAX1:
+                                                                            CNT_ROW_MAX0;
   reg [LOG_CNT_ROW_MAX-1:0]         cnt_send_row;
   reg [LOG_NUM_NIBBLES-1:0]         nibble_cnt;
 
+  wire [LOG_DEPTH-1:0]          depth_mux = (mem_sel == 3)? DEPTH3:
+                                            (mem_sel == 2)? DEPTH2:
+                                            (mem_sel == 1)? DEPTH1:
+                                                            DEPTH0;
   reg [LOG_DEPTH-1:0] addr_cnt;
-  reg [LOG_NUM_MEMS-1:0] mem_sel;
-  reg [WIDTH-1:0] data_temp;
-  wire [WIDTH-1:0] data_in_concatenated = {data_temp[WIDTH-1:4], char_to_digit[3:0]};
-	wire [WIDTH-1:0] mem_out;
+  reg [WIDTH2-1:0] data_temp;
+  wire [WIDTH2-1:0] data_in_concatenated = {data_temp[WIDTH2-1:4], char_to_digit[3:0]};
+	wire [WIDTH2-1:0] mem_out;
 
-	reg fsm_start;
 	wire fsm_done;
 
-  core_fsm # (
-    .NUM_MEMS(NUM_MEMS),
-    .WIDTH(WIDTH),
-    .DEPTH(DEPTH)
-  ) core_fsm_inst (
+  // wire [WIDTH0-1:0] TM_DATA_OUT;
+  wire [WIDTH1-1:0] ICache_DATA_OUT;
+  wire [WIDTH2-1:0] MEM_DATA_OUT;
+  // wire [WIDTH3-1:0] EMU_DATA_OUT;
+  gpu_top_checking gpu_top (
     .clk(clk_sys),
-    .rst(rst_clk),
-    .FIO_wen((state == RECV) && (nibble_cnt == 0)),
-    .FIO_sel(mem_sel),
-    .FIO_in(data_in_concatenated),
-    .FIO_addr(addr_cnt),
-    .FIO_out(mem_out),
+    .rst(~rst_clk),
+    // FileIO to TM
+    .Write_Enable_FIO_TM((state == RECV) && (nibble_cnt == 0) && (mem_sel == 0)),
+    .Write_Data_FIO_TM(data_in_concatenated[28:0]),
+    .start_FIO_TM(btnl_scen),
+    .clear_FIO_TM(1'b0),
+    .finished_TM_FIO(fsm_done),
+    // FileIO to ICache
+    .FileIO_Wen_ICache((state == RECV) && (nibble_cnt == 0) && (mem_sel == 1)),
+    .FileIO_Addr_ICache(addr_cnt),
+    .FileIO_Din_ICache(data_in_concatenated[31:0]),
+    .FileIO_Dout_ICache(ICache_DATA_OUT),
 
-    .fsm_start(btnl_scen),
-    .fsm_done(fsm_done)
-  );
+    // FileIO to MEM
+    .FIO_MEMWRITE((state == RECV) && (nibble_cnt == 0) && (mem_sel == 2)),
+    .FIO_ADDR(addr_cnt[8:0]),
+    .FIO_WRITE_DATA(data_in_concatenated[255:0]),
+    .FIO_READ_DATA(MEM_DATA_OUT),
+	
+    .FIO_CACHE_LAT_WRITE((state == RECV) && (nibble_cnt == 0) && (mem_sel == 3)),
+    .FIO_CACHE_LAT_VALUE(data_in_concatenated[4:0]),
+    .FIO_CACHE_MEM_ADDR(addr_cnt[7:0])
+    );
 
+
+  assign mem_out = (mem_sel == 1)? {ICache_DATA_OUT, {(WIDTH2-WIDTH1){1'b0}}} : MEM_DATA_OUT;
   wire [3:0] nibble_mux;
-  assign nibble_mux[3] = mem_out[WIDTH-1-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
-  assign nibble_mux[2] = mem_out[WIDTH-2-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
-  assign nibble_mux[1] = mem_out[WIDTH-3-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
-  assign nibble_mux[0] = mem_out[WIDTH-4-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
+  assign nibble_mux[3] = mem_out[WIDTH2-1-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
+  assign nibble_mux[2] = mem_out[WIDTH2-2-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
+  assign nibble_mux[1] = mem_out[WIDTH2-3-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
+  assign nibble_mux[0] = mem_out[WIDTH2-4-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
 
   // the logic for input to the send buffer. This is the entire character flow of sending a file, including controling characters
   always @ (*) //
@@ -431,10 +476,10 @@ module uart_example (
         else if (cnt_send == 1) send_fifo_din = to_char(mem_sel); // name of the file (0, 1, 2, 3...)
         else if (cnt_send == 2) send_fifo_din = EOT;
         else if (cnt_send == 3) send_fifo_din = SOT;
-        else if (cnt_send >= 4 && cnt_send <= CNT_MAX - 2) begin
-            if (cnt_send_row < NUM_NIBBLES) send_fifo_din = to_char(nibble_mux); // content of the row
-            else if (cnt_send_row[0] == 0) send_fifo_din = CR; // line ending
-            else if (cnt_send_row[1] == 1) send_fifo_din = LF;
+        else if (cnt_send >= 4 && cnt_send <= cnt_max_mux - 2) begin
+            if (cnt_send_row <= cnt_send_row_max_mux - 3) send_fifo_din = to_char(nibble_mux); // content of the row
+            else if (cnt_send_row == cnt_send_row_max_mux - 2) send_fifo_din = CR; // line ending
+            else if (cnt_send_row == cnt_send_row_max_mux - 1) send_fifo_din = LF;
             else send_fifo_din = 8'hXX;
         end else send_fifo_din = EOF; // cnt_send == 84 (CNT_MAX - 1)
     end
@@ -465,19 +510,31 @@ module uart_example (
         begin
             state <= RECV;
             addr_cnt <= 0;
-            nibble_cnt <= NUM_NIBBLES-1;
+            nibble_cnt <= (mem_sel == 3)? NUM_NIBBLES3-1:
+                          (mem_sel == 2)? NUM_NIBBLES2-1:
+                          (mem_sel == 1)? NUM_NIBBLES1-1:
+                                          NUM_NIBBLES0-1;
         end
     RECV:
         if (receive_data_rdy && (~char_to_digit[4])) begin
-            nibble_cnt <= nibble_cnt - 1'b1;
             data_temp[4*nibble_cnt]     <= char_to_digit[0];
             data_temp[4*nibble_cnt + 1] <= char_to_digit[1];
             data_temp[4*nibble_cnt + 2] <= char_to_digit[2];
             data_temp[4*nibble_cnt + 3] <= char_to_digit[3];
             if (nibble_cnt == 0) begin
+                nibble_cnt <= (mem_sel == 3)? NUM_NIBBLES3-1:
+                              (mem_sel == 2)? NUM_NIBBLES2-1:
+                              (mem_sel == 1)? NUM_NIBBLES1-1:
+                                              NUM_NIBBLES0-1;
+                if (addr_cnt == (depth_mux-1)) begin
+                    state <= IDLE;
+                    addr_cnt <= 0;
+                end else begin
                     addr_cnt <= addr_cnt + 1'b1;
-                    if (addr_cnt == (DEPTH-1)) state <= IDLE;
-            end 
+                end
+            end else begin
+                nibble_cnt <= nibble_cnt - 1'b1;
+            end
         end
     COMP:            // Enter the div state: start running the sub state machine for division
     begin
@@ -488,7 +545,7 @@ module uart_example (
     SEND: 
         if (~send_fifo_full)
         begin
-            if (cnt_send == CNT_MAX - 1) begin // 4 (header) + 8 locations * (8 (nibbles) + 2 (/r/n)) + EOF
+            if (cnt_send == cnt_max_mux - 1) begin // 4 (header) + 8 locations * (8 (nibbles) + 2 (/r/n)) + EOF
                 cnt_send <= 0;
                 mem_sel <= mem_sel + 1'b1;
                 if(mem_sel == (NUM_MEMS-1)) state <= WAIT_SEND_DONE;
@@ -500,14 +557,14 @@ module uart_example (
             if (cnt_send < 4) begin // Sending header
                 cnt_send_row <= 0;
             end else begin
-                if (cnt_send_row == CNT_ROW_MAX - 1) begin
+                if (cnt_send_row == cnt_send_row_max_mux - 1) begin
                     cnt_send_row <= 0;
                 end else begin
                     cnt_send_row <= cnt_send_row + 1;
                 end
             end
 
-            if (cnt_send_row == CNT_ROW_MAX - 2) begin // address increment should be 1 clock ahead to accommodate for the IREG latency
+            if (cnt_send_row == cnt_send_row_max_mux - 2) begin // address increment should be 1 clock ahead to accommodate for the IREG latency
                 addr_cnt <= addr_cnt + 1;
             end
         end
