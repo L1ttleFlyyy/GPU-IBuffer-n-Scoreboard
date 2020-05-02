@@ -354,8 +354,8 @@ module uart_example (
 //   assign led_o[1] = receive_sendbar;
 //   assign led_o[2] = send_fifo_full;
 //   assign led_o[0] = done;
-//   assign led_o[2:0] = addr_cnt;
-  assign led_o[7:4] = state;
+  assign led_o[15:4] = addr_cnt;
+  assign led_o[3:0] = state;
 //   assign led_o[9:8] = mem_sel;
   //assign led_o[5:4] = reg_pointer;
   //assign led_o[7:4] = state_temp;
@@ -374,7 +374,7 @@ module uart_example (
   localparam DEPTH0 = 256;
   localparam WIDTH1 = 8*4; // I-Cache: 32 * 4096
   localparam DEPTH1 = 4096;
-  localparam WIDTH2 = 64*4; // Data Memory: 255 * 512
+  localparam WIDTH2 = 64*4; // Data Memory: 256 * 512
   localparam DEPTH2 = 512;
   localparam WIDTH3 = 2*4; // Cache Emulator: 5 * 256
   localparam DEPTH3 = 256;
@@ -406,22 +406,22 @@ module uart_example (
   /************************* Derived Parameters ************************/
 
   reg [LOG_NUM_MEMS-1:0] mem_sel;
-  wire [LOG_CNT_MAX-1:0]        cnt_max_mux = (mem_sel == 3)? CNT_MAX3:
-                                              (mem_sel == 2)? CNT_MAX2:
-                                              (mem_sel == 1)? CNT_MAX1:
-                                                              CNT_MAX0;
+  wire [LOG_CNT_MAX-1:0]        cnt_max_mux = (mem_sel == 3)? CNT_MAX3 - 1:
+                                              (mem_sel == 2)? CNT_MAX2 - 1:
+                                              (mem_sel == 1)? CNT_MAX1 - 1:
+                                                              CNT_MAX0 - 1;
   reg [LOG_CNT_MAX-1:0]         cnt_send;
-  wire [LOG_CNT_ROW_MAX-1:0]         cnt_send_row_max_mux = (mem_sel == 3)? CNT_ROW_MAX3:
-                                                            (mem_sel == 2)? CNT_ROW_MAX2:
-                                                            (mem_sel == 1)? CNT_ROW_MAX1:
-                                                                            CNT_ROW_MAX0;
+  wire [LOG_CNT_ROW_MAX-1:0]         cnt_send_row_max_mux = (mem_sel == 3)? CNT_ROW_MAX3 - 1:
+                                                            (mem_sel == 2)? CNT_ROW_MAX2 - 1:
+                                                            (mem_sel == 1)? CNT_ROW_MAX1 - 1:
+                                                                            CNT_ROW_MAX0 - 1;
   reg [LOG_CNT_ROW_MAX-1:0]         cnt_send_row;
   reg [LOG_NUM_NIBBLES-1:0]         nibble_cnt;
 
-  wire [LOG_DEPTH-1:0]          depth_mux = (mem_sel == 3)? DEPTH3:
-                                            (mem_sel == 2)? DEPTH2:
-                                            (mem_sel == 1)? DEPTH1:
-                                                            DEPTH0;
+  wire [LOG_DEPTH-1:0]          addr_max_mux =  (mem_sel == 3)? DEPTH3 - 1:
+                                                (mem_sel == 2)? DEPTH2 - 1:
+                                                (mem_sel == 1)? DEPTH1 - 1:
+                                                                DEPTH0 - 1;
   reg [LOG_DEPTH-1:0] addr_cnt;
   reg [WIDTH2-1:0] data_temp;
   wire [WIDTH2-1:0] data_in_concatenated = {data_temp[WIDTH2-1:4], char_to_digit[3:0]};
@@ -444,7 +444,7 @@ module uart_example (
     .finished_TM_FIO(fsm_done),
     // FileIO to ICache
     .FileIO_Wen_ICache((state == RECV) && (nibble_cnt == 0) && (mem_sel == 1)),
-    .FileIO_Addr_ICache(addr_cnt),
+    .FileIO_Addr_ICache(addr_cnt[11:0]),
     .FileIO_Din_ICache(data_in_concatenated[31:0]),
     .FileIO_Dout_ICache(ICache_DATA_OUT),
 
@@ -476,10 +476,10 @@ module uart_example (
         else if (cnt_send == 1) send_fifo_din = to_char(mem_sel); // name of the file (0, 1, 2, 3...)
         else if (cnt_send == 2) send_fifo_din = EOT;
         else if (cnt_send == 3) send_fifo_din = SOT;
-        else if (cnt_send >= 4 && cnt_send <= cnt_max_mux - 2) begin
-            if (cnt_send_row <= cnt_send_row_max_mux - 3) send_fifo_din = to_char(nibble_mux); // content of the row
-            else if (cnt_send_row == cnt_send_row_max_mux - 2) send_fifo_din = CR; // line ending
-            else if (cnt_send_row == cnt_send_row_max_mux - 1) send_fifo_din = LF;
+        else if (cnt_send >= 4 && cnt_send <= cnt_max_mux - 1) begin
+            if (cnt_send_row <= cnt_send_row_max_mux - 2) send_fifo_din = to_char(nibble_mux); // content of the row
+            else if (cnt_send_row == cnt_send_row_max_mux - 1) send_fifo_din = CR; // line ending
+            else if (cnt_send_row == cnt_send_row_max_mux) send_fifo_din = LF;
             else send_fifo_din = 8'hXX;
         end else send_fifo_din = EOF; // cnt_send == 84 (CNT_MAX - 1)
     end
@@ -526,7 +526,7 @@ module uart_example (
                               (mem_sel == 2)? NUM_NIBBLES2-1:
                               (mem_sel == 1)? NUM_NIBBLES1-1:
                                               NUM_NIBBLES0-1;
-                if (addr_cnt == (depth_mux-1)) begin
+                if (addr_cnt == addr_max_mux) begin
                     state <= IDLE;
                     addr_cnt <= 0;
                 end else begin
@@ -538,33 +538,34 @@ module uart_example (
         end
     COMP:            // Enter the div state: start running the sub state machine for division
     begin
-        if (fsm_done) state <= SEND;
+        // if (fsm_done) state <= SEND;
+        state <= SEND;
         cnt_send <= 0;
-        mem_sel <= 0;
+        mem_sel <= 1;
     end
     SEND: 
         if (~send_fifo_full)
         begin
-            if (cnt_send == cnt_max_mux - 1) begin // 4 (header) + 8 locations * (8 (nibbles) + 2 (/r/n)) + EOF
+            if (cnt_send == cnt_max_mux) begin // 4 (header) + 8 locations * (8 (nibbles) + 2 (/r/n)) + EOF
                 cnt_send <= 0;
                 mem_sel <= mem_sel + 1'b1;
-                if(mem_sel == (NUM_MEMS-1)) state <= WAIT_SEND_DONE;
+                if(mem_sel == 2) state <= WAIT_SEND_DONE;
             end else begin
                 cnt_send <= cnt_send + 1;
             end
-            if ((mem_sel == (NUM_MEMS-1)) && (send_finish == 1'b1)) state <= IDLE;
+            if ((mem_sel == 2) && (send_finish == 1'b1)) state <= IDLE;
 
             if (cnt_send < 4) begin // Sending header
                 cnt_send_row <= 0;
             end else begin
-                if (cnt_send_row == cnt_send_row_max_mux - 1) begin
+                if (cnt_send_row == cnt_send_row_max_mux) begin
                     cnt_send_row <= 0;
                 end else begin
                     cnt_send_row <= cnt_send_row + 1;
                 end
             end
 
-            if (cnt_send_row == cnt_send_row_max_mux - 2) begin // address increment should be 1 clock ahead to accommodate for the IREG latency
+            if (cnt_send_row == cnt_send_row_max_mux - 1) begin // address increment should be 1 clock ahead to accommodate for the IREG latency
                 addr_cnt <= addr_cnt + 1;
             end
         end
