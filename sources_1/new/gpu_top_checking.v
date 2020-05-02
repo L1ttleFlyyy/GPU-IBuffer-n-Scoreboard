@@ -54,6 +54,7 @@ module gpu_top_checking#(
     output [255:0] FIO_READ_DATA,
 	
 	input FIO_CACHE_LAT_WRITE,
+	output [4:0] FIO_CACHE_LAT_READ,
 	input [4:0] FIO_CACHE_LAT_VALUE,
 	input [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR
 
@@ -807,6 +808,7 @@ module gpu_top_checking#(
     .FIO_READ_DATA(FIO_READ_DATA),
 	
 	.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE),
+	.FIO_CACHE_LAT_READ(FIO_CACHE_LAT_READ),
 	.FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE),
 	.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR),
 	

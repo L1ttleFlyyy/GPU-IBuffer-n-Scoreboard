@@ -18,6 +18,7 @@ module mem_stage2
 	input [31:0] Instr,
 	
 	input FIO_CACHE_LAT_WRITE,
+	output [4:0] FIO_CACHE_LAT_READ,
 	input [4:0] FIO_CACHE_LAT_VALUE,
 	input [addr_width-1:0] FIO_CACHE_MEM_ADDR,
 	
@@ -68,6 +69,7 @@ module mem_stage2
 									.addr_response(mshr_neg_feedback_addr), .addr_response_valid(mshr_neg_feedback_valid), .clk(clk), 
 									.resetb(resetb), .miss_wait(miss_wait),
 									.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE), .FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE), 
+									.FIO_CACHE_LAT_READ(FIO_CACHE_LAT_READ),
 									.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR));
 	
 	

@@ -28,6 +28,7 @@ module mem_unit
 	
 	input FIO_CACHE_LAT_WRITE,
 	input [4:0] FIO_CACHE_LAT_VALUE,
+	output [4:0] FIO_CACHE_LAT_READ,
 	input [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR,
 	
 	output [2:0] WarpID_MEM_CDB,
@@ -129,7 +130,7 @@ module mem_unit
 							.addr_sel(stage12_addr_sel), .mshr_neg_feedback_addr(stage32_neg_feedback_addr), .Instr(stage12_Instr), 
 							
 							.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE), .FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE),
-							.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR),
+							.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR), .FIO_CACHE_LAT_READ(FIO_CACHE_LAT_READ),
 							
 							
 							.MemRead_o(stage23_MemRead), .MemWrite_o(stage23_MemWrite), .hit_missbar_o(stage23_hit_missbar), 

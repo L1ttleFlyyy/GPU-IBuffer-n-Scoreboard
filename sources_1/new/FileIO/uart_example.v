@@ -432,7 +432,9 @@ module uart_example (
   // wire [WIDTH0-1:0] TM_DATA_OUT;
   wire [WIDTH1-1:0] ICache_DATA_OUT;
   wire [WIDTH2-1:0] MEM_DATA_OUT;
-  // wire [WIDTH3-1:0] EMU_DATA_OUT;
+	wire [WIDTH3-1:0] EMU_DATA_OUT;
+  assign EMU_DATA_OUT[7:5] = 0;
+
   gpu_top_checking gpu_top (
     .clk(clk_sys),
     .rst(~rst_clk),
@@ -456,11 +458,14 @@ module uart_example (
 	
     .FIO_CACHE_LAT_WRITE((state == RECV) && (nibble_cnt == 0) && (mem_sel == 3)),
     .FIO_CACHE_LAT_VALUE(data_in_concatenated[4:0]),
+    .FIO_CACHE_LAT_READ(EMU_DATA_OUT[4:0]),
     .FIO_CACHE_MEM_ADDR(addr_cnt[7:0])
     );
 
 
-  assign mem_out = (mem_sel == 1)? {ICache_DATA_OUT, {(WIDTH2-WIDTH1){1'b0}}} : MEM_DATA_OUT;
+  assign mem_out =    (mem_sel == 1)? {ICache_DATA_OUT, {(WIDTH2-WIDTH1){1'b0}}}:
+                      (mem_sel == 2)? MEM_DATA_OUT: 
+                                      {EMU_DATA_OUT, {(WIDTH2-WIDTH3){1'b0}}};
   wire [3:0] nibble_mux;
   assign nibble_mux[3] = mem_out[WIDTH2-1-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
   assign nibble_mux[2] = mem_out[WIDTH2-2-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
@@ -549,11 +554,11 @@ module uart_example (
             if (cnt_send == cnt_max_mux) begin // 4 (header) + 8 locations * (8 (nibbles) + 2 (/r/n)) + EOF
                 cnt_send <= 0;
                 mem_sel <= mem_sel + 1'b1;
-                if(mem_sel == 2) state <= WAIT_SEND_DONE;
+                if(mem_sel == 3) state <= WAIT_SEND_DONE;
             end else begin
                 cnt_send <= cnt_send + 1;
             end
-            if ((mem_sel == 2) && (send_finish == 1'b1)) state <= IDLE;
+            if ((mem_sel == 3) && (send_finish == 1'b1)) state <= IDLE;
 
             if (cnt_send < 4) begin // Sending header
                 cnt_send_row <= 0;
