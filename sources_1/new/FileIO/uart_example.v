@@ -45,8 +45,8 @@ module uart_example (
 
   parameter BAUD_RATE           = 115_200;
 
-  parameter CLOCK_RATE_RX       = 100_000_000;
-  parameter CLOCK_RATE_TX       = 100_000_000;
+  parameter CLOCK_RATE_RX       = 50_000_000;
+  parameter CLOCK_RATE_TX       = 50_000_000;
 
   localparam
       ACK = 8'h06,
@@ -159,7 +159,8 @@ module uart_example (
   OBUF OBUF_led_i13     (.I(led_o[13]),     .O(led_pins[13]));
   OBUF OBUF_led_i14     (.I(led_o[14]),     .O(led_pins[14]));
   OBUF OBUF_led_i15     (.I(led_o[15]),     .O(led_pins[15]));
-  IBUF IBUFG_CLK       (.I(clk_pin),      .O(clk_sys));
+  // IBUF IBUFG_CLK       (.I(clk_pin),      .O(clk_sys));
+  clk_wiz_0 clk_wiz_inst(.clk_in1(clk_pin) ,       .clk_out1(clk_sys));
 
     // This function takes the lower 7 bits of a character and converts them
     // to a hex digit. It returns 5 bits - the upper bit is set if the character
