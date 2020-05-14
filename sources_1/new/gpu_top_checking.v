@@ -366,8 +366,8 @@ module gpu_top_checking#(
     .StartingPC_TM_PC(StartingPC_TM_PC[9:0]),
 
     //interface with Issue Unit
-    .Exit_IB_RAU_TM(Exit_IB_RAU_TM),
-    .Exit_WarpID_IB_RAU_TM(Exit_WarpID_IB_RAU_TM),
+    .Exit_IU_SIMT(Exit_IB_RAU_TM),
+    .WarpID_IU_TM(Exit_WarpID_IB_RAU_TM),
 
     //interface with Register File Allocation Unit
     .Update_TM_RAU(Update_TM_RAU),

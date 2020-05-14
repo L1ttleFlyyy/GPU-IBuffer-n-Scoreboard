@@ -175,7 +175,7 @@ begin
             end
         end
         ALLO:begin
-            if (Nreq == 2) begin //defined in next always block
+            if (Nreq == 1) begin //defined in next always block
                 next_state = READY;
 
             end else begin
