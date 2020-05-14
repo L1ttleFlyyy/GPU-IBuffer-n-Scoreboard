@@ -83,14 +83,14 @@ clk, rst_n
 
 input clk, rst_n;
 input wire [7:0] Valid_ID0_IB, Valid_ID1_IB, UpdatePC_TM_PC;
-input wire [7:0] Exit_ID0_IB, Exit_ID1_IB;
+input wire Exit_ID0_IB, Exit_ID1_IB;
 output reg [7:0] PCValid_PC_RR;
 wire [7:0] Exit_ID_PC;
 
 genvar i;
 generate
 for (i = 0; i < 8; i = i + 1) begin : pc_valid
-	assign Exit_ID_PC[i] = (Valid_ID0_IB[i] && Exit_ID0_IB[i]) || (Valid_ID1_IB[i] && Exit_ID1_IB[i]);
+	assign Exit_ID_PC[i] = (Valid_ID0_IB[i] && Exit_ID0_IB) || (Valid_ID1_IB[i] && Exit_ID1_IB);
 	always@(posedge clk) begin
 		if (!rst_n)
 			PCValid_PC_RR[i] <= 1'b0;
