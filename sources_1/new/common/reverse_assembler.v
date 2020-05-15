@@ -158,10 +158,10 @@ module reverse_assembler (
 														instruction_out = {inst_string, dot_S_string, rd_string, rs_string, rt_string};
 												end
 									6'b000010:  begin   inst_string = "SHR "; 
-														instruction_out = {inst_string, dot_S_string, rd_string, rs_string, shamt};
+														instruction_out = {inst_string, dot_S_string, rd_string, rs_string, rt_string};
 												end
 									6'b000000:  begin   inst_string = "SHL "; 
-														instruction_out = {inst_string, dot_S_string, rd_string, rs_string, shamt};
+														instruction_out = {inst_string, dot_S_string, rd_string, rs_string, rt_string};
 												end
 									default :   instruction_out = "Unknown"; // invalid instruction
 								endcase

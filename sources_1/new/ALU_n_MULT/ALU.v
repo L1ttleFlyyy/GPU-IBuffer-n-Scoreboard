@@ -146,8 +146,8 @@ module ALU (
 											{{16{Imme_reg[15]}},Imme_reg} : Src2_Data_reg[i*32+31:i*32]); //or & imme and
 							4'b0101: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] ^ (Imme_Valid_reg ? 
 											{{16{Imme_reg[15]}},Imme_reg} : Src2_Data_reg[i*32+31:i*32]); //xor & imme xor
-							4'b0110: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] >>> Shamt_reg; //shr
-							4'b0111: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] <<< Shamt_reg; //shl
+							4'b0110: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] >>> Src2_Data_reg[i*32+4:i*32]; //shr
+							4'b0111: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] <<< Src2_Data_reg[i*32+4:i*32]; //shl
 							default: Dst_Data_ALU_CDB[i*32+31:i*32] = 32'b0;
 						endcase
 					end
