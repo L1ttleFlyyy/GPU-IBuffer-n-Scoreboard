@@ -11,7 +11,7 @@ output reg [7:0] AM_TM_SIMT,
 //interface with Fetch
 output reg UpdatePC_TM_PC,
 output reg [2:0] WarpID_TM_PC,
-output reg [8:0] StartingPC_TM_PC,
+output reg [31:0] StartingPC_TM_PC,
 
 //interface with Issue Unit
 input Exit_IU_SIMT,
@@ -157,14 +157,14 @@ always @ (posedge clk or negedge rst) begin
 			WarpID_TM_PC<=free_Warp[free_Warp_rptr[2:0]];
 			WarpID_TM_SIMT<=free_Warp[free_Warp_rptr[2:0]];
 			AM_TM_SIMT<=tasks[tasks_rptr[7:0]][10:3];
-			StartingPC_TM_PC<=tasks[tasks_rptr[7:0]][19:11];
+			StartingPC_TM_PC<={21'b0,tasks[tasks_rptr[7:0]][19:11],2'b0};
 
 			if(assign_warp_raw & tasks[tasks_rptr[7:0]][28]) begin
 				UpdatePC_TM_PC<=1;
 				Update_TM_SIMT<=1;
 				free_Warp_rptr<=free_Warp_rptr+1;
 				tasks_rptr<=tasks_rptr+1;
-				free_registers<= free_registers - reg_would_alloc;
+				free_registers<= free_registers - reg_would_alloc * 2;
 				active_Warp[free_Warp[free_Warp_rptr[2:0]]]<=tasks_rptr[7:0];
 				active_tasks<=active_tasks+1;
 			end

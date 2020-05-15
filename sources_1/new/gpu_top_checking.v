@@ -363,7 +363,7 @@ module gpu_top_checking#(
     //interface with Fetch
     .UpdatePC_TM_PC(UpdatePC_TM_PC),
     .WarpID_TM_PC(WarpID_TM_PC),
-    .StartingPC_TM_PC(StartingPC_TM_PC[9:0]),
+    .StartingPC_TM_PC(StartingPC_TM_PC),
 
     //interface with Issue Unit
     .Exit_IU_SIMT(Exit_IB_RAU_TM),
