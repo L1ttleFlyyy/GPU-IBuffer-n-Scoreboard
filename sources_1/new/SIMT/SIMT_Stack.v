@@ -32,8 +32,8 @@ input Jmp_ID1_SIMT,
 input Jmp_ID0_SIMT,
 input [7:0] Valid_ID0_IB_SIMT,
 input [7:0] Valid_ID1_IB_SIMT,
-input [31:0] PCplus4_ID1_SIMT,
-input [31:0] PCplus4_ID0_SIMT,
+input [9:0] PCplus4_ID1_SIMT,
+input [9:0] PCplus4_ID0_SIMT,
 
 //interface with IBuffer
 output [7:0] DropInstr_SIMT_IB,
@@ -104,10 +104,10 @@ begin
         Jump_Warp[i] = ((Valid_ID0_IB_SIMT[i] & Jmp_ID0_SIMT) |
                               (Valid_ID1_IB_SIMT[i] & Jmp_ID1_SIMT));
         if(Valid_ID0_IB_SIMT[i]==1) begin
-            PCplus4_ID_SIMT[i] = PCplus4_ID0_SIMT[9:0];
+            PCplus4_ID_SIMT[i] = PCplus4_ID0_SIMT;
         end
         else begin
-            PCplus4_ID_SIMT[i] = PCplus4_ID1_SIMT[9:0];
+            PCplus4_ID_SIMT[i] = PCplus4_ID1_SIMT;
         end
         warp_Br_ALU_SIMT[i]=0;
         warp_Update_TM_SIMT[i]=0;

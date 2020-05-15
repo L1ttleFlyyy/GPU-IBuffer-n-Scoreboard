@@ -486,8 +486,8 @@ module gpu_top_checking#(
     .Jmp_ID1_SIMT(Jmp_ID1_SIMT),
     .Valid_ID0_IB_SIMT(Valid_ID0_IB_SIMT),
     .Valid_ID1_IB_SIMT(Valid_ID1_IB_SIMT),
-    .PCplus4_ID0_SIMT(PCplus4_ID0_SIMT),
-    .PCplus4_ID1_SIMT(PCplus4_ID1_SIMT),
+    .PCplus4_ID0_SIMT(PCplus4_ID0_SIMT[9:0]),
+    .PCplus4_ID1_SIMT(PCplus4_ID1_SIMT[9:0]),
 
     //interface with IBuffer
     .DropInstr_SIMT_IB(DropInstr_SIMT_IB),

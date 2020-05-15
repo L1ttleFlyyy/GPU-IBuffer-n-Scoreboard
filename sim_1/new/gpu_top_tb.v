@@ -33,9 +33,9 @@ reg [4:0] FIO_CACHE_LAT_VALUE_tb;
 reg [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR_tb;          //default
 
 reg [31:0] temp_ICache [0:4095];
-reg [255:0] temp_MEM [0:255];
-reg [7:0] temp_EMU [0:511];
-reg [31:0] temp_TM [0:7];
+reg [255:0] temp_MEM [0:511];
+reg [7:0] temp_EMU [0:255];
+reg [31:0] temp_TM [0:255];
 
 reg [255:0] Read_temp;
  

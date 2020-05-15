@@ -292,7 +292,7 @@ module IBuffer_warp#(
     assign Shared_Globalbar_IB_OC = IRP_Req? Shared_Globalbar_array[IRP_ind]:Shared_Globalbar_array[RP_ind];
     assign BEQ_IB_OC = IRP_Req? BEQ_array[IRP_ind]:BEQ_array[RP_ind];
     assign BLT_IB_OC = IRP_Req? BLT_array[IRP_ind]:BLT_array[RP_ind];
-    assign ScbID_IB_OC = IRP_Req? ScbID_array[IRP_ind]:ScbID_array[RP_ind];
+    assign ScbID_IB_OC = IRP_Req? ScbID_array[IRP_ind]:ScbID_Scb_IB;
 
     // output to Scb
     assign Src1_IB_Scb = Src1_array[RP_ind];
