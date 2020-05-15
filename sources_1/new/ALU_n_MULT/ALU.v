@@ -112,9 +112,7 @@ module ALU (
 		end
 	end
     
-	wire [4:0] Shamt_reg; // shift amount of shift instructions
 	assign ActiveMask_ALU_CDB = ActiveMask_reg;
-	assign Shamt_reg = Imme_reg[11:7];
 	assign Clear_ScbID_ALU_Scb = ScbID_reg;
 	assign Clear_ScbID_ALU_CDB = ScbID_reg;
 	assign Clear_WarpID_ALU_Scb = WarpID_reg;
