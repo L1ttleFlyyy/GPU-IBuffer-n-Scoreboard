@@ -92,8 +92,8 @@ module reverse_assembler (
 		assign dot_S = instruction_in[30];		
 
 			case(rs)
-				5'b10000: rs_string = " $31";
-				5'b01000: rs_string = " $15";
+				5'b10000: rs_string = " $16";
+				5'b01000: rs_string = " $8 ";
 				5'b00111: rs_string = " $7 ";
 				5'b00110: rs_string = " $6 ";
 				5'b00101: rs_string = " $5 ";
@@ -105,8 +105,8 @@ module reverse_assembler (
 				default : rs_string = " UNK";
 			endcase
 			case(rt)
-				5'b10000: rt_string = " $31";
-				5'b01000: rt_string = " $15";
+				5'b10000: rt_string = " $16";
+				5'b01000: rt_string = " $8 ";
 				5'b00111: rt_string = " $7 ";
 				5'b00110: rt_string = " $6 ";
 				5'b00101: rt_string = " $5 ";
@@ -118,8 +118,8 @@ module reverse_assembler (
 				default : rt_string = " UNK";
 			endcase
 			case(rd)
-				5'b10000: rd_string = " $31";
-				5'b01000: rd_string = " $15";
+				5'b10000: rd_string = " $16";
+				5'b01000: rd_string = " $8 ";
 				5'b00111: rd_string = " $7 ";
 				5'b00110: rd_string = " $6 ";
 				5'b00101: rd_string = " $5 ";
