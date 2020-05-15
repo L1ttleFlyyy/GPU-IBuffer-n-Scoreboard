@@ -77,32 +77,39 @@ endmodule
 module Generate_PCvalid_Logic (
 Valid_ID0_IB, Valid_ID1_IB,
 Exit_ID0_IB, Exit_ID1_IB,
-UpdatePC_TM_PC, PCValid_PC_RR,
+UpdatePC_TM_PC, PCValid_next,
 clk, rst_n
 );
 
 input clk, rst_n;
 input wire [7:0] Valid_ID0_IB, Valid_ID1_IB, UpdatePC_TM_PC;
 input wire Exit_ID0_IB, Exit_ID1_IB;
-output reg [7:0] PCValid_PC_RR;
+output reg [7:0] PCValid_next;
+
+reg [7:0] PCValid;
 wire [7:0] Exit_ID_PC;
 
 genvar i;
 generate
 for (i = 0; i < 8; i = i + 1) begin : pc_valid
 	assign Exit_ID_PC[i] = (Valid_ID0_IB[i] && Exit_ID0_IB) || (Valid_ID1_IB[i] && Exit_ID1_IB);
-	always@(posedge clk) begin
-		if (!rst_n)
-			PCValid_PC_RR[i] <= 1'b0;
-		else begin
-			if (Exit_ID_PC[i] == 1'b1)
-				PCValid_PC_RR[i] <= 1'b0;
-			else if (UpdatePC_TM_PC[i] == 1)
-				PCValid_PC_RR[i] <= 1'b1;
-		end
+	always@(*) begin
+		PCValid_next[i] = PCValid[i];
+		if (Exit_ID_PC[i] == 1'b1)
+			PCValid_next[i] = 1'b0;
+		else if (UpdatePC_TM_PC[i] == 1)
+			PCValid_next[i] = 1'b1;
 	end
 end
 endgenerate
+
+always@(posedge clk) begin
+	if (!rst_n)
+		PCValid <= 0;
+	else begin
+		PCValid <= PCValid_next;
+	end
+end
 
 endmodule
 

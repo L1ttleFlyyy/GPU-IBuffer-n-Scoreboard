@@ -159,7 +159,7 @@ Generate_PCvalid_Logic pc_valid(
 	.Exit_ID1_IB(Exit_ID1_IB),
 	.UpdatePC_TM_PC(UpdatePC_mature_TM_PC),
 
-	.PCValid_PC_RR(PC_Valid)
+	.PCValid_next(PC_Valid)
 );
 
 //2nd Stage: IF
