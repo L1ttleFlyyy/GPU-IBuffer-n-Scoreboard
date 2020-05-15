@@ -19,14 +19,10 @@ input [2:0] WarpID_IU_TM,
 
 //interface with Register File Allocation Unit
 input Alloc_BusyBar_RAU_TM,
-// output alloc_TM_RAU,
-output reg [2:0] Nreg_TM_RAU,
-// output [2:0] WarpID_TM_RAU,
-
-//interface with Operand Collector
-output reg Update_TM_RAU,
-output reg [2:0] HWWarpID_TM_RAU,
-output reg [7:0] SWWarpID_TM_RAU,
+output Update_TM_RAU,
+output [2:0] Nreg_TM_RAU,
+output [2:0] HWWarpID_TM_RAU,
+output [7:0] SWWarpID_TM_RAU,
 
 //interface with FileIO module
 input Write_Enable_FIO_TM,
@@ -96,6 +92,11 @@ assign assign_warp_raw2 = can_reg_alloc & Alloc_BusyBar_RAU_TM ;
 assign assign_warp_raw = assign_warp_raw1 & assign_warp_raw2;
 
 
+assign Update_TM_RAU = (STATE == Working) & assign_warp_raw & tasks[tasks_rptr[7:0]][28];
+assign HWWarpID_TM_RAU = free_Warp[free_Warp_rptr[2:0]];
+assign Nreg_TM_RAU = tasks[tasks_rptr[7:0]][2:0];
+assign SWWarpID_TM_RAU = tasks[tasks_rptr[7:0]][27:20];
+
 always @ (posedge clk or negedge rst) begin
 	if(rst==0) begin
 		free_registers <= 6'b10_0000;	// Free registers represent the actual number of free registers.
@@ -105,17 +106,12 @@ always @ (posedge clk or negedge rst) begin
 
 		WarpID_TM_PC<=0;
 		WarpID_TM_SIMT<=0;
-		// WarpID_TM_RAU<=0;
-		HWWarpID_TM_RAU<=0;
 
-		Nreg_TM_RAU<=0;
 		AM_TM_SIMT<=0;
 		StartingPC_TM_PC<=0;
-		SWWarpID_TM_RAU<=0;
 
 		UpdatePC_TM_PC<=0;
 		Update_TM_SIMT<=0;
-		Update_TM_RAU<=0;
 		// alloc_TM_RAU<=0;
 		free_Warp_rptr<=0;
 		tasks_rptr<=0;
@@ -160,19 +156,12 @@ always @ (posedge clk or negedge rst) begin
 		begin
 			WarpID_TM_PC<=free_Warp[free_Warp_rptr[2:0]];
 			WarpID_TM_SIMT<=free_Warp[free_Warp_rptr[2:0]];
-			// WarpID_TM_RAU<=free_Warp[free_Warp_rptr[2:0]];
-			HWWarpID_TM_RAU<=free_Warp[free_Warp_rptr[2:0]];
-
-			Nreg_TM_RAU<=tasks[tasks_rptr[7:0]][2:0];
 			AM_TM_SIMT<=tasks[tasks_rptr[7:0]][10:3];
 			StartingPC_TM_PC<=tasks[tasks_rptr[7:0]][19:11];
-			SWWarpID_TM_RAU<=tasks[tasks_rptr[7:0]][27:20];
 
 			if(assign_warp_raw & tasks[tasks_rptr[7:0]][28]) begin
 				UpdatePC_TM_PC<=1;
 				Update_TM_SIMT<=1;
-				Update_TM_RAU<=1;
-				// alloc_TM_RAU<=1;
 				free_Warp_rptr<=free_Warp_rptr+1;
 				tasks_rptr<=tasks_rptr+1;
 				free_registers<= free_registers - reg_would_alloc;
@@ -182,7 +171,6 @@ always @ (posedge clk or negedge rst) begin
 			else begin
 				UpdatePC_TM_PC<=0;
 				Update_TM_SIMT<=0;
-				Update_TM_RAU<=0;
 				// alloc_TM_RAU<=0;
 			end
 
@@ -219,16 +207,12 @@ always @ (posedge clk or negedge rst) begin
 			WarpID_TM_PC<=0;
 			WarpID_TM_SIMT<=0;
 			// WarpID_TM_RAU<=0;
-			HWWarpID_TM_RAU<=0;
 
-			Nreg_TM_RAU<=0;
 			AM_TM_SIMT<=0;
 			StartingPC_TM_PC<=0;
-			SWWarpID_TM_RAU<=0;
 
 			UpdatePC_TM_PC<=0;
 			Update_TM_SIMT<=0;
-			Update_TM_RAU<=0;
 			// alloc_TM_RAU<=0;
 			free_Warp_rptr<=0;
 			tasks_rptr<=0;

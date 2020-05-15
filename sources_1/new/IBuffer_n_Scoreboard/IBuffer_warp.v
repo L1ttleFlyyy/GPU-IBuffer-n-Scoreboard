@@ -179,8 +179,12 @@ module IBuffer_warp#(
 
     always@(posedge clk or negedge rst) begin
         if (!rst) begin
+            WP <= 0;
+            RP <= 0;
             Valid_array <= 0;
         end else begin
+            WP <= WP_next;
+            RP <= RP_next;
             Valid_array <= Valid_array_cleared;
             if (WP_EN) begin
                 Valid_array[WP_ind] <= 1'b1;
@@ -209,8 +213,6 @@ module IBuffer_warp#(
     end
 
     always@(posedge clk) begin
-        WP <= WP_next;
-        RP <= RP_next;
         IRP <= IRP_next;
         Replay_array <= Replay_array_next;
         if (RP_Grt) begin
@@ -307,6 +309,6 @@ module IBuffer_warp#(
     assign Replay_Complete_SW_LWbar_IB_Scb = MemWrite_array[IRP_ind]; // distinguish between SW/LW
     
     // signal to RAU/IU
-    assign Exit_Req_IB_IU = Valid_array[RP_ind] & Exit_array[RP_ind] & Empty_Scb_IB;
+    assign Exit_Req_IB_IU = Valid_array[RP_ind]? Exit_array[RP_ind] & Empty_Scb_IB : 0;
 
 endmodule

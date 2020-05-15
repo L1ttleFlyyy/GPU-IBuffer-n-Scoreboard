@@ -120,7 +120,7 @@ reg [4:0] LUT_Addr;
 
 reg [31:0] SpecialReg[7:0]; //special register file
 
-reg MT [15:0];
+reg [15:0] MT ;
 reg [4:0] LUT [31:0];
 
 reg [3:0] next_empty_ptr;
@@ -194,6 +194,7 @@ end
 always @ (posedge clk)
 begin
     if (rst == 1'b0) begin
+        MT <= 0;
         Nreq <= 0;
         HWWarp <= 0;
     end else begin
@@ -204,7 +205,7 @@ begin
             if (Update_TM_RAU) begin
                 Nreq <= Nreg_TM_RAU;
                 HWWarp <= HWWarpID_TM_RAU; //SWWARP
-                LUT_Addr <= HWWarp * 4; 
+                LUT_Addr <= HWWarpID_TM_RAU * 4; 
                 SpecialReg[HWWarpID_TM_RAU] <= {24'b0,SWWarpID_TM_RAU}; // special reg
             end else begin
                 HWWarp <= Exit_WarpID_IB_RAU; //how to write certain bits in instrcution

@@ -58,7 +58,7 @@ initial
 initial
     begin:rst
         rst_tb = 0;                     //low reset
-        #2 rst_tb = 1;
+        #20 rst_tb = 1;
     end
 
 initial                             //MEM_INIT
@@ -74,7 +74,7 @@ initial
         @ (posedge clk_tb);
         clear_FIO_TM_tb = 0;
         wait(rst_tb);
-        for(i_TM = 0; i_TM <= 7; i_TM = i_TM+1)
+        for(i_TM = 0; i_TM <= 255; i_TM = i_TM+1)
         begin
             @ (posedge clk_tb);
             Write_Enable_FIO_TM_tb = 1;
