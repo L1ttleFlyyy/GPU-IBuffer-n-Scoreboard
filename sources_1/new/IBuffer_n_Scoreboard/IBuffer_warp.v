@@ -181,10 +181,12 @@ module IBuffer_warp#(
         if (!rst) begin
             WP <= 0;
             RP <= 0;
+            IRP <= 0;
             Valid_array <= 0;
         end else begin
             WP <= WP_next;
             RP <= RP_next;
+            IRP <= IRP_next;
             Valid_array <= Valid_array_cleared;
             if (WP_EN) begin
                 Valid_array[WP_ind] <= 1'b1;
@@ -213,7 +215,6 @@ module IBuffer_warp#(
     end
 
     always@(posedge clk) begin
-        IRP <= IRP_next;
         Replay_array <= Replay_array_next;
         if (RP_Grt) begin
             ScbID_array[RP_ind] <= ScbID_Scb_IB;

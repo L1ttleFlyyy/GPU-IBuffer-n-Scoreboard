@@ -62,7 +62,7 @@ assign REQ_number[0] = |GRT_raw_1_RR_IF[7:0];
 
 always@(posedge clk) begin
 if (!rst_n)
-    MR_REQ <= 8'b0;
+    MR_REQ <= 8'b1000_0000;
 else 
   begin
     if (REQ_number == 2'b01)

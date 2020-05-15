@@ -104,8 +104,8 @@ assign TargetAddr_ID1_PC = {6'b0, tar_addr_ID1};
 //To SMIT
 assign PCplus4_ID0_SIMT = PCplus4_IF_ID0;
 assign PCplus4_ID1_SIMT = PCplus4_IF_ID1;
-assign DotS_ID0_SIMT = opcode_ID0[5];	//.S
-assign DotS_ID1_SIMT = opcode_ID1[5];
+assign DotS_ID0_SIMT = opcode_ID0[4];	//.S
+assign DotS_ID1_SIMT = opcode_ID1[4];
 assign Call_ID0_SIMT = (opcode_ID0 == 6'b000011);	//CALL
 assign Call_ID1_SIMT = (opcode_ID1 == 6'b000011);
 assign Ret_ID0_SIMT = (opcode_ID0 == 6'b000110);	//RET
@@ -171,7 +171,7 @@ always @(*) begin
 	endcase
 end
 always @(*) begin
-	case (funct_ID0)
+	case (funct_ID1)
 		6'b100000 : ALUop_ID1_IB = 4'b0000;	//ADD
 		6'b100010 : ALUop_ID1_IB = 4'b0001;	//SUB
 		6'b011000 : ALUop_ID1_IB = 4'b0010;	//MUL
