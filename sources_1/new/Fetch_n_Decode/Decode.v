@@ -122,7 +122,7 @@ assign Src1_ID0_IB = rs_ID0;
 assign Src1_ID1_IB = rs_ID1;
 assign Src2_ID0_IB = rt_ID0;
 assign Src2_ID1_IB = rt_ID1;
-assign Dst_ID0_IB = rd_ID0;
+assign Dst_ID0_IB = rd_ID0; // FIXME: for LW and I-type, Dst should be rt_ID0;
 assign Dst_ID1_IB = rd_ID1;
 assign Imme_ID0_IB = imme_ID0; 
 assign Imme_ID1_IB = imme_ID1; 
@@ -156,7 +156,7 @@ assign MemRead_ID1_IB = (opcode_ID1 == 6'b100011 || opcode_ID1 == 6'b110011 	//L
 						);
 assign Exit_ID0_IB = (opcode_ID0 == 6'b100001);	//EXIT
 assign Exit_ID1_IB = (opcode_ID1 == 6'b100001);	//EXIT
-//Only R-tpye
+//Only R-tpye // FIXME: how about ADDI, ANDI, XORI?
 always @(*) begin
 	case (funct_ID0)
 		6'b100000 : ALUop_ID0_IB = 4'b0000;	//ADD
@@ -224,7 +224,7 @@ assign Src2_Valid_ID0_IB = (opcode_ID0 == 6'b000000 || opcode_ID0 == 6'b010000 	
 							|| opcode_ID0 == 6'b101111 || opcode_ID0 == 6'b111111 	//SWS
 							|| opcode_ID0 == 6'b000100 || opcode_ID0 == 6'b010100	//BEQ
 							|| opcode_ID0 == 6'b000111 || opcode_ID0 == 6'b010111	//BLT
-								);
+								); // FIXME: for LW, rt is Dst, so Src2 is not valid, Dst is valid.
 assign Src2_Valid_ID1_IB = (opcode_ID1 == 6'b000000 || opcode_ID1 == 6'b010000 		//Integer Instr
 							|| opcode_ID1 == 6'b001000 || opcode_ID1 == 6'b011000 	//ADDI
 							|| opcode_ID1 == 6'b001100 || opcode_ID1 == 6'b011100 	//ANDI
