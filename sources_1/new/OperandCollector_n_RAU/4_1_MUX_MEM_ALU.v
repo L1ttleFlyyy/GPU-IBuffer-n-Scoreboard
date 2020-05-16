@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module MUX_ALU_MEM(
     input [3:0] MEM_Grt,
     input [3:0] ALU_Grt,

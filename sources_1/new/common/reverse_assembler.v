@@ -51,14 +51,14 @@ module reverse_assembler (
 		outfile = $fopen(module_name, "w");
 	end
 	
-	// FIXME: reverse assembler can be totally "combinational", this one clock latency should be removed
+	always@(*)
+		reverse_instruction(instruction_in, instruction_out);
+
 	always@(posedge clk) begin
 		if(!rst_n) begin
 			//warp_ID <= 3'bXXX;
-			instruction_out <= "NOOP";
 			end
 		else begin
-			reverse_instruction(instruction_in, instruction_out);
 			$fwrite(outfile,"%s; imme = %d; j_addr = %h; PC = %h; warp_ID = %d\n", instruction_out, immediate, j_address, PC_value, warp_ID);
 		end			
 	end
