@@ -51,6 +51,7 @@ module reverse_assembler (
 		outfile = $fopen(module_name, "w");
 	end
 	
+	// FIXME: reverse assembler can be totally "combinational", this one clock latency should be removed
 	always@(posedge clk) begin
 		if(!rst_n) begin
 			//warp_ID <= 3'bXXX;

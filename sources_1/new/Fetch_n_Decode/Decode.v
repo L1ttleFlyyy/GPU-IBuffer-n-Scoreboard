@@ -106,6 +106,7 @@ assign PCplus4_ID0_SIMT = PCplus4_IF_ID0;
 assign PCplus4_ID1_SIMT = PCplus4_IF_ID1;
 assign DotS_ID0_SIMT = opcode_ID0[4];	//.S
 assign DotS_ID1_SIMT = opcode_ID1[4];
+// FIXME: the usage of opcode... dotS bit is totally ignored...
 assign Call_ID0_SIMT = (opcode_ID0 == 6'b000011);	//CALL
 assign Call_ID1_SIMT = (opcode_ID1 == 6'b000011);
 assign Ret_ID0_SIMT = (opcode_ID0 == 6'b000110);	//RET
@@ -122,8 +123,8 @@ assign Src1_ID0_IB = rs_ID0;
 assign Src1_ID1_IB = rs_ID1;
 assign Src2_ID0_IB = rt_ID0;
 assign Src2_ID1_IB = rt_ID1;
-assign Dst_ID0_IB = rd_ID0; // FIXME: for LW and I-type, Dst should be rt_ID0;
-assign Dst_ID1_IB = rd_ID1;
+assign Dst_ID0_IB = (MemRead_ID0_IB || Imme_Valid_ID0_IB) ? rt_ID0 : rd_ID0; // FIXME: for LW and I-type, Dst should be rt_ID0;
+assign Dst_ID1_IB = (MemRead_ID1_IB || Imme_Valid_ID1_IB) ? rt_ID1 : rd_ID1;
 assign Imme_ID0_IB = imme_ID0; 
 assign Imme_ID1_IB = imme_ID1; 
 assign RegWrite_ID0_IB = (opcode_ID0 == 6'b000000 || opcode_ID0 == 6'b010000 	//Integer Instr
@@ -156,32 +157,55 @@ assign MemRead_ID1_IB = (opcode_ID1 == 6'b100011 || opcode_ID1 == 6'b110011 	//L
 						);
 assign Exit_ID0_IB = (opcode_ID0 == 6'b100001);	//EXIT
 assign Exit_ID1_IB = (opcode_ID1 == 6'b100001);	//EXIT
-//Only R-tpye // FIXME: how about ADDI, ANDI, XORI?
 always @(*) begin
-	case (funct_ID0)
-		6'b100000 : ALUop_ID0_IB = 4'b0000;	//ADD
-		6'b100010 : ALUop_ID0_IB = 4'b0001;	//SUB
-		6'b011000 : ALUop_ID0_IB = 4'b0010;	//MUL
-		6'b100100 : ALUop_ID0_IB = 4'b0011;	//AND
-		6'b100101 : ALUop_ID0_IB = 4'b0100;	//OR
-		6'b100110 : ALUop_ID0_IB = 4'b0101;	//XOR
-		6'b000010 : ALUop_ID0_IB = 4'b0110;	//SHR
-		6'b000000 : ALUop_ID0_IB = 4'b0111;	//SHL
-		default:  ALUop_ID0_IB = 4'bxxxx;
-	endcase
+	if (Imme_Valid_ID0_IB) begin
+		casez (opcode_ID0)
+			6'b0?1000 : ALUop_ID0_IB = 4'b0000;	//ADDI
+			6'b0?1000 : ALUop_ID0_IB = 4'b0011;	//ANDI
+			6'b0?1101 : ALUop_ID0_IB = 4'b0100;	//ORI
+			6'b0?1110 : ALUop_ID0_IB = 4'b0101;	//XORI
+			default:  ALUop_ID0_IB = 4'bxxxx;
+		endcase
+	end
+	else begin
+		case (funct_ID0)
+			6'b100000 : ALUop_ID0_IB = 4'b0000;	//ADD
+			6'b100010 : ALUop_ID0_IB = 4'b0001;	//SUB
+			6'b011000 : ALUop_ID0_IB = 4'b0010;	//MUL
+			6'b100100 : ALUop_ID0_IB = 4'b0011;	//AND
+			6'b100101 : ALUop_ID0_IB = 4'b0100;	//OR
+			6'b100110 : ALUop_ID0_IB = 4'b0101;	//XOR
+			6'b000010 : ALUop_ID0_IB = 4'b0110;	//SHR
+			6'b000000 : ALUop_ID0_IB = 4'b0111;	//SHL
+			default:  ALUop_ID0_IB = 4'bxxxx;
+		endcase
+	end
 end
+
 always @(*) begin
-	case (funct_ID1)
-		6'b100000 : ALUop_ID1_IB = 4'b0000;	//ADD
-		6'b100010 : ALUop_ID1_IB = 4'b0001;	//SUB
-		6'b011000 : ALUop_ID1_IB = 4'b0010;	//MUL
-		6'b100100 : ALUop_ID1_IB = 4'b0011;	//AND
-		6'b100101 : ALUop_ID1_IB = 4'b0100;	//OR
-		6'b100110 : ALUop_ID1_IB = 4'b0101;	//XOR
-		6'b000010 : ALUop_ID1_IB = 4'b0110;	//SHR
-		6'b000000 : ALUop_ID1_IB = 4'b0111;	//SHL
-		default:  ALUop_ID1_IB = 4'bxxxx;
-	endcase
+	if (Imme_Valid_ID1_IB) begin
+		casez (opcode_ID1)
+			6'b0?1000 : ALUop_ID1_IB = 4'b0000;	//ADDI
+			6'b0?1000 : ALUop_ID1_IB = 4'b0011;	//ANDI
+			6'b0?1101 : ALUop_ID1_IB = 4'b0100;	//ORI
+			6'b0?1110 : ALUop_ID1_IB = 4'b0101;	//XORI
+			default:  ALUop_ID1_IB = 4'bxxxx;
+		endcase
+	end
+	else begin
+		case (funct_ID1)
+			6'b100000 : ALUop_ID1_IB = 4'b0000;	//ADD
+			6'b100010 : ALUop_ID1_IB = 4'b0001;	//SUB
+			6'b011000 : ALUop_ID1_IB = 4'b0010;	//MUL
+			6'b100100 : ALUop_ID1_IB = 4'b0011;	//AND
+			6'b100101 : ALUop_ID1_IB = 4'b0100;	//OR
+			6'b100110 : ALUop_ID1_IB = 4'b0101;	//XOR
+			6'b000010 : ALUop_ID1_IB = 4'b0110;	//SHR
+			6'b000000 : ALUop_ID1_IB = 4'b0111;	//SHL
+			default:  ALUop_ID1_IB = 4'bxxxx;
+		endcase
+	end
+	
 end
 assign Shared_Globalbar_ID0_IB = (opcode_ID0 == 6'b101111 || opcode_ID0 == 6'b111111 	//SWS
 								|| opcode_ID0 == 6'b100111 || opcode_ID0 == 6'b110111 	//LDS	
@@ -214,24 +238,12 @@ assign Src1_Valid_ID1_IB = (opcode_ID1 == 6'b000000 || opcode_ID1 == 6'b010000 	
 							|| opcode_ID1 == 6'b000111 || opcode_ID1 == 6'b010111	//BLT
 							);
 assign Src2_Valid_ID0_IB = (opcode_ID0 == 6'b000000 || opcode_ID0 == 6'b010000 		//Integer Instr
-							|| opcode_ID0 == 6'b001000 || opcode_ID0 == 6'b011000 	//ADDI
-							|| opcode_ID0 == 6'b001100 || opcode_ID0 == 6'b011100 	//ANDI
-							|| opcode_ID0 == 6'b001101 || opcode_ID0 == 6'b011101 	//ORI
-							|| opcode_ID0 == 6'b001110 || opcode_ID0 == 6'b011110 	//XORI
-							|| opcode_ID0 == 6'b100011 || opcode_ID0 == 6'b110011 	//LD
-							|| opcode_ID0 == 6'b100111 || opcode_ID0 == 6'b110111 	//LDS
 							|| opcode_ID0 == 6'b101011 || opcode_ID0 == 6'b111011 	//SW
 							|| opcode_ID0 == 6'b101111 || opcode_ID0 == 6'b111111 	//SWS
 							|| opcode_ID0 == 6'b000100 || opcode_ID0 == 6'b010100	//BEQ
 							|| opcode_ID0 == 6'b000111 || opcode_ID0 == 6'b010111	//BLT
-								); // FIXME: for LW, rt is Dst, so Src2 is not valid, Dst is valid.
+								);
 assign Src2_Valid_ID1_IB = (opcode_ID1 == 6'b000000 || opcode_ID1 == 6'b010000 		//Integer Instr
-							|| opcode_ID1 == 6'b001000 || opcode_ID1 == 6'b011000 	//ADDI
-							|| opcode_ID1 == 6'b001100 || opcode_ID1 == 6'b011100 	//ANDI
-							|| opcode_ID1 == 6'b001101 || opcode_ID1 == 6'b011101 	//ORI
-							|| opcode_ID1 == 6'b001110 || opcode_ID1 == 6'b011110 	//XORI
-							|| opcode_ID1 == 6'b100011 || opcode_ID1 == 6'b110011 	//LD
-							|| opcode_ID1 == 6'b100111 || opcode_ID1 == 6'b110111 	//LDS
 							|| opcode_ID1 == 6'b101011 || opcode_ID1 == 6'b111011 	//SW
 							|| opcode_ID1 == 6'b101111 || opcode_ID1 == 6'b111111 	//SWS
 							|| opcode_ID1 == 6'b000100 || opcode_ID1 == 6'b010100	//BEQ
