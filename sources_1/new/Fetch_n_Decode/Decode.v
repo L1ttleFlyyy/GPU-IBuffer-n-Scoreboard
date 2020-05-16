@@ -161,7 +161,7 @@ always @(*) begin
 	if (Imme_Valid_ID0_IB) begin
 		casez (opcode_ID0)
 			6'b0?1000 : ALUop_ID0_IB = 4'b0000;	//ADDI
-			6'b0?1000 : ALUop_ID0_IB = 4'b0011;	//ANDI
+			6'b0?1100 : ALUop_ID0_IB = 4'b0011;	//ANDI
 			6'b0?1101 : ALUop_ID0_IB = 4'b0100;	//ORI
 			6'b0?1110 : ALUop_ID0_IB = 4'b0101;	//XORI
 			default:  ALUop_ID0_IB = 4'bxxxx;
@@ -186,7 +186,7 @@ always @(*) begin
 	if (Imme_Valid_ID1_IB) begin
 		casez (opcode_ID1)
 			6'b0?1000 : ALUop_ID1_IB = 4'b0000;	//ADDI
-			6'b0?1000 : ALUop_ID1_IB = 4'b0011;	//ANDI
+			6'b0?1100 : ALUop_ID1_IB = 4'b0011;	//ANDI
 			6'b0?1101 : ALUop_ID1_IB = 4'b0100;	//ORI
 			6'b0?1110 : ALUop_ID1_IB = 4'b0101;	//XORI
 			default:  ALUop_ID1_IB = 4'bxxxx;
