@@ -669,7 +669,7 @@ module gpu_top_checking#(
     .Dst_IB_OC(Dst_IB_OC),
     .Imme_IB_OC(Imme_IB_OC),
     .Imme_Valid_IB_OC(Imme_Valid_IB_OC),
-    .ALUop_IB_OC(Imme_Valid_IB_OC),
+    .ALUop_IB_OC(ALUop_IB_OC),
     .RegWrite_IB_OC(RegWrite_IB_OC),
     .MemWrite_IB_OC(MemWrite_IB_OC),//区分是给ALU还是MEN，再分具体的操作
     .MemRead_IB_OC(MemRead_IB_OC),
