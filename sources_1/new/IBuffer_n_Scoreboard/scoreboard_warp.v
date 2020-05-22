@@ -113,22 +113,20 @@ module scoreboard_warp(
 
     // check all possible data hazards
     reg [3: 0] Dependent_array;
+    reg [3:0] RAW, WAW, WAR;
     always@(*) begin
         // for each of the pending instructions, check RAW, WAW, WAR
         for (i = 0; i < 4; i = i+1) begin: Dependent_loop
             // RAW:
-            Dependent_array[i] = 
-                (Src1_Valid && Src1_Valid_array[i] && (Src1 == Dst_array[i])) | 
-                (Src2_Valid && Src2_Valid_array[i] && (Src2 == Dst_array[i]));
+            RAW[i] = (Src1_Valid && Dst_Valid_array[i] && (Src1 == Dst_array[i])) | 
+                (Src2_Valid && Dst_Valid_array[i] && (Src2 == Dst_array[i]));
             // WAW:
-            Dependent_array[i] = Dependent_array[i] |
-                (Dst_Valid && Dst_Valid_array[i] && (Dst == Dst_array[i]));
+            WAW[i] = (Dst_Valid && Dst_Valid_array[i] && (Dst == Dst_array[i]));
             // WAR:
-            Dependent_array[i] = Dependent_array[i] |
-                (Dst_Valid && Src1_Valid_array[i] && (Dst == Src1_array[i])) |
+            WAR[i] = (Dst_Valid && Src1_Valid_array[i] && (Dst == Src1_array[i])) |
                 (Dst_Valid && Src2_Valid_array[i] && (Dst == Src2_array[i])); 
         end
-        Dependent_array = Dependent_array & Valid_array_cleared; // Note here use Valid_cleared to save one clock
+        Dependent_array = (RAW | WAR | WAW) & Valid_array_cleared; // Note here use Valid_cleared to save one clock
     end
     // overall Dependent bit:
     assign Dependent = |Dependent_array;
