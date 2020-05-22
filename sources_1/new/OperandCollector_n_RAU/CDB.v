@@ -28,7 +28,7 @@ module CDB(
 
 );
 
-assign RegWrite_CDB_RAU = RegWrite_ALU_CDB & RegWrite_MEM_CDB;
+assign RegWrite_CDB_RAU = RegWrite_ALU_CDB | RegWrite_MEM_CDB;
 
 always @ (*)
 begin

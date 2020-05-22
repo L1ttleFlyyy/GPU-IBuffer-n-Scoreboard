@@ -190,24 +190,24 @@ module IBuffer#(
 
 
     always@(*) begin
-        Instr_IB_OC = Instr_array[0];
-        ActiveMask_IB_OC = ActiveMask_array[0];
+        Instr_IB_OC = {32{1'bx}};
+        ActiveMask_IB_OC = 8'b0;
+        Src1_Valid_IB_OC = 1'b0;
+        Src2_Valid_IB_OC = 1'b0;
+        RegWrite_IB_OC = 1'b0;
+        MemWrite_IB_OC = 1'b0;
+        MemRead_IB_OC = 1'b0;
+        Imme_Valid_IB_OC = 1'b0;
+        Shared_Globalbar_IB_OC = 1'b0;
         Src1_IB_OC = Src1_array[0];
         Src2_IB_OC = Src2_array[0];
-        Src1_Valid_IB_OC = Src1_Valid_array[0];
-        Src2_Valid_IB_OC = Src2_Valid_array[0];
         Dst_IB_OC = Dst_array[0];
         Imme_IB_OC = Imme_array[0];
-        Imme_Valid_IB_OC = Imme_Valid_array[0];
         ALUop_IB_OC = ALUop_array[0];
-        RegWrite_IB_OC = RegWrite_array[0];
-        MemWrite_IB_OC = MemWrite_array[0];
-        MemRead_IB_OC = MemRead_array[0];
-        Shared_Globalbar_IB_OC = Shared_Globalbar_array[0];
         BEQ_IB_OC = BEQ_array[0];
         BLT_IB_OC = BLT_array[0];
         ScbID_IB_OC = ScbID_array[0];
-        for (j=1; j<NUM_WARPS; j=j+1) begin: IB_OC_mux
+        for (j=0; j<NUM_WARPS; j=j+1) begin: IB_OC_mux
             if (Grt_IU_IB[j]) begin   
                 ActiveMask_IB_OC = ActiveMask_array[j];    
                 Instr_IB_OC = Instr_array[j];
