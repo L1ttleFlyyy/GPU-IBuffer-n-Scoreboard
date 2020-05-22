@@ -188,6 +188,19 @@ wire [1:0] SPEslot_RAU_OC;
 wire [255:0] SPEvalue_RAU_OC;
 wire [1:0] SPEv2slot_RAU_OC;
 wire [255:0] SPEv2value_RAU_OC;
+wire ReqFIFO_Same;
+wire same_0;
+wire same_1;
+wire same_2;
+wire same_3;
+wire same_OC_0;
+wire same_OC_1;
+wire same_OC_2;
+wire same_OC_3;
+wire RF_WR_OC_0;
+wire RF_WR_OC_1;
+wire RF_WR_OC_2;
+wire RF_WR_OC_3;
 
 
 wire [255:0] oc_0_data_0;
@@ -352,14 +365,16 @@ Mapping MappingUnit(
     .SPEslot_RAU_OC(SPEslot_RAU_OC),
     .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
     .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
-    .SPEv2value_RAU_OC(SPEv2value_RAU_OC)
+    .SPEv2value_RAU_OC(SPEv2value_RAU_OC),
+
+    .ReqFIFO_Same(ReqFIFO_Same)
 );
 
 ReqFIFO_4 ReqFIFO_4(
     .rst(rst),
     .clk(clk),
 
-
+    .Valid_RAU_OC(Valid_RAU_OC),
     .WriteValid(WriteValid),
 
     .WriteBank(WriteBank),
@@ -377,6 +392,7 @@ ReqFIFO_4 ReqFIFO_4(
     .Src2_OCID_RAU_OC(Src2_OCID_RAU_OC),
 
     .Data_CDB(Data_CDB),
+    .ReqFIFO_Same(ReqFIFO_Same),
 
     .RF_Addr_0(RF_Addr_0),
     .RF_Addr_1(RF_Addr_1),
@@ -396,13 +412,21 @@ ReqFIFO_4 ReqFIFO_4(
     .WriteData_0(WriteData_0),
     .WriteData_1(WriteData_1),
     .WriteData_2(WriteData_2),
-    .WriteData_3(WriteData_3)
+    .WriteData_3(WriteData_3),
+
+    .same_0(same_0),
+    .same_1(same_1),
+    .same_2(same_2),
+    .same_3(same_3)
 );
 
 RegisterFile RegisterFile(
     .clk(clk),
 
-
+    .same_0(same_0),
+    .same_1(same_1),
+    .same_2(same_2),
+    .same_3(same_3),
     .RF_WR_MASK(ActiveMask_CDB_RAU),
     .RF_Addr_0(RF_Addr_0),
     .RF_Addr_1(RF_Addr_1),
@@ -433,13 +457,26 @@ RegisterFile RegisterFile(
     .ocid_0(ocid_0),
     .ocid_1(ocid_1),
     .ocid_2(ocid_2),
-    .ocid_3(ocid_3)
+    .ocid_3(ocid_3),
+    .same_OC_0(same_OC_0),
+    .same_OC_1(same_OC_1),
+    .same_OC_2(same_OC_2),
+    .same_OC_3(same_OC_3),
+
+    .RF_WR_OC_0(RF_WR_OC_0),
+    .RF_WR_OC_1(RF_WR_OC_1),
+    .RF_WR_OC_2(RF_WR_OC_2),
+    .RF_WR_OC_3(RF_WR_OC_3)
 );
 
 OC_collector_4 OC_collector_4(
     .rst(rst),
     .clk(clk),
 
+    .same_OC_0(same_OC_0),
+    .same_OC_1(same_OC_1),
+    .same_OC_2(same_OC_2),
+    .same_OC_3(same_OC_3),
 
     .SPEslot_RAU_OC(SPEslot_RAU_OC),
     .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
@@ -478,10 +515,10 @@ OC_collector_4 OC_collector_4(
     .ocid_2(ocid_2),
     .ocid_3(ocid_3),
 
-    .RF_WR_0(RF_WR_0),
-    .RF_WR_1(RF_WR_1),
-    .RF_WR_2(RF_WR_2),
-    .RF_WR_3(RF_WR_3),
+    .RF_WR_0(RF_WR_OC_0),
+    .RF_WR_1(RF_WR_OC_1),
+    .RF_WR_2(RF_WR_OC_2),
+    .RF_WR_3(RF_WR_OC_3),
 
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
@@ -573,7 +610,10 @@ OC_collector_4 OC_collector_4(
     .BLT_OC_Ex_3(BLT_OC_Ex_3) ,//pass
     .ScbID_OC_Ex_3(ScbID_OC_Ex_3) ,//pass
     .ActiveMask_OC_Ex_3(ActiveMask_OC_Ex_3),//pass
-    .Dst_OC_Ex_3(Dst_OC_Ex_3)
+    .Dst_OC_Ex_3(Dst_OC_Ex_3),
+
+    .Src1_Valid(Src1_Valid),
+    .Src2_Valid(Src2_Valid)
 );
 
 scheduler_4 sched_4(

@@ -34,6 +34,11 @@ input RE,
 input clk, 
 input rst,
 
+input same_OC_0,
+input same_OC_1,
+input same_OC_2,
+input same_OC_3,
+
 input wire [2:0] WarpID_RAU_OC,
 input wire Valid_RAU_OC ,//use
 input wire [31:0] Instr_RAU_OC ,//pass
@@ -98,14 +103,25 @@ wire OC_1_WE;
 
 assign RDY = valid && ~(oc_0_valid && ~oc_0_rdy) && ~(oc_1_valid && ~oc_1_rdy);
 
-assign OC_0_WE = ((bk_0_ocid == ocid << 1) &&  !bk_0_bz && bk_0_vld)|| 
-				 ((bk_1_ocid == ocid << 1) &&  !bk_1_bz && bk_1_vld)|| 
-				 ((bk_2_ocid == ocid << 1) &&  !bk_2_bz && bk_2_vld)|| 
-				 ((bk_3_ocid == ocid << 1) &&  !bk_3_bz && bk_3_vld)||SPEslot_RAU_OC[0]||SPEv2slot_RAU_OC[0];
-assign OC_1_WE = ((bk_0_ocid == ocid << 1 + 1) &&  !bk_0_bz && bk_0_vld)|| 
-				 ((bk_1_ocid == ocid << 1 + 1) &&  !bk_1_bz && bk_1_vld)|| 
-				 ((bk_2_ocid == ocid << 1 + 1) &&  !bk_2_bz && bk_2_vld)|| 
-				 ((bk_3_ocid == ocid << 1 + 1) &&  !bk_3_bz && bk_3_vld)||SPEslot_RAU_OC[1]||SPEv2slot_RAU_OC[1];
+wire OC_0_bk0 = oc_0_banksel == 2'b00 & (bk_0_ocid == {ocid[1:0], 1'b0}) &&  !bk_0_bz && bk_0_vld;
+wire OC_0_bk1 = oc_0_banksel == 2'b01 & (bk_1_ocid == {ocid[1:0], 1'b0}) &&  !bk_1_bz && bk_1_vld;
+wire OC_0_bk2 = oc_0_banksel == 2'b10 & (bk_2_ocid == {ocid[1:0], 1'b0}) &&  !bk_2_bz && bk_2_vld;
+wire OC_0_bk3 = oc_0_banksel == 2'b11 & (bk_3_ocid == {ocid[1:0], 1'b0}) &&  !bk_3_bz && bk_3_vld;
+
+// assign OC_0_WE = ((bk_0_ocid == {ocid[1:0], 1'b0}) &&  !bk_0_bz && bk_0_vld)|| 
+// 				 ((bk_1_ocid == {ocid[1:0], 1'b0}) &&  !bk_1_bz && bk_1_vld)|| 
+// 				 ((bk_2_ocid == {ocid[1:0], 1'b0}) &&  !bk_2_bz && bk_2_vld)|| 
+// 				 ((bk_3_ocid == {ocid[1:0], 1'b0}) &&  !bk_3_bz && bk_3_vld);
+
+assign OC_0_WE = OC_0_bk0 || OC_0_bk1 || OC_0_bk2 || OC_0_bk3;
+
+assign OC_1_WE = ((oc_1_banksel == 2'b00 & (bk_0_ocid == {ocid[1:0], 1'b1}) &&  !bk_0_bz && bk_0_vld) | (OC_0_WE & (same_OC_0 === 1'b1)))|| 
+				 ((oc_1_banksel == 2'b01 & (bk_1_ocid == {ocid[1:0], 1'b1}) &&  !bk_1_bz && bk_1_vld) | (OC_0_WE & (same_OC_1 === 1'b1)))|| 
+				 ((oc_1_banksel == 2'b10 & (bk_2_ocid == {ocid[1:0], 1'b1}) &&  !bk_2_bz && bk_2_vld) | (OC_0_WE & (same_OC_2 === 1'b1)))|| 
+				 ((oc_1_banksel == 2'b11 & (bk_3_ocid == {ocid[1:0], 1'b1}) &&  !bk_3_bz && bk_3_vld) | (OC_0_WE & (same_OC_3 === 1'b1)));
+
+
+
 always @ *
 begin 
 	case (oc_0_banksel)
@@ -113,28 +129,28 @@ begin
 		2'b01:	oc_0_data_in = bk_1_data;
 		2'b10:	oc_0_data_in = bk_2_data;
 		2'b11:	oc_0_data_in = bk_3_data;
-		default: oc_0_data_in = 32'bz;
+		default: oc_0_data_in = 256'bz;
 	endcase
 	if (SPEslot_RAU_OC[0])
 		oc_0_data_in = SPEvalue_RAU_OC;
 	else if (SPEv2slot_RAU_OC[0])
 		oc_0_data_in = SPEv2value_RAU_OC;
 	case (oc_1_banksel)
-		2'b00:  oc_1_data_in =bk_0_data;
-		2'b01:	oc_1_data_in =bk_1_data;
-		2'b10:	oc_1_data_in =bk_2_data;
-		2'b11:	oc_1_data_in =bk_3_data;
-		default: oc_1_data_in = 32'bz;
+		2'b00:  oc_1_data_in = bk_0_data;
+		2'b01:	oc_1_data_in = bk_1_data;
+		2'b10:	oc_1_data_in = bk_2_data;
+		2'b11:	oc_1_data_in = bk_3_data;
+		default: oc_1_data_in = 256'bz;
 	endcase
 	if (SPEslot_RAU_OC[1])
-		oc_0_data_in = SPEvalue_RAU_OC;
+		oc_1_data_in = SPEvalue_RAU_OC;
 	else if (SPEv2slot_RAU_OC[1])
-		oc_0_data_in = SPEv2value_RAU_OC;
+		oc_1_data_in = SPEv2value_RAU_OC;
 end
 
 always @ (posedge clk)
 begin
-	if (rst)
+	if (!rst)
 		begin
 			valid <= 0;
 			oc_0_valid <= 0;
@@ -166,15 +182,33 @@ begin
 				Dst_OC_Ex <= Dst_RAU_OC;
 				
 
-				if (WE[0] == 1)
+				if (WE[0])
 				begin
 					oc_0_valid <= 1;
 					oc_0_banksel <= Src1_Phy_Bank_ID;
+					if (SPEslot_RAU_OC[0]) begin
+						oc_0_data <= SPEvalue_RAU_OC;
+						oc_0_rdy <= 1;
+						oc_0_valid <= 0;
+					end else if (SPEv2slot_RAU_OC[0]) begin
+						oc_0_data <= SPEv2value_RAU_OC;
+						oc_0_rdy <= 1;
+						oc_0_valid <= 0;
+					end
 				end
-				if (WE[1] == 1)
+				if (WE[1])
 				begin
 					oc_1_valid <= 1;
 					oc_1_banksel <= Src2_Phy_Bank_ID;
+					if (SPEslot_RAU_OC[1]) begin
+						oc_1_data = SPEvalue_RAU_OC;
+						oc_1_rdy <= 1;
+						oc_1_valid <= 0;
+					end else if (SPEv2slot_RAU_OC[1]) begin
+						oc_1_data = SPEv2value_RAU_OC;
+						oc_1_rdy <= 1;
+						oc_1_valid <= 0;
+					end
 				end				
 			end
 			else if (RE == 1)
@@ -185,12 +219,12 @@ begin
 			end
 			else 
 			begin
-				if (oc_0_valid && OC_0_WE)
+				if (oc_0_valid & OC_0_WE)
 				begin
 					oc_0_data <= oc_0_data_in;
 					oc_0_rdy <= 1;
 				end
-				if (oc_1_valid && OC_1_WE)
+				if (oc_1_valid & OC_1_WE)
 				begin
 					oc_1_data <= oc_1_data_in;
 					oc_1_rdy <= 1;

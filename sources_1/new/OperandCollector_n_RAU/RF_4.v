@@ -17,6 +17,11 @@ module RegisterFile(
     input wire RF_WR_2,
     input wire RF_WR_3,
 
+    input wire same_0,
+    input wire same_1,
+    input wire same_2,
+    input wire same_3,
+
     input wire [255:0] WriteData_0,
     input wire [255:0] WriteData_1,
     input wire [255:0] WriteData_2,
@@ -27,7 +32,17 @@ module RegisterFile(
     output wire [255:0] DataOut_2,
     output wire [255:0] DataOut_3,//不能写wire？
 
-    
+    output reg same_OC_0,
+    output reg same_OC_1,
+    output reg same_OC_2,
+    output reg same_OC_3,
+
+    output reg RF_WR_OC_0,
+    output reg RF_WR_OC_1,
+    output reg RF_WR_OC_2,
+    output reg RF_WR_OC_3,
+
+
     output reg [3:0] ocid_0,
     output reg [3:0] ocid_1,
     output reg [3:0] ocid_2,
@@ -47,6 +62,16 @@ begin
     ocid_1 <= ocid_out_1;
     ocid_2 <= ocid_out_2;
     ocid_3 <= ocid_out_3;
+    RF_WR_OC_0 <= RF_WR_0;
+    RF_WR_OC_1 <= RF_WR_1;
+    RF_WR_OC_2 <= RF_WR_2;
+    RF_WR_OC_3 <= RF_WR_3;
+    same_OC_0 <= same_0;
+    same_OC_1 <= same_1;
+    same_OC_2 <= same_2;
+    same_OC_3 <= same_3;
+
+    
 end
 
 BRAM_MASK RF_0(

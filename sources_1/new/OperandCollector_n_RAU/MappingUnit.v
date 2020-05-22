@@ -95,7 +95,9 @@ module Mapping(
     output reg [1:0] SPEslot_RAU_OC,
     output reg [255:0] SPEvalue_RAU_OC,
     output reg [1:0] SPEv2slot_RAU_OC,
-    output reg [255:0] SPEv2value_RAU_OC
+    output reg [255:0] SPEv2value_RAU_OC,
+
+    output wire ReqFIFO_Same
 );
 
 
@@ -260,19 +262,20 @@ end
 
 
 assign WriteValid = RegWrite_CDB_RAU;
-assign WriteRow = LUT[(HWWarp_CDB_RAU)*4 + (WriteAddr_CDB_RAU>>1)][3:1];
-assign WriteBank = {LUT[(HWWarp_CDB_RAU)*4 + (WriteAddr_CDB_RAU >> 1)][0], 1'b0} + WriteAddr_CDB_RAU[0];
+assign WriteRow = LUT[{(HWWarp_CDB_RAU[2:0]) , (WriteAddr_CDB_RAU[2:1])}][3:1];
+assign WriteBank = {LUT[(HWWarp_CDB_RAU)*4 + (WriteAddr_CDB_RAU[2:1])][0], WriteAddr_CDB_RAU[0]} ;
 
 assign Src1_Valid = Src1_Valid_IB_RAU;
-assign Src1_Phy_Row_ID = LUT[(HWWarp_IB_RAU*4) + Src1_IB_RAU[2:0]>>1][3:1];
-assign Src1_Phy_Bank_ID = {LUT[(HWWarp_IB_RAU*4) + Src1_IB_RAU[2:0]>>1][0]<<1, 1'b0} + Src1_IB_RAU[0];
+assign Src1_Phy_Row_ID = LUT[{(HWWarp_IB_RAU[2:0]) , Src1_IB_RAU[2:1]}][3:1];
+assign Src1_Phy_Bank_ID = {LUT[{(HWWarp_IB_RAU[2:0]) , Src1_IB_RAU[2:1]}][0], Src1_IB_RAU[0]};
 
 assign Src2_Valid = Src2_Valid_IB_RAU;
-assign Src2_Phy_Row_ID = LUT[(HWWarp_IB_RAU*4) + Src2_IB_RAU[2:0]>>1][3:1];
-assign Src2_Phy_Bank_ID = {LUT[(HWWarp_IB_RAU*4) + Src2_IB_RAU[2:0]>>1][0]<<1, 1'b0} + Src2_IB_RAU[0];
+assign Src2_Phy_Row_ID = LUT[{(HWWarp_IB_RAU[2:0]) , Src2_IB_RAU[2:1]}][3:1];
+assign Src2_Phy_Bank_ID = {LUT[{(HWWarp_IB_RAU[2:0]) , Src2_IB_RAU[2:1]}][0], Src2_IB_RAU[0]};
 
 //same bank or not?
-assign ReqFIFO_2op_EN = (Src1_Phy_Bank_ID == Src2_Phy_Bank_ID) & (Src1_Valid_IB_RAU & Src2_Valid_IB_RAU);
+assign ReqFIFO_2op_EN = (Src1_Phy_Bank_ID == Src2_Phy_Bank_ID) & (Src1_Valid & Src2_Valid);
+assign ReqFIFO_Same = (Src1_IB_RAU == Src2_IB_RAU) & (Src1_Valid & Src2_Valid);
 //给到ReqFIFO再到rf
 
 
@@ -321,12 +324,12 @@ assign Data_CDB = Data_CDB_RAU;
 assign Instr_CDB = Instr_CDB_RAU;
 
 
-always @ (posedge clk)
+always @ (*)
 begin
-    SPEslot_RAU_OC <= {Src2_IB_RAU[4], Src1_IB_RAU[4]}; 
-    SPEvalue_RAU_OC <= {8{SpecialReg[HWWarp_IB_RAU]}};
-    SPEv2slot_RAU_OC <= {Src2_IB_RAU[3], Src1_IB_RAU[3]}; 
-    SPEv2value_RAU_OC <= {32'd7,32'd6,32'd5,32'd4,32'd3,32'd2,32'd1,32'd0};
+    SPEslot_RAU_OC = {Src2_IB_RAU[4], Src1_IB_RAU[4]}; 
+    SPEvalue_RAU_OC = {8{SpecialReg[HWWarp_IB_RAU]}};
+    SPEv2slot_RAU_OC = {Src2_IB_RAU[3], Src1_IB_RAU[3]}; 
+    SPEv2value_RAU_OC = {32'd7,32'd6,32'd5,32'd4,32'd3,32'd2,32'd1,32'd0};
 end
 
 endmodule

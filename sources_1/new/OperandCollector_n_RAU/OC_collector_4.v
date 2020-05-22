@@ -49,6 +49,11 @@ module OC_collector_4(
     input wire [1:0] SPEv2slot_RAU_OC,
     input wire [255:0] SPEv2value_RAU_OC,
 
+    input same_OC_0,
+    input same_OC_1,
+    input same_OC_2,
+    input same_OC_3,
+
     output wire [255:0] oc_0_data_0,
     output wire [255:0] oc_1_data_0,
 
@@ -133,7 +138,10 @@ module OC_collector_4(
     output BLT_OC_Ex_3 ,//pass
     output [1:0] ScbID_OC_Ex_3 ,//pass
     output [7:0] ActiveMask_OC_Ex_3,//pass
-    output [4:0] Dst_OC_Ex_3
+    output [4:0] Dst_OC_Ex_3,
+
+    input wire Src2_Valid,
+    input wire Src1_Valid
 
 );
 
@@ -142,17 +150,20 @@ wire bank_1_valiud = ocid_1[3];
 wire bank_2_valiud = ocid_2[3];
 wire bank_3_valiud = ocid_3[3];
 
-wire [1:0]WE_0 = {((ocid_0 == 3'b001) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b001) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b001) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b001) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[1] | SPEv2slot_RAU_OC[1]) & (Src2_OCID_RAU_OC== 3'b001)),
-             ((ocid_0 == 3'b000) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b000) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b000) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b000) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[0] | SPEv2slot_RAU_OC[0]) & (Src1_OCID_RAU_OC== 3'b000))};
-wire [1:0]WE_1 = {((ocid_0 == 3'b011) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b011) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b011) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b011) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[1] | SPEv2slot_RAU_OC[1]) & (Src2_OCID_RAU_OC== 3'b011)),
-             ((ocid_0 == 3'b010) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b010) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b010) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b010) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[0] | SPEv2slot_RAU_OC[0]) & (Src1_OCID_RAU_OC== 3'b010))};
-wire [1:0]WE_2 = {((ocid_0 == 3'b101) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b101) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b101) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b101) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[1] | SPEv2slot_RAU_OC[1]) & (Src2_OCID_RAU_OC== 3'b101)),
-             ((ocid_0 == 3'b100) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b100) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b100) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b100) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[0] | SPEv2slot_RAU_OC[0]) & (Src1_OCID_RAU_OC== 3'b100))};
-wire [1:0]WE_3 = {((ocid_0 == 3'b111) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b111) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b111) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b111) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[1] | SPEv2slot_RAU_OC[1]) & (Src2_OCID_RAU_OC== 3'b111)),
-             ((ocid_0 == 3'b110) & (ocid_0[3] == 1'b1))|((ocid_1 == 3'b110) & (ocid_1[3] == 1'b1))|((ocid_2 == 3'b110) & (ocid_2[3] == 1'b1))|((ocid_3 == 3'b110) & (ocid_3[3] == 1'b1))|((SPEslot_RAU_OC[0] | SPEv2slot_RAU_OC[0]) & (Src1_OCID_RAU_OC== 3'b110))};
+wire [1:0]WE_0 = Valid_RAU_OC?{((Src2_OCID_RAU_OC[2:1] == 2'b00) & Src2_Valid) , ((Src1_OCID_RAU_OC[2:1] == 2'b00) & Src1_Valid)}:2'b00;
+wire [1:0]WE_1 = Valid_RAU_OC?{((Src2_OCID_RAU_OC[2:1] == 2'b01) & Src2_Valid) , ((Src1_OCID_RAU_OC[2:1] == 2'b01) & Src1_Valid)}:2'b00;
+wire [1:0]WE_2 = Valid_RAU_OC?{((Src2_OCID_RAU_OC[2:1] == 2'b10) & Src2_Valid) , ((Src1_OCID_RAU_OC[2:1] == 2'b10) & Src1_Valid)}:2'b00;
+wire [1:0]WE_3 = Valid_RAU_OC?{((Src2_OCID_RAU_OC[2:1] == 2'b11) & Src2_Valid) , ((Src1_OCID_RAU_OC[2:1] == 2'b11) & Src1_Valid)}:2'b00;
 
+wire [1:0] SPEslot_RAU_OC_0 = {(Src2_OCID_RAU_OC[2:1] == 2'b00) & Src2_Valid & SPEslot_RAU_OC[1] , (Src1_OCID_RAU_OC[2:1] == 2'b00) & Src1_Valid & SPEslot_RAU_OC[0]};
+wire [1:0] SPEslot_RAU_OC_1 = {(Src2_OCID_RAU_OC[2:1] == 2'b01) & Src2_Valid & SPEslot_RAU_OC[1] , (Src1_OCID_RAU_OC[2:1] == 2'b01) & Src1_Valid & SPEslot_RAU_OC[0]};
+wire [1:0] SPEslot_RAU_OC_2 = {(Src2_OCID_RAU_OC[2:1] == 2'b10) & Src2_Valid & SPEslot_RAU_OC[1] , (Src1_OCID_RAU_OC[2:1] == 2'b10) & Src1_Valid & SPEslot_RAU_OC[0]};
+wire [1:0] SPEslot_RAU_OC_3 = {(Src2_OCID_RAU_OC[2:1] == 2'b11) & Src2_Valid & SPEslot_RAU_OC[1] , (Src1_OCID_RAU_OC[2:1] == 2'b11) & Src1_Valid & SPEslot_RAU_OC[0]};
 
-
+wire [1:0] SPEv2slot_RAU_OC_0 = {(Src2_OCID_RAU_OC[2:1] == 2'b00) & Src2_Valid & SPEv2slot_RAU_OC[1] , (Src1_OCID_RAU_OC[2:1] == 2'b00) & Src1_Valid & SPEv2slot_RAU_OC[0]};
+wire [1:0] SPEv2slot_RAU_OC_1 = {(Src2_OCID_RAU_OC[2:1] == 2'b01) & Src2_Valid & SPEv2slot_RAU_OC[1] , (Src1_OCID_RAU_OC[2:1] == 2'b01) & Src1_Valid & SPEv2slot_RAU_OC[0]};
+wire [1:0] SPEv2slot_RAU_OC_2 = {(Src2_OCID_RAU_OC[2:1] == 2'b10) & Src2_Valid & SPEv2slot_RAU_OC[1] , (Src1_OCID_RAU_OC[2:1] == 2'b10) & Src1_Valid & SPEv2slot_RAU_OC[0]};
+wire [1:0] SPEv2slot_RAU_OC_3 = {(Src2_OCID_RAU_OC[2:1] == 2'b11) & Src2_Valid & SPEv2slot_RAU_OC[1] , (Src1_OCID_RAU_OC[2:1] == 2'b11) & Src1_Valid & SPEv2slot_RAU_OC[0]};
 
 wire RE_0 = ALU_Grt_Sched_OC[0] | MEM_Grt_Sched_OC[0];
 wire RE_1 = ALU_Grt_Sched_OC[1] | MEM_Grt_Sched_OC[1];
@@ -165,12 +176,17 @@ OC_collector_unit#(
 ) unit0(
     .clk(clk), 
     .rst(rst),
-    .SPEslot_RAU_OC(SPEslot_RAU_OC),
+    .SPEslot_RAU_OC(SPEslot_RAU_OC_0),
     .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
-    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
+    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC_0),
     .SPEv2value_RAU_OC(SPEv2value_RAU_OC),
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
+    .same_OC_0(same_OC_0),
+    .same_OC_1(same_OC_1),
+    .same_OC_2(same_OC_2),
+    .same_OC_3(same_OC_3),
+
 
     .bk_0_data(DataOut_0), 
     .bk_1_data(DataOut_1), 
@@ -236,12 +252,16 @@ OC_collector_unit#(
 ) unit1(
     .clk(clk), 
     .rst(rst),
-    .SPEslot_RAU_OC(SPEslot_RAU_OC),
+    .SPEslot_RAU_OC(SPEslot_RAU_OC_1),
     .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
-    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
+    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC_1),
     .SPEv2value_RAU_OC(SPEv2value_RAU_OC),
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
+    .same_OC_0(same_OC_0),
+    .same_OC_1(same_OC_1),
+    .same_OC_2(same_OC_2),
+    .same_OC_3(same_OC_3),
 
     .bk_0_data(DataOut_0), 
     .bk_1_data(DataOut_1), 
@@ -309,12 +329,17 @@ OC_collector_unit#(
 ) unit2(
     .clk(clk), 
     .rst(rst),
-    .SPEslot_RAU_OC(SPEslot_RAU_OC),
+    .SPEslot_RAU_OC(SPEslot_RAU_OC_2),
     .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
-    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
+    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC_2),
     .SPEv2value_RAU_OC(SPEv2value_RAU_OC),
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
+    .same_OC_0(same_OC_0),
+    .same_OC_1(same_OC_1),
+    .same_OC_2(same_OC_2),
+    .same_OC_3(same_OC_3),
+
 
     .bk_0_data(DataOut_0), 
     .bk_1_data(DataOut_1), 
@@ -381,12 +406,17 @@ OC_collector_unit#(
 ) unit3(
     .clk(clk), 
     .rst(rst),
-    .SPEslot_RAU_OC(SPEslot_RAU_OC),
+    .SPEslot_RAU_OC(SPEslot_RAU_OC_3),
     .SPEvalue_RAU_OC(SPEvalue_RAU_OC),
-    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC),
+    .SPEv2slot_RAU_OC(SPEv2slot_RAU_OC_3),
     .SPEv2value_RAU_OC(SPEv2value_RAU_OC),
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
+    .same_OC_0(same_OC_0),
+    .same_OC_1(same_OC_1),
+    .same_OC_2(same_OC_2),
+    .same_OC_3(same_OC_3),
+
 
     .bk_0_data(DataOut_0), 
     .bk_1_data(DataOut_1), 
