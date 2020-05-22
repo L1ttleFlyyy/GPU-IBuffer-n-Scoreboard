@@ -790,7 +790,7 @@ module gpu_top_checking#(
     .rst(rst), 
     .Instr_valid_OC_MEM(Valid_OC_MEM), 
     .MemRead_OC_MEM(MemRead_OC_MEM),
-    .MemWrite_OC_MEM(MemRead_OC_MEM), 
+    .MemWrite_OC_MEM(MemWrite_OC_MEM), 
     .shared_global_bar_OC_MEM(Shared_Globalbar_OC_MEM),
 	.PAM_OC_MEM(ActiveMask_OC_MEM),
 	.warp_ID_OC_MEM(WarpID_OC_MEM),
