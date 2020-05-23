@@ -8,11 +8,12 @@
 ## Updated on 05/09/2020: Simulation and documentation
 
 ---
+<span style="color:green">Each team should have their slides revised by May 24</span>
+
 <span style="color:yellow">Each team come up with a test instruction stream for corner cases</span>
 
 <span style="color:blue">Each team should make introduction video for their slides</span>
 
-<span style="color:green">Each team should revise the slides</span>
 
 ### 1. Create a Generic Testbench
 
@@ -23,8 +24,8 @@
 - [x] Nreg_TM_RAU now changed to number of pairs of registers
 - [x] Covert real [cuda application](../cuda/add.cu) into our assembly
 - [x] Serialization program adding up 1024 numbers (asm & cuda)
-- [ ] Initialize the RF using mem init file
-- [ ] Create project and debug Operand Collector
+- [x] Initialize the RF using mem init file
+- [x] Create project and debug Operand Collector
 ### 2. Create Instruction Stream (in assembly) for Testing
 > Tridash, Dipayan
 - [x] Template content of Task Manager (SW warp ID, PC, Number of Registers, Active Mask)
@@ -32,6 +33,8 @@
 - [x] Memory Access, Active Mask and Instruction Replay
 - [x] Nreg_TM_RAU now changed to number of pairs of registers
 - [x] Shared Memory testing
+- [ ] Simulate Memory Unit
+- [ ] Try simulating in Modelsim/NcSim
 - [ ] Create a script to initialize Task Manager in hex (two versions, one for debug, one for FileIO)
 - [ ] Confirm the actual exception and virtual memory support in AMD/Nvidia implementation
 - [ ] Figure out how cudaMalloc pointer is translated to actual GPU memory location
@@ -44,9 +47,9 @@
 - [x] Post-Synth of multiplier
 - [x] Modify assembler
 - [x] ISA modification (LD => LW), documentaion, assembler, reverse assembler
-- [ ] Fix casez in ALUop generation logic
-- [ ] Covert real [cuda application](../cuda/mulv.cu) into our assembly
-- [ ] CUDA simulator / (HPC platform)
+- [x] Fix casez in ALUop generation logic
+- [x] Covert real [cuda application](../cuda/mulv.cu) into our assembly
+- [x] CUDA simulator / (HPC platform)
 ### 4. Integrate FileIO and reverse assembler
 > Spandan, Chang
 - [x] Inject reverse assembler (and PC) in each stage
@@ -57,5 +60,6 @@
 - [x] Complete gpu_top_with_FileIO
 - [x] Verify FileIO reading/writing on board
 - [x] Create waveform configurations for each team and dipatch the projects
-- [ ] Create a general overall introduction slides to our GPU design
+- [x] Create a general overall introduction slides to our GPU design
+- [ ] Resolve issues in assembler and start simulate SIMT stack
 ---
