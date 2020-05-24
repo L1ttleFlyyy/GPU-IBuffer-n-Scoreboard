@@ -193,7 +193,8 @@ Fetch ifetch(
 	.Valid_2_IF_ID0(Valid_2_IF_ID0), 
 	.Valid_2_IF_ID1(Valid_2_IF_ID1),
 	.Valid_3_IF_ID0(Valid_3_IF_ID0), 
-	.Valid_3_IF_ID1(Valid_3_IF_ID1)
+	.Valid_3_IF_ID1(Valid_3_IF_ID1),
+	.PC_Valid(PC_Valid)
 );
 
 //3rd Stage: ID

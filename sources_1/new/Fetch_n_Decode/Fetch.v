@@ -10,7 +10,8 @@ Instr_IF_ID0, Instr_IF_ID1,
 PC_plus4_IF_ID0, PC_plus4_IF_ID1,
 Valid_2_IF_ID0, Valid_2_IF_ID1,
 Valid_3_IF_ID0, Valid_3_IF_ID1,
-FileIO_Wen_ICache, FileIO_Addr_ICache, FileIO_Din_ICache, FileIO_Dout_ICache
+FileIO_Wen_ICache, FileIO_Addr_ICache, FileIO_Din_ICache, FileIO_Dout_ICache, 
+PC_Valid
 );
 
 input clk, rst_n;
@@ -26,6 +27,7 @@ input FileIO_Wen_ICache;
 input [11:0] FileIO_Addr_ICache;
 input [31:0] FileIO_Din_ICache;
 output [31:0] FileIO_Dout_ICache;
+input [7:0] PC_Valid;
 
 wire [7:0] UpdatePC_Qual3_SIMT_IF;
 wire [7:0] Flush_raw;
@@ -69,8 +71,8 @@ for (i = 0; i < 8; i = i + 1) begin : valid_reg_g2
 			Valid_3_IF_ID0[i] <= 0;
 		end
 		else begin
-			Valid_2_IF_ID0[i] <= Valid_Q1_1[i] && Flush_raw[i];
-			Valid_3_IF_ID0[i] <= Valid_2_IF_ID0[i] && Flush_raw[i];
+			Valid_2_IF_ID0[i] <= Valid_Q1_1[i] && Flush_raw[i] && PC_Valid[i];
+			Valid_3_IF_ID0[i] <= Valid_2_IF_ID0[i] && Flush_raw[i] && PC_Valid[i];
 		end
 	end 
 end
@@ -82,8 +84,8 @@ for (i = 0; i < 8; i = i + 1) begin : valid_reg_g3
 			Valid_3_IF_ID1[i] <= 0;
 		end
 		else begin
-			Valid_2_IF_ID1[i] <= Valid_Q2_1[i] && Flush_raw[i];
-			Valid_3_IF_ID1[i] <= Valid_2_IF_ID1[i] && Flush_raw[i];
+			Valid_2_IF_ID1[i] <= Valid_Q2_1[i] && Flush_raw[i] && PC_Valid[i];
+			Valid_3_IF_ID1[i] <= Valid_2_IF_ID1[i] && Flush_raw[i] && PC_Valid[i];
 		end
 	end 
 end
