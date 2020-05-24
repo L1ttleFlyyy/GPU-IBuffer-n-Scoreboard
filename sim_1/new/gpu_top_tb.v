@@ -64,7 +64,7 @@ initial
 initial                             //MEM_INIT
     begin
     $readmemh("TM_init.txt", temp_TM);
-    $readmemh("ICache_init.txt", temp_ICache);
+    $readmemh("ICache_init_thread_div.txt", temp_ICache);
     $readmemh("MEM_init.txt", temp_MEM);
     $readmemh("EMU_init.txt", temp_EMU);
     end
@@ -132,11 +132,14 @@ initial
 initial
     begin:  DUMP_MEM
         wait (~FIO_MEMWRITE_tb);
-            for(i_MEM = 0; i_MEM <= 255; i_MEM = i_MEM+1)
-                @(posedge clk_tb)
-                FIO_ADDR_tb = i_MEM;
-                Read_temp = FIO_READ_DATA_tb;
-                $display ("Addr before 2 clk = %d, Data = %b", i_MEM, Read_temp);
+            $display ("All BRAMs initialized");
+            // for(i_MEM = 0; i_MEM <= 255; i_MEM = i_MEM+1)
+            //     begin
+            //         @(posedge clk_tb)
+            //         FIO_ADDR_tb = i_MEM;
+            //         Read_temp = FIO_READ_DATA_tb;
+            //         $display ("Addr before 2 clk = %d, Data = %b", i_MEM, Read_temp);
+            //     end
     end
 
 
