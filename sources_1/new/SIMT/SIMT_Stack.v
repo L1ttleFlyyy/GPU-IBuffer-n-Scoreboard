@@ -58,13 +58,11 @@ localparam warp7=3'b111;
 
 wire [9:0] TA_Warp_SIMT_IF [7:0];  // Target Address from SIMT per warp
 wire [7:0] AM_Warp_SIMT_IB [7:0];
-wire [21:0] z22;
-assign z22 = 0;
-assign TargetAddr_SIMT_PC_Flattened = {z22,TA_Warp_SIMT_IF[7],
-                z22,TA_Warp_SIMT_IF[6],z22,TA_Warp_SIMT_IF[5],
-                z22,TA_Warp_SIMT_IF[4],z22,TA_Warp_SIMT_IF[3],
-                z22,TA_Warp_SIMT_IF[2],z22,TA_Warp_SIMT_IF[1],
-                z22,TA_Warp_SIMT_IF[0]};
+assign TargetAddr_SIMT_PC_Flattened = {20'b0,TA_Warp_SIMT_IF[7],2'b0,
+                20'b0,TA_Warp_SIMT_IF[6],2'b0,20'b0,TA_Warp_SIMT_IF[5],2'b0,
+                20'b0,TA_Warp_SIMT_IF[4],2'b0,20'b0,TA_Warp_SIMT_IF[3],2'b0,
+                20'b0,TA_Warp_SIMT_IF[2],2'b0,20'b0,TA_Warp_SIMT_IF[1],2'b0,
+                20'b0,TA_Warp_SIMT_IF[0],2'b0};
 
 assign ActiveMask_SIMT_IB_Flattened = {AM_Warp_SIMT_IB[7],
                                         AM_Warp_SIMT_IB[6],
