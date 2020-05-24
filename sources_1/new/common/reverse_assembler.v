@@ -30,7 +30,7 @@ module reverse_assembler (
 	input [7:0] one_hot_warp_ID,  // one-hot code
     input [31:0] instruction_in,
 	input [31:0] PC,
-	input [8*10:0] module_name,
+	input [8*10:1] module_name,
 	
 	output [2:0] warp_ID,
 	output reg [8*20:1] instruction_out,
@@ -62,6 +62,76 @@ module reverse_assembler (
 			$fwrite(outfile,"%s; imme = %d; j_addr = %h; PC = %h; warp_ID = %d\n", instruction_out, immediate, j_address, PC_value, warp_ID);
 		end			
 	end
+
+	function [8:1] num2ascii;
+	input [3:0] num;
+		begin
+			case (num)
+				4'h0: num2ascii = "0"; 
+				4'h1: num2ascii = "1"; 
+				4'h2: num2ascii = "2"; 
+				4'h3: num2ascii = "3"; 
+				4'h4: num2ascii = "4"; 
+				4'h5: num2ascii = "5"; 
+				4'h6: num2ascii = "6"; 
+				4'h7: num2ascii = "7"; 
+				4'h8: num2ascii = "8"; 
+				4'h9: num2ascii = "9"; 
+				4'ha: num2ascii = "a"; 
+				4'hb: num2ascii = "b"; 
+				4'hc: num2ascii = "c"; 
+				4'hd: num2ascii = "d"; 
+				4'he: num2ascii = "e"; 
+				4'hf: num2ascii = "f"; 
+			endcase
+		end
+	endfunction
+
+	// FIXME: signed extended?
+	function [8*6:1] imme2dec;
+	input [15:0] imme;
+	reg [15:0] num;
+	reg [8:1] tmp;
+	integer i;
+		begin
+			num = imme;
+			for (i = 0; i < 6; i = i + 1) begin
+				tmp = num2ascii(num%10);
+				imme2dec[8*i+1] = tmp[1];
+				imme2dec[8*i+2] = tmp[2];
+				imme2dec[8*i+3] = tmp[3];
+				imme2dec[8*i+4] = tmp[4];
+				imme2dec[8*i+5] = tmp[5];
+				imme2dec[8*i+6] = tmp[6];
+				imme2dec[8*i+7] = tmp[7];
+				imme2dec[8*i+8] = tmp[8];
+				num = num/10;
+			end
+		end
+	endfunction
+
+
+	function [8*8:1] jaddr2dec;
+	input [25:0] jaddr;
+	reg [25:0] num;
+	reg [8:1] tmp;
+	integer i;
+		begin
+			num = jaddr;
+			for (i = 0; i < 8; i = i + 1) begin
+				tmp = num2ascii(num%10);
+				jaddr2dec[8*i+1] = tmp[1];
+				jaddr2dec[8*i+2] = tmp[2];
+				jaddr2dec[8*i+3] = tmp[3];
+				jaddr2dec[8*i+4] = tmp[4];
+				jaddr2dec[8*i+5] = tmp[5];
+				jaddr2dec[8*i+6] = tmp[6];
+				jaddr2dec[8*i+7] = tmp[7];
+				jaddr2dec[8*i+8] = tmp[8];
+				num = num/10;
+			end
+		end
+	endfunction
 
 	task reverse_instruction;
 		input [31:0] instruction_in;
@@ -168,46 +238,46 @@ module reverse_assembler (
 								endcase
 							end
 				6'b0?1000:  begin   inst_string = "ADDI";
-									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, "  imme"};
+									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, imme2dec(immediate)};
 							end
 				6'b0?1100:  begin   inst_string = "ANDI";
-									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, "  imme"};
+									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, imme2dec(immediate)};
 							end
 				6'b0?1101:  begin   inst_string = "ORI ";
-									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, "  imme"};
+									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, imme2dec(immediate)};
 							end
 				6'b0?1110:  begin   inst_string = "XORI";
-									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, "  imme"};
+									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, imme2dec(immediate)};
 							end
-				6'b1?0011:  begin   inst_string = "LD  ";
-									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, "  imme"};
+				6'b1?0011:  begin   inst_string = "LW  ";
+									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, imme2dec(immediate)};
 							end
-				6'b1?0111:  begin   inst_string = "LDS ";
-									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, "  imme"};
+				6'b1?0111:  begin   inst_string = "LWS ";
+									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, imme2dec(immediate)};
 							end
 				6'b1?1011:  begin   inst_string = "SW  ";
-									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, "  imme"};
+									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, imme2dec(immediate)};
 							end
 				6'b1?1111:  begin   inst_string = "SWS ";
-									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, "  imme"};
+									instruction_out = {inst_string, dot_S_string, rt_string, rs_string, imme2dec(immediate)};
 							end
 				6'b0?0100:  begin   inst_string = "BEQ ";
-									instruction_out = {inst_string, dot_S_string, rs_string, rt_string, "  imme"};
+									instruction_out = {inst_string, dot_S_string, rs_string, rt_string, imme2dec(immediate)};
 							end
 				6'b0?0111:  begin   inst_string = "BLT ";
-									instruction_out = {inst_string, dot_S_string, rs_string, rt_string, "  imme"};
+									instruction_out = {inst_string, dot_S_string, rs_string, rt_string, imme2dec(immediate)};
 							end
 				6'b0?0010:  begin   inst_string = "JMP ";
-									instruction_out = {inst_string, dot_S_string, "  j_addr"};
+									instruction_out = {inst_string, dot_S_string, jaddr2dec(j_address)};
 							end
 				6'b000011:  begin   inst_string = "CALL";
-									instruction_out = {inst_string, "  imme"};
+									instruction_out = {inst_string, imme2dec(immediate)};
 							end
 				6'b000110:  begin   inst_string = "RET ";
 									instruction_out = {inst_string};
 							end
 				6'b100001:  begin   inst_string = "EXIT";
-									instruction_out = {inst_string, "  warp_id"};
+									instruction_out = {inst_string};
 							end
 				6'b0?0001:  begin   inst_string = "NOOP";
 									instruction_out = {inst_string};
