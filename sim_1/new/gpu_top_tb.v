@@ -64,7 +64,7 @@ initial
 initial                             //MEM_INIT
     begin
     $readmemh("TM_init.txt", temp_TM);
-    $readmemh("ICache_init_thread_div.txt", temp_ICache);
+    $readmemh("ICache_init_new.txt", temp_ICache);
     $readmemh("MEM_init.txt", temp_MEM);
     $readmemh("EMU_init.txt", temp_EMU);
     end
@@ -104,7 +104,7 @@ initial
     begin:  MEM_INIT
         wait(rst_tb);
         FIO_MEMWRITE_tb = 1;
-        for(i_MEM = 0; i_MEM <= 255; i_MEM = i_MEM+1)
+        for(i_MEM = 0; i_MEM <= 511; i_MEM = i_MEM+1)
             begin
                 @ (posedge clk_tb);
                 FIO_ADDR_tb = i_MEM;
@@ -118,7 +118,7 @@ initial
     begin:  EMU_INIT
         wait(rst_tb);
         FIO_CACHE_LAT_WRITE_tb = 1;
-        for(i_EMU = 0; i_EMU <= 511; i_EMU = i_EMU+1)
+        for(i_EMU = 0; i_EMU <= 255; i_EMU = i_EMU+1)
             begin
                 @ (posedge clk_tb);
                 FIO_CACHE_MEM_ADDR_tb = i_EMU;

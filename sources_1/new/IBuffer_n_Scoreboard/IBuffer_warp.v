@@ -153,16 +153,16 @@ module IBuffer_warp#(
     wire Full = depth == 3'b100;
 
     // for the Instruction currently being Replayed
-    wire [NUM_THREADS-1:0] PAM_next = PosFB_Valid_MEM_IB? (PAM_array[IRP_ind] & (~PosFB_MEM_IB)): PAM_array[IRP_ind];
+    wire [NUM_THREADS-1:0] PAM_IRP_next;
     // clear the Inst[IRP_ind] in the same clock as PosFB is received
 
-    reg [3:0] Valid_array_cleared;
+    reg [3:0] Valid_array_next;
     // pointer management
     assign WP_EN = !DropInstr_SIMT_IB & (Valid_ID0_IB_SIMT | Valid_ID1_IB_SIMT);
     assign WP_next = WP_EN? (WP+1'b1):WP;
     assign RP_EN = RP_Grt;
     assign RP_next = RP_EN? (RP+1'b1):RP;
-    assign IRP_EN = !Valid_array_cleared[IRP_ind];
+    assign IRP_EN = !Valid_array_next[IRP_ind];
     assign IRP_next = IRP_EN? RP_next:IRP;
     // note there is a simpler implementation:
     // assign IRP_EN = !Valid_array[IRP_ind];
@@ -172,9 +172,11 @@ module IBuffer_warp#(
     // we can even do FWFT from ID to OC totally bypassing IB
 
     always@(*) begin
-        Valid_array_cleared = Valid_array;
-        if (PAM_next == 0) Valid_array_cleared[IRP_ind] = 1'b0;
-        if (RP_Grt & !Replay_array[RP_ind]) Valid_array_cleared[RP_ind] = 1'b0; // non-Replayable Instruction
+        Valid_array_next = Valid_array;
+        if (WP_EN) Valid_array_next[WP_ind] <= 1'b1;
+        if (PosFB_Valid_MEM_IB && (PAM_IRP_next == 0)) Valid_array_next[IRP_ind] = 1'b0;
+        if (RP_Grt & !Replay_array[RP_ind]) Valid_array_next[RP_ind] = 1'b0; // non-Replayable Instruction
+        if (Exit_Grt_IU_IB) Valid_array_next[RP_ind] <= 1'b0;
     end
 
     always@(posedge clk or negedge rst) begin
@@ -187,35 +189,32 @@ module IBuffer_warp#(
             WP <= WP_next;
             RP <= RP_next;
             IRP <= IRP_next;
-            Valid_array <= Valid_array_cleared;
-            if (WP_EN) begin
-                Valid_array[WP_ind] <= 1'b1;
-            end
-            if (Exit_Grt_IU_IB) begin
-                Valid_array[RP_ind] <= 1'b0;
-            end
+            Valid_array <= Valid_array_next;
         end
     end
 
-    // TODO: should I supress Req_IB_IF when I see an "EXIT"?
+    // Q: should I supress Req_IB_IF when I see an "EXIT"?
+    // A: No. It has already been taken care of in IF stage (Flush if !PC_Valid)
     // Note: here we has to be conservative, even though the Valid_IF might be a Call/Jump,
     // we still need to reserve an IBuffer slot for it
-    // For the "depth" calculation, a more aggresive choice is to use WP_next-IRP_next
     assign Req_IB_IF = (depth + Valid_IF_ID0_IB + Valid_IF_ID1_IB + WP_EN) < 3'b100;
 
     //similarly, Replay_array_set, Replay_array_cleared
     reg [3:0] Replay_array_next;
     always@(*) begin
         Replay_array_next = Replay_array;
-        if (ZeroFB_Valid_MEM_IB | (PosFB_Valid_MEM_IB & PAM_next!=0)) Replay_array_next[IRP_ind] = 1'b1;
+        if (ZeroFB_Valid_MEM_IB || (PosFB_Valid_MEM_IB && (PAM_IRP_next != 0))) Replay_array_next[IRP_ind] = 1'b1;
         if (IRP_Grt) Replay_array_next[IRP_ind] = 1'b0;
         if (RP_Grt) Replay_array_next[RP_ind] = 1'b0;
         if (Valid_ID1_IB_SIMT) Replay_array_next[WP_ind] = MemWrite_ID1_IB | MemRead_ID1_IB;
         if (Valid_ID0_IB_SIMT) Replay_array_next[WP_ind] = MemWrite_ID0_IB | MemRead_ID0_IB;  
     end
 
+    assign PAM_IRP_next = PosFB_Valid_MEM_IB? (PAM_array[IRP_ind] & (~PosFB_MEM_IB)): PAM_array[IRP_ind];
+
     always@(posedge clk) begin
         Replay_array <= Replay_array_next;
+        PAM_array[IRP_ind] <= PAM_IRP_next;
         if (RP_Grt) begin
             ScbID_array[RP_ind] <= ScbID_Scb_IB;
         end
@@ -267,7 +266,7 @@ module IBuffer_warp#(
             RP_Req = Valid_array[RP_ind] & !Exit_array[RP_ind] & !Full_Scb_IB & !Dependent_Scb_IB & !Full_OC_IB & !AllocStall_RAU_IB;
         end else begin // RP != IRP && IRPValid
             // give priority to the Replay Instruction
-            if (Replay_array[IRP_ind] | ZeroFB_Valid_MEM_IB | (PosFB_Valid_MEM_IB & PAM_next != 0)) begin
+            if (Replay_array[IRP_ind]) begin
                 IRP_Req = !Full_OC_IB;
             end else if (Valid_array[RP_ind] & !Replay_array[RP_ind]) begin // RP is Valid && RP is not another Replayable inst
                 RP_Req = !Exit_array[RP_ind] & !Full_Scb_IB & !Dependent_Scb_IB & !Full_OC_IB;
@@ -306,7 +305,7 @@ module IBuffer_warp#(
 
     // signal for clearing
     assign Replay_Complete_ScbID_IB_Scb = ScbID_array[IRP_ind]; // mark the Scb entry as Complete
-    assign Replay_Complete_IB_Scb = PAM_next == 0;
+    assign Replay_Complete_IB_Scb = PAM_IRP_next == 0;
     assign Replay_Complete_SW_LWbar_IB_Scb = MemWrite_array[IRP_ind]; // distinguish between SW/LW
     
     // signal to RAU/IU
