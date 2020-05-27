@@ -44,7 +44,7 @@ always @(*) begin
 	if (!rst_n)
 		PC_next = 32'b0;
 	else if (UpdatePC_TM_PC)
-		PC_next = StartingPC_TM_PC;
+		PC_next = StartingPC_TM_PC - 4;
 	else if (valid_1_IF_PC && valid_2_IF_PC && valid_3_IF_PC && Stall_SIMT_PC)
 		PC_next = PC_reg - 4;
 	else if (!UpdatePC_Qual1_SIMT_PC && !UpdatePC_Qual2_SIMT_PC && UpdatePC_Qual3_ID_PC)

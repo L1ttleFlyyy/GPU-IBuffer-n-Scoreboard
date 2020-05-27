@@ -77,16 +77,16 @@ endmodule
 module Generate_PCvalid_Logic (
 Valid_ID0_IB, Valid_ID1_IB,
 Exit_ID0_IB, Exit_ID1_IB,
-UpdatePC_TM_PC, PCValid_next,
+UpdatePC_TM_PC, PCValid,
 clk, rst_n
 );
 
 input clk, rst_n;
 input wire [7:0] Valid_ID0_IB, Valid_ID1_IB, UpdatePC_TM_PC;
 input wire Exit_ID0_IB, Exit_ID1_IB;
-output reg [7:0] PCValid_next;
+output reg [7:0] PCValid;
 
-reg [7:0] PCValid;
+reg [7:0] PCValid_next;
 wire [7:0] Exit_ID_PC;
 
 genvar i;
