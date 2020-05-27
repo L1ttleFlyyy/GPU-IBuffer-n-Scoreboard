@@ -87,15 +87,20 @@ module reverse_assembler (
 		end
 	endfunction
 
-	// FIXME: signed extended?
 	function [8*6:1] imme2dec;
 	input [15:0] imme;
 	reg [15:0] num;
 	reg [8:1] tmp;
 	integer i;
 		begin
-			num = imme;
-			for (i = 0; i < 6; i = i + 1) begin
+			if (imme[15]) begin
+				num = ~imme + 1; // 2's complement to true code
+				imme2dec[8*6: 8*5+1] = "-";
+			end else begin
+				num = imme;
+				imme2dec[8*6: 8*5+1] = "+";
+			end
+			for (i = 0; i < 5; i = i + 1) begin
 				tmp = num2ascii(num%10);
 				imme2dec[8*i+1] = tmp[1];
 				imme2dec[8*i+2] = tmp[2];
