@@ -44,14 +44,13 @@ reg [31:0] temp_ICache [0:icache_depth-1];
 reg [255:0] temp_MEM [0:mem_total_depth-1];
 reg [7:0] temp_EMU [0:emu_depth-1];
 reg [31:0] temp_TM [0:tm_depth-1];
-
-reg [255:0] Read_temp;
  
 reg [15:0] i_ICache;
 reg [15:0] i_MEM;
 reg [15:0] i_EMU;
 reg [15:0] i_TM;
 
+integer outfile;
 
 
 initial
@@ -143,13 +142,26 @@ initial
             $display("All BRAMs initialized");
         wait (finished_TM_FIO_tb);
             $display("Execution finished, now dumping data");
-            // for(i_MEM = 0; i_MEM <= 255; i_MEM = i_MEM+1)
-            //     begin
-            //         @(posedge clk_tb)
-            //         FIO_ADDR_tb = i_MEM;
-            //         Read_temp = FIO_READ_DATA_tb;
-            //         $display ("Addr before 2 clk = %d, Data = %b", i_MEM, Read_temp);
-            //     end
+		    outfile = $fopen("MEM_dump.txt", "w");
+            for(i_MEM = 0; i_MEM < 16; i_MEM = i_MEM+1)
+                begin
+                    @(posedge clk_tb)
+                    FIO_ADDR_tb = i_MEM;
+                    if (i_MEM > 0) begin
+                        $fwrite(outfile,"%x %x %x %x %x %x %x %x\n", FIO_READ_DATA_tb[255:224], FIO_READ_DATA_tb[223:192],
+                            FIO_READ_DATA_tb[191:160], FIO_READ_DATA_tb[159:128],
+                            FIO_READ_DATA_tb[127:96], FIO_READ_DATA_tb[95:64],
+                            FIO_READ_DATA_tb[63:32], FIO_READ_DATA_tb[31:0]);
+                    end
+                end
+        @(posedge clk_tb)
+        $fwrite(outfile,"%x %x %x %x %x %x %x %x\n", FIO_READ_DATA_tb[255:224], FIO_READ_DATA_tb[223:192],
+            FIO_READ_DATA_tb[191:160], FIO_READ_DATA_tb[159:128],
+            FIO_READ_DATA_tb[127:96], FIO_READ_DATA_tb[95:64],
+            FIO_READ_DATA_tb[63:32], FIO_READ_DATA_tb[31:0]);
+        $fclose(outfile);
+        $display("Dump finished");
+        $finish;
     end
 
 
