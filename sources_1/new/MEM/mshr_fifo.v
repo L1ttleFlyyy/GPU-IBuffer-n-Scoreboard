@@ -16,7 +16,9 @@ module mshr_fifo(clk, resetb, cle_hit_missbar, scbID, warpID, cle_addr, cle_late
 	reg [4:0] fifo_latency [7:0];
 	
 	reg [3:0] wp, rp;
-	
+	wire [2:0] wp_ind = wp[2:0];
+	wire [2:0] rp_ind = rp[2:0];
+
 	wire [3:0] depth;
 	wire empty, full;
 	
@@ -30,11 +32,11 @@ module mshr_fifo(clk, resetb, cle_hit_missbar, scbID, warpID, cle_addr, cle_late
 	assign empty = (wp == rp);
 	assign full = depth[3];
 	
-	assign neg_feedback_addr	=	fifo_addr[rp];
-	assign neg_feedback_scbID	=	fifo_scbID[rp];
-	assign neg_feedback_warpID	=	fifo_warpID[rp];
+	assign neg_feedback_addr	=	fifo_addr[rp_ind];
+	assign neg_feedback_scbID	=	fifo_scbID[rp_ind];
+	assign neg_feedback_warpID	=	fifo_warpID[rp_ind];
 	
-	assign neg_feedback_valid 	=	(fifo_latency[rp]==5'b00001 && !empty);
+	assign neg_feedback_valid 	=	(fifo_latency[rp_ind]==5'b00001 && !empty);
 	integer i;
 	always@(posedge clk, negedge resetb)
 	begin
@@ -53,16 +55,16 @@ module mshr_fifo(clk, resetb, cle_hit_missbar, scbID, warpID, cle_addr, cle_late
 		begin
 			if(neg_feedback_valid)
 				rp <= rp + 1;
-			if(fifo_latency[rp])
-				fifo_latency[rp] <= fifo_latency[rp] - 1;
+			if(fifo_latency[rp_ind])
+				fifo_latency[rp_ind] <= fifo_latency[rp_ind] - 1;
 				
 				
 			if(!cle_hit_missbar && !full && addr_valid)
 			begin
-				fifo_scbID[wp]		<= 	scbID;
-				fifo_warpID[wp]		<=	warpID;
-				fifo_addr[wp]		<= 	cle_addr;
-				fifo_latency[wp]	<=	cle_latency;
+				fifo_scbID[wp_ind]		<= 	scbID;
+				fifo_warpID[wp_ind]		<=	warpID;
+				fifo_addr[wp_ind]		<= 	cle_addr;
+				fifo_latency[wp_ind]	<=	cle_latency;
 				
 				wp <= wp + 1;
 			end
