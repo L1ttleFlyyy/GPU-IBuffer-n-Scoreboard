@@ -1,10 +1,18 @@
 `timescale 1ns/100ps
 
 module testbench;
-parameter mem_size = 256;
-parameter shmem_size = 256;
-localparam addr_width = $clog2(mem_size+shmem_size);
-localparam mem_addr_width = $clog2(mem_size);
+
+localparam tm_depth = 256;
+localparam icache_depth = 4096;
+localparam mem_depth = 256;
+localparam emu_depth = mem_depth;
+localparam shmem_depth = 256;
+
+localparam mem_total_depth = mem_depth + shmem_depth;
+
+localparam mem_addr_width = $clog2(mem_depth);
+localparam addr_width = $clog2(mem_total_depth);
+
 reg clk_tb;
 reg rst_tb;
     
@@ -32,10 +40,10 @@ reg FIO_CACHE_LAT_WRITE_tb;
 reg [4:0] FIO_CACHE_LAT_VALUE_tb;
 reg [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR_tb;          //default
 
-reg [31:0] temp_ICache [0:4095];
-reg [255:0] temp_MEM [0:511];
-reg [7:0] temp_EMU [0:255];
-reg [31:0] temp_TM [0:255];
+reg [31:0] temp_ICache [0:icache_depth-1];
+reg [255:0] temp_MEM [0:mem_total_depth-1];
+reg [7:0] temp_EMU [0:emu_depth-1];
+reg [31:0] temp_TM [0:tm_depth-1];
 
 reg [255:0] Read_temp;
  
@@ -74,7 +82,7 @@ initial
         @ (posedge clk_tb);
         clear_FIO_TM_tb = 0;
         wait(rst_tb);
-        for(i_TM = 0; i_TM <= 255; i_TM = i_TM+1)
+        for(i_TM = 0; i_TM < tm_depth; i_TM = i_TM+1)
         begin
             @ (posedge clk_tb);
             Write_Enable_FIO_TM_tb = 1;
@@ -89,7 +97,7 @@ initial
         wait(rst_tb);
         start_FIO_TM_tb = 0;
         FileIO_Wen_ICache_tb = 1;
-        for(i_ICache = 0; i_ICache <= 4095; i_ICache = i_ICache+1)
+        for(i_ICache = 0; i_ICache < icache_depth; i_ICache = i_ICache+1)
             begin
                 @ (posedge clk_tb);
                 FileIO_Addr_ICache_tb = i_ICache;
@@ -104,7 +112,7 @@ initial
     begin:  MEM_INIT
         wait(rst_tb);
         FIO_MEMWRITE_tb = 1;
-        for(i_MEM = 0; i_MEM <= 511; i_MEM = i_MEM+1)
+        for(i_MEM = 0; i_MEM < mem_total_depth; i_MEM = i_MEM+1)
             begin
                 @ (posedge clk_tb);
                 FIO_ADDR_tb = i_MEM;
@@ -118,7 +126,7 @@ initial
     begin:  EMU_INIT
         wait(rst_tb);
         FIO_CACHE_LAT_WRITE_tb = 1;
-        for(i_EMU = 0; i_EMU <= 255; i_EMU = i_EMU+1)
+        for(i_EMU = 0; i_EMU < emu_depth; i_EMU = i_EMU+1)
             begin
                 @ (posedge clk_tb);
                 FIO_CACHE_MEM_ADDR_tb = i_EMU;
@@ -132,7 +140,9 @@ initial
 initial
     begin:  DUMP_MEM
         wait (~FIO_MEMWRITE_tb);
-            $display ("All BRAMs initialized");
+            $display("All BRAMs initialized");
+        wait (finished_TM_FIO_tb);
+            $display("Execution finished, now dumping data");
             // for(i_MEM = 0; i_MEM <= 255; i_MEM = i_MEM+1)
             //     begin
             //         @(posedge clk_tb)
@@ -143,7 +153,11 @@ initial
     end
 
 
-gpu_top_checking DUT(
+gpu_top_checking #(
+	.mem_size(mem_depth),
+	.shmem_size(shmem_depth),
+    .cache_size(64)
+)DUT(
 .clk(clk_tb),
 .rst(rst_tb),
     

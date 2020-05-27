@@ -785,7 +785,11 @@ module gpu_top_checking#(
     .Clear_ScbID_ALU_Scb(Clear_ScbID_ALU_Scb)
     );
 
-    mem_unit MEM (
+    mem_unit #(
+        .mem_size(mem_size),
+        .shmem_size(shmem_size),
+        .cache_size(64)
+    ) MEM (
 	.clk(clk), 
     .rst(rst), 
     .Instr_valid_OC_MEM(Valid_OC_MEM), 
