@@ -54,6 +54,7 @@ module mem_unit
 	reg [255:0] rs_data_q, rt_data_q;
 	reg [15:0] offset_q;
 	reg [4:0] reg_addr_q;
+	reg [31:0] Instr_OC_MEM_q,
 	
 	wire stage12_MemRead, stage12_MemWrite, stage12_shared_global_bar;
 	wire [2:0] stage12_warp_ID;
@@ -108,7 +109,7 @@ module mem_unit
 	
 	mem_stage1 stage1_inst(.clk(clk), .resetb(rst), .MemRead(MemRead_q), .MemWrite(MemWrite_q), .shared_global_bar(shared_global_bar_q),
 							.warp_ID(warp_ID_q), .scb_ID(scb_ID_q), .PAM(PAM_q), .reg_addr(reg_addr_q), .rs_reg_data(rs_data_q), .offset(offset_q), 
-							.write_data(rt_data_q), .Instr(Instr_OC_MEM), 
+			       .write_data(rt_data_q), .Instr(Instr_OC_MEM_q), 
 	
 	
 							.MemRead_o(stage12_MemRead), .MemWrite_o(stage12_MemWrite), .shared_global_bar_o(stage12_shared_global_bar), 
@@ -225,6 +226,7 @@ module mem_unit
 			rt_data_q				<=	rt_data_OC_MEM;
 			offset_q				<=	offset_OC_MEM;
 			reg_addr_q				<=	reg_addr_OC_MEM;
+			Instr_OC_MEM_q				<=	Instr_OC_MEM;
 			
 		end
 	end
