@@ -7,7 +7,7 @@
     SHL     $3, $2, $1          ; mem location = thrID * 4
     SW      $2, 0($3)           ; 1 negetaive feedback and 1 positive feedback
     LW      $2, 0($3)           ; 0 negetaive feedback and 1 positive feedback
-    ADDI    $2, $2, 16
+    ADDI    $2, $2, 256
     SW      $2, 0($3)           ; 0 negetaive feedback and 1 positive feedback
     EXIT
     

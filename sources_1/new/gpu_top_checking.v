@@ -256,7 +256,6 @@ module gpu_top_checking#(
     wire RegWrite_ALU_CDB;
     wire [4:0] Dst_ALU_CDB;
     wire [8*32-1:0] Dst_Data_ALU_CDB;
-    wire [1:0] Clear_ScbID_ALU_CDB;
 
     // MEM to CDB
     wire [2:0] WarpID_MEM_CDB; 
@@ -265,16 +264,10 @@ module gpu_top_checking#(
     wire [255:0] Dst_Data_MEM_CDB;
     wire [31:0] Instr_MEM_CDB;
     wire [7:0] ActiveMask_MEM_CDB;
-    wire [1:0] Clear_ScbID_MEM_CDB;
-
-    // From CDB to Scb
-    wire [1:0] Clear_ScbID_CDB_Scb; // Clear signal from CDB (for all regwrite)
-    wire [LOGNUM_WARPS-1:0] Clear_WarpID_CDB_Scb;
-    wire Clear_Valid_CDB_Scb;
 
     // From CDB to RAU
     wire RegWrite_CDB_RAU;
-    wire [2:0] WriteAddr_CDB_RAU;
+    wire [4:0] WriteAddr_CDB_RAU;
     wire [2:0] HWWarp_CDB_RAU;
     wire [255:0] Data_CDB_RAU;
     wire [31:0] Instr_CDB_RAU;
@@ -624,12 +617,9 @@ module gpu_top_checking#(
     scoreboard Scb(
     .clk(clk),
     .rst(rst),
-    .Clear_ScbID_ALU_Scb(Clear_ScbID_ALU_Scb), // Clear signal from ALU (branch only)
-    .Clear_ScbID_CDB_Scb(Clear_ScbID_CDB_Scb), // Clear signal from CDB (for all regwrite)
+    .Clear_ScbID_ALU_Scb(Clear_ScbID_ALU_Scb), // Clear signal from ALU
     .Clear_WarpID_ALU_Scb(Clear_WarpID_ALU_Scb),
-    .Clear_WarpID_CDB_Scb(Clear_WarpID_CDB_Scb),
     .Clear_Valid_ALU_Scb(Clear_Valid_ALU_Scb),
-    .Clear_Valid_CDB_Scb(Clear_Valid_CDB_Scb),
 
     // Warp specific signals
     // from IBuffer when depositing
@@ -692,7 +682,7 @@ module gpu_top_checking#(
 
     //Write
     .RegWrite_CDB_RAU(RegWrite_CDB_RAU),
-    .WriteAddr_CDB_RAU(WriteAddr_CDB_RAU),
+    .WriteAddr_CDB_RAU(WriteAddr_CDB_RAU[2:0]),
     .HWWarp_CDB_RAU(HWWarp_CDB_RAU),
     .Data_CDB_RAU(Data_CDB_RAU),
     .Instr_CDB_RAU(Instr_CDB_RAU),
@@ -771,7 +761,6 @@ module gpu_top_checking#(
     .RegWrite_ALU_CDB(RegWrite_ALU_CDB),
     .Dst_ALU_CDB(Dst_ALU_CDB),
     .Dst_Data_ALU_CDB(Dst_Data_ALU_CDB),
-    .Clear_ScbID_ALU_CDB(Clear_ScbID_ALU_CDB),
     
     // output to Scb (to clear Scb entry. Branch only, which do not go onto CDB)
     .Clear_Valid_ALU_Scb(Clear_Valid_ALU_Scb),
@@ -822,8 +811,7 @@ module gpu_top_checking#(
     .cdb_regwrite_MEM_CDB(RegWrite_MEM_CDB),
     .cdb_write_mask_MEM_CDB(ActiveMask_MEM_CDB),
 	.cdb_write_data_MEM_CDB(Dst_Data_MEM_CDB),
-	.cdb_reg_addr_MEM_CDB(Dst_MEM_CDB),
-    .cdb_scbID_MEM_CDB(Clear_ScbID_MEM_CDB)
+	.cdb_reg_addr_MEM_CDB(Dst_MEM_CDB)
     );
 
     CDB cdb1(
@@ -840,14 +828,6 @@ module gpu_top_checking#(
     .Dst_Data_MEM_CDB(Dst_Data_MEM_CDB),
     .Instr_MEM_CDB(Instr_MEM_CDB),
     .ActiveMask_MEM_CDB(ActiveMask_MEM_CDB),
-
-    
-    .Clear_ScbID_ALU_CDB(Clear_ScbID_ALU_CDB),
-    .Clear_ScbID_MEM_CDB(Clear_ScbID_MEM_CDB),
-
-    .Clear_ScbID_CDB_Scb(Clear_ScbID_CDB_Scb),
-    .Clear_WarpID_CDB_Scb(Clear_WarpID_CDB_Scb),
-    .Clear_Valid_CDB_Scb(Clear_Valid_CDB_Scb),
 
     .HWWarp_CDB_RAU(HWWarp_CDB_RAU),
     .RegWrite_CDB_RAU(RegWrite_CDB_RAU),

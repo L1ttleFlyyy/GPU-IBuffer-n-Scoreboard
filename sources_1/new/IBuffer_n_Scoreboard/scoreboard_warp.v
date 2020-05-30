@@ -35,10 +35,8 @@ module scoreboard_warp(
     input [1:0] Replay_Complete_ScbID, // mark the Scb entry as Complete
     input Replay_Complete,
     // signal from other modules
-    input [1:0] Clear_ScbID_ALU, // clear signal from ALU (for branch only)
-    input [1:0] Clear_ScbID_regwr, // clear signal from CDB (for all regwrite)
+    input [1:0] Clear_ScbID_ALU, // clear signal from ALU
     input Clear_Valid_ALU,
-    input Clear_Valid_regwr,
     output Full,
     output Empty, // for exit
     output Dependent,

@@ -27,12 +27,9 @@ module scoreboard#(
     // common signals
     input clk,
     input rst,
-    input [1:0] Clear_ScbID_ALU_Scb, // Clear signal from ALU (branch only)
-    input [1:0] Clear_ScbID_CDB_Scb, // Clear signal from CDB (for all regwrite)
+    input [1:0] Clear_ScbID_ALU_Scb, // Clear signal from ALU
     input [LOGNUM_WARPS-1:0] Clear_WarpID_ALU_Scb,
-    input [LOGNUM_WARPS-1:0] Clear_WarpID_CDB_Scb,
     input Clear_Valid_ALU_Scb,
-    input Clear_Valid_CDB_Scb,
 
     // Warp specific signals
     // from IBuffer when depositing
@@ -60,12 +57,9 @@ module scoreboard#(
 
     // demux for the common signals    
     reg [NUM_WARPS-1:0]Clear_Valid_ALU_Scb_array;
-    reg [NUM_WARPS-1:0]Clear_Valid_CDB_Scb_array;
     always@(*) begin
         Clear_Valid_ALU_Scb_array = 0;
         Clear_Valid_ALU_Scb_array[Clear_WarpID_ALU_Scb] = Clear_Valid_ALU_Scb;
-        Clear_Valid_CDB_Scb_array = 0;
-        Clear_Valid_CDB_Scb_array[Clear_WarpID_CDB_Scb] = Clear_Valid_CDB_Scb;
     end
 
     // flatten and unflatten
@@ -94,8 +88,6 @@ module scoreboard#(
             // signal from other modules
             .Clear_ScbID_ALU(Clear_ScbID_ALU_Scb), // common signals
             .Clear_Valid_ALU(Clear_Valid_ALU_Scb_array[i]), // after demux
-            .Clear_ScbID_regwr(Clear_ScbID_CDB_Scb),
-            .Clear_Valid_regwr(Clear_Valid_CDB_Scb_array[i]),
             .Full(Full_Scb_IB[i]),
             .Empty(Empty_Scb_IB[i]),
             .Dependent(Dependent_Scb_IB[i]),

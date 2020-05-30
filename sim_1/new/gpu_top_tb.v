@@ -26,7 +26,7 @@ wire finished_TM_FIO_tb;
 
     // FileIO to ICache
 reg FileIO_Wen_ICache_tb;
-reg [11:0] FileIO_Addr_ICache_tb;
+reg [9:0] FileIO_Addr_ICache_tb;
 reg [31:0] FileIO_Din_ICache_tb;
 wire [31:0] FileIO_Dout_ICache_tb;
 

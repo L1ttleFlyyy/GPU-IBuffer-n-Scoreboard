@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module MUX_4_1 (
     input [3:0] Grt,
 

@@ -96,7 +96,6 @@ wire push_SIMT_stack_qual;
 assign token = updateToken_val;
 assign push = push_SIMT_stack_qual;
 assign pop = pop_stack_qual;
-reg [4:0] test_register;
 //---Moved to comb always block-- assign pc_pushed = (updateToken_val==DIV)?stack[TOSP][17:8]:PCplus4_ID_SIMT;
 assign am_pushed = (updateToken_val==DIV)?(ActiveMask^CondOutcome_Ex_SIMT):ActiveMask;
 assign sp = TOSP;
@@ -143,7 +142,6 @@ assign updateAM_Qual = updateAM_Qual1 | pop_stack_qual;
 assign waiting_wire = (Waiting_Status_CondBr)? CondBr_status_Not_rx : CondBr_ID_SIMT;
 always @(posedge clk or negedge rst) begin
     if(rst==0) begin
-          test_register<=0;
           Waiting_Status_CondBr<=0;
           TOSP<=4'hf;
           TOSP_plus1<=0;
@@ -196,8 +194,6 @@ always @(posedge clk or negedge rst) begin
                         TOSP_plus1<=TOSP_plus1;
                     end
         endcase
-        if(pop_stack_qual) test_register<=1;
-        else test_register<=0;
         //////-----------Updating SIMT Stack--------------/////
         if(push_SIMT_stack_qual) begin
             stack[TOSP_plus1][19:18]<=updateToken_val;

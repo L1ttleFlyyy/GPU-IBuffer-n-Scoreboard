@@ -54,7 +54,6 @@ module ALU (
     output RegWrite_ALU_CDB,
     output [4:0] Dst_ALU_CDB,
     output reg [8*32-1:0] Dst_Data_ALU_CDB,
-    output [1:0] Clear_ScbID_ALU_CDB,
 
     
     // output to Scb (to clear Scb entry. Branch only, which do not go onto CDB)

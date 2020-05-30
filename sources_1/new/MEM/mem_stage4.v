@@ -1,7 +1,7 @@
 module mem_stage4(
 	
 	
-	input clk, resetb, reg_write, write_fb_valid,
+	input reg_write, write_fb_valid,
 	input [2:0] warp_ID,
 	input [1:0] scb_ID,
 	input [255:0] read_data,
