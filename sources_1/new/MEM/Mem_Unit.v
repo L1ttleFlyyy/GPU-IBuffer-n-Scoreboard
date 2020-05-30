@@ -54,7 +54,7 @@ module mem_unit
 	reg [255:0] rs_data_q, rt_data_q;
 	reg [15:0] offset_q;
 	reg [4:0] reg_addr_q;
-	reg [31:0] Instr_OC_MEM_q,
+	reg [31:0] Instr_OC_MEM_q;
 	
 	wire stage12_MemRead, stage12_MemWrite, stage12_shared_global_bar;
 	wire [2:0] stage12_warp_ID;
