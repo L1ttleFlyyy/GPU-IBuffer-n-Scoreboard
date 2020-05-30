@@ -149,11 +149,9 @@ module gpu_top_checking#(
     wire [NUM_WARPS-1:0] Src1_Valid_IB_Scb;
     wire [NUM_WARPS-1:0] Src2_Valid_IB_Scb;
     wire [NUM_WARPS-1:0] Dst_Valid_IB_Scb;
-    wire [NUM_WARPS-1:0] Replayable_IB_Scb;
     // when clearing
     wire [2*NUM_WARPS-1:0] Replay_Complete_ScbID_Flattened_IB_Scb;
     wire [NUM_WARPS-1:0] Replay_Complete_IB_Scb;
-    wire [NUM_WARPS-1:0] Replay_Complete_SW_LWbar_IB_Scb;
     // when issuing
     wire [NUM_WARPS-1:0] Full_Scb_IB;
     wire [NUM_WARPS-1:0] Empty_Scb_IB;
@@ -557,11 +555,9 @@ module gpu_top_checking#(
     .Src1_Valid_IB_Scb(Src1_Valid_IB_Scb),
     .Src2_Valid_IB_Scb(Src2_Valid_IB_Scb),
     .Dst_Valid_IB_Scb(Dst_Valid_IB_Scb),
-    .Replayable_IB_Scb(Replayable_IB_Scb),
     // when clearing
     .Replay_Complete_ScbID_Flattened_IB_Scb(Replay_Complete_ScbID_Flattened_IB_Scb),
     .Replay_Complete_IB_Scb(Replay_Complete_IB_Scb),
-    .Replay_Complete_SW_LWbar_IB_Scb(Replay_Complete_SW_LWbar_IB_Scb),
     // when issuing
     .Full_Scb_IB(Full_Scb_IB),
     .Empty_Scb_IB(Empty_Scb_IB),
@@ -644,11 +640,9 @@ module gpu_top_checking#(
     .Src1_Valid_IB_Scb(Src1_Valid_IB_Scb),
     .Src2_Valid_IB_Scb(Src2_Valid_IB_Scb),
     .Dst_Valid_IB_Scb(Dst_Valid_IB_Scb),
-    .Replayable_IB_Scb(Replayable_IB_Scb),
     // from IBuffer when Clearing
     .Replay_Complete_ScbID_Flattened_IB_Scb(Replay_Complete_ScbID_Flattened_IB_Scb),
     .Replay_Complete_IB_Scb(Replay_Complete_IB_Scb),
-    .Replay_Complete_SW_LWbar_IB_Scb(Replay_Complete_SW_LWbar_IB_Scb),
     // to IBuffer when issuing
     .Full_Scb_IB(Full_Scb_IB),
     .Empty_Scb_IB(Empty_Scb_IB),

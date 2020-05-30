@@ -120,7 +120,7 @@ module ALU (
 	assign Instr_ALU_CDB = Instr_reg;
 	assign Dst_ALU_CDB = Dst_reg;
 	assign RegWrite_ALU_CDB = RegWrite_reg & Valid_reg;
-    assign Clear_Valid_ALU_Scb = Valid_reg & (BLT_reg | BEQ_reg);
+    assign Clear_Valid_ALU_Scb = Valid_reg;
 	assign Br_ALU_SIMT = Valid_reg & (BLT_reg | BEQ_reg);
 	assign WarpID_ALU_SIMT = WarpID_reg;
 	

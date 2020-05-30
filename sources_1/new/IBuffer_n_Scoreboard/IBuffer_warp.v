@@ -114,11 +114,9 @@ module IBuffer_warp#(
     output Src2_Valid_IB_Scb,
     output Dst_Valid_IB_Scb,
     output RP_Grt_IB_Scb, // only create Scb entry for RP_Grt (avoid duplicate entry for Replay Instructions)
-    output Replayable_IB_Scb, // if it is LW/SW, the Scb entry will be marked as "inComplete"
     // signal for clearing
     output [1:0] Replay_Complete_ScbID_IB_Scb, // mark the Scb entry as Complete
     output Replay_Complete_IB_Scb,
-    output Replay_Complete_SW_LWbar_IB_Scb, // distinguish between SW/LW
 
     // signal from MEM for Replay Instructions
     input PosFB_Valid_MEM_IB,
@@ -173,10 +171,10 @@ module IBuffer_warp#(
 
     always@(*) begin
         Valid_array_next = Valid_array;
-        if (WP_EN) Valid_array_next[WP_ind] <= 1'b1;
+        if (WP_EN) Valid_array_next[WP_ind] = 1'b1;
         if (PosFB_Valid_MEM_IB && (PAM_IRP_next == 0)) Valid_array_next[IRP_ind] = 1'b0;
         if (RP_Grt & !Replay_array[RP_ind]) Valid_array_next[RP_ind] = 1'b0; // non-Replayable Instruction
-        if (Exit_Grt_IU_IB) Valid_array_next[RP_ind] <= 1'b0;
+        if (Exit_Grt_IU_IB) Valid_array_next[RP_ind] = 1'b0;
     end
 
     always@(posedge clk or negedge rst) begin
@@ -301,12 +299,10 @@ module IBuffer_warp#(
     assign Src2_Valid_IB_Scb = Src2_Valid_array[RP_ind];
     assign Dst_Valid_IB_Scb = RegWrite_array[RP_ind];
     assign RP_Grt_IB_Scb = RP_Grt;
-    assign Replayable_IB_Scb = Replay_array[RP_ind];
 
     // signal for clearing
     assign Replay_Complete_ScbID_IB_Scb = ScbID_array[IRP_ind]; // mark the Scb entry as Complete
     assign Replay_Complete_IB_Scb = PAM_IRP_next == 0;
-    assign Replay_Complete_SW_LWbar_IB_Scb = MemWrite_array[IRP_ind]; // distinguish between SW/LW
     
     // signal to RAU/IU
     assign Exit_Req_IB_IU = Valid_array[RP_ind]? Exit_array[RP_ind] & Empty_Scb_IB : 0;

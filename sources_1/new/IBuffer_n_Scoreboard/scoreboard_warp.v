@@ -31,15 +31,13 @@ module scoreboard_warp(
     input Src2_Valid,
     input Dst_Valid,
     input RP_Grt, // only create Scb entry for RP_Grt (avoid duplicate entry for Replay instructions)
-    input Replayable, // if it is LW/SW, the Scb entry will be marked as "inComplete"
     //signal for clearing
     input [1:0] Replay_Complete_ScbID, // mark the Scb entry as Complete
     input Replay_Complete,
-    input Replay_Complete_SW_LWbar, // distinguish between SW/LW
     // signal from other modules
-    input [1:0] Clear_ScbID_Br, // clear signal from ALU (for branch only)
+    input [1:0] Clear_ScbID_ALU, // clear signal from ALU (for branch only)
     input [1:0] Clear_ScbID_regwr, // clear signal from CDB (for all regwrite)
-    input Clear_Valid_Br,
+    input Clear_Valid_ALU,
     input Clear_Valid_regwr,
     output Full,
     output Empty, // for exit
@@ -53,18 +51,15 @@ module scoreboard_warp(
     reg [3:0] Src2_Valid_array;
     reg [3:0] Dst_Valid_array;
     reg [3:0] Valid_array;
-    reg [3:0] Replay_Complete_array;
 
-    // Valid array after Scb entries cleared by Mem/ALU/CDB
+    // Valid array after Scb entries cleared by Mem/ALU
     reg [3:0] Valid_array_cleared;
     always@(*) begin
         Valid_array_cleared = Valid_array;
-        if (Replay_Complete & Replay_Complete_SW_LWbar) // from IBuffer for SW
+        if (Replay_Complete) // from IBuffer for LW/SW
             Valid_array_cleared[Replay_Complete_ScbID] = 0;
-        if (Clear_Valid_regwr & Replay_Complete_array[Clear_ScbID_regwr]) // from CDB
-            Valid_array_cleared[Clear_ScbID_regwr] = 0; // clear only when finished (in case of LW)
-        if (Clear_Valid_Br) // from ALU for branch
-            Valid_array_cleared[Clear_ScbID_Br] = 0;
+        if (Clear_Valid_ALU) // from ALU
+            Valid_array_cleared[Clear_ScbID_ALU] = 0;
     end
     assign Full = &Valid_array_cleared;
 
@@ -101,13 +96,6 @@ module scoreboard_warp(
             Src1_Valid_array[next_Empty] <= Src1_Valid;
             Src2_Valid_array[next_Empty] <= Src2_Valid;
             Dst_Valid_array[next_Empty] <= Dst_Valid;
-            if (Replayable) 
-                Replay_Complete_array[next_Empty] <= 1'b0;
-            else
-                Replay_Complete_array[next_Empty] <= 1'b1;
-        end
-        if (Replay_Complete) begin
-            Replay_Complete_array[Replay_Complete_ScbID] <= 1'b1;
         end
     end
 

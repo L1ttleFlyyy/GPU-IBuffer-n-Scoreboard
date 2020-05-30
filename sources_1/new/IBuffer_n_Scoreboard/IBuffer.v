@@ -82,11 +82,9 @@ module IBuffer#(
     output [NUM_WARPS-1:0] Src1_Valid_IB_Scb,
     output [NUM_WARPS-1:0] Src2_Valid_IB_Scb,
     output [NUM_WARPS-1:0] Dst_Valid_IB_Scb,
-    output [NUM_WARPS-1:0] Replayable_IB_Scb,
     // when clearing
     output [2*NUM_WARPS-1:0] Replay_Complete_ScbID_Flattened_IB_Scb,
     output [NUM_WARPS-1:0] Replay_Complete_IB_Scb,
-    output [NUM_WARPS-1:0] Replay_Complete_SW_LWbar_IB_Scb,
     // when issuing
     input [NUM_WARPS-1:0] Full_Scb_IB,
     input [NUM_WARPS-1:0] Empty_Scb_IB,
@@ -333,11 +331,9 @@ module IBuffer#(
             .Src2_Valid_IB_Scb(Src2_Valid_IB_Scb[i]),
             .Dst_Valid_IB_Scb(Dst_Valid_IB_Scb[i]),
             .RP_Grt_IB_Scb(RP_Grt_IB_Scb[i]), // only create Scb entry for RP_Grt (avoid duplicate entry for Replay instructions)
-            .Replayable_IB_Scb(Replayable_IB_Scb[i]), // if it is LW/SW, the Scb entry will be marked as "inComplete"
             // signal for clearing
             .Replay_Complete_ScbID_IB_Scb(Replay_Complete_ScbID_IB_Scb[i]), // mark the Scb entry as Complete
             .Replay_Complete_IB_Scb(Replay_Complete_IB_Scb[i]),
-            .Replay_Complete_SW_LWbar_IB_Scb(Replay_Complete_SW_LWbar_IB_Scb[i]), // distinguish between SW/LW
 
             // signal from MEM for Replay instructions
             .PosFB_Valid_MEM_IB(PosFB_Valid_array[i]),
