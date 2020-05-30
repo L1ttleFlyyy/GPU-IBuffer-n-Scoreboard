@@ -3,7 +3,7 @@
 module testbench;
 
 localparam tm_depth = 256;
-localparam icache_depth = 4096;
+localparam icache_depth = 1024;
 localparam mem_depth = 256;
 localparam emu_depth = mem_depth;
 localparam shmem_depth = 256;

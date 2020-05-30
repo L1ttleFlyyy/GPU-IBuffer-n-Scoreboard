@@ -24,7 +24,7 @@ output reg [31:0] PC_plus4_IF_ID0, PC_plus4_IF_ID1;
 output reg [7:0] Valid_3_IF_ID0, Valid_3_IF_ID1;
 output reg [7:0] Valid_2_IF_ID0, Valid_2_IF_ID1;
 input FileIO_Wen_ICache;
-input [11:0] FileIO_Addr_ICache;
+input [9:0] FileIO_Addr_ICache;
 input [31:0] FileIO_Din_ICache;
 output [31:0] FileIO_Dout_ICache;
 input [7:0] PC_Valid;
@@ -38,8 +38,8 @@ assign UpdatePC_Qual3_SIMT_IF = UpdatePC_Qual3_ID0_IF || UpdatePC_Qual3_ID1_IF;
 
 mux_8_1 mux1 (PC0_PC_IF, PC1_PC_IF, PC2_PC_IF, PC3_PC_IF, PC4_PC_IF, PC5_PC_IF, PC6_PC_IF, PC7_PC_IF, GRT_raw_1_RR_IF, PC_out1);
 mux_8_1 mux2 (PC0_PC_IF, PC1_PC_IF, PC2_PC_IF, PC3_PC_IF, PC4_PC_IF, PC5_PC_IF, PC6_PC_IF, PC7_PC_IF, GRT_raw_2_RR_IF, PC_out2);
-I_Cache Ic1 (clk, FileIO_Wen_ICache, FileIO_Addr_ICache, FileIO_Din_ICache, FileIO_Dout_ICache, clk, {2'b00, PC_out1[11:2]}, Instr_IF_ID0);
-I_Cache Ic2 (clk, FileIO_Wen_ICache, FileIO_Addr_ICache, FileIO_Din_ICache, , clk, {2'b00, PC_out2[11:2]}, Instr_IF_ID1);
+I_Cache Ic1 (clk, FileIO_Wen_ICache, FileIO_Addr_ICache, FileIO_Din_ICache, FileIO_Dout_ICache, clk, PC_out1[11:2], Instr_IF_ID0);
+I_Cache Ic2 (clk, FileIO_Wen_ICache, FileIO_Addr_ICache, FileIO_Din_ICache, , clk, PC_out2[11:2], Instr_IF_ID1);
 // TODO: For I Cache, we need 2 read ports (dual Decode) and 1 write (or maybe r/w port) port (FileIO)
 // either time-division multiplexing or use duplicate BRAM
 

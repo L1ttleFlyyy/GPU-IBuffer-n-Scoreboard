@@ -2,7 +2,7 @@
  
 module I_Cache #(
     parameter DATA = 32,
-    parameter ADDR = 12
+    parameter ADDR = 10
 ) (
     // Port A
     input   wire                a_clk,

@@ -43,7 +43,7 @@ module gpu_top_checking#(
 
     // FileIO to ICache
 	input FileIO_Wen_ICache,
-	input [11:0] FileIO_Addr_ICache,
+	input [9:0] FileIO_Addr_ICache,
 	input [31:0] FileIO_Din_ICache,
 	output [31:0] FileIO_Dout_ICache,
 

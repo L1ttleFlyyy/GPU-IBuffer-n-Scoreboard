@@ -373,8 +373,8 @@ module uart_example (
   localparam NUM_MEMS = 4;
   localparam WIDTH0 = 8*4; // Task manager: 29 * 256
   localparam DEPTH0 = 256;
-  localparam WIDTH1 = 8*4; // I-Cache: 32 * 4096
-  localparam DEPTH1 = 4096;
+  localparam WIDTH1 = 8*4; // I-Cache: 32 * 1024
+  localparam DEPTH1 = 1024;
   localparam WIDTH2 = 64*4; // Data Memory: 256 * 512
   localparam DEPTH2 = 512;
   localparam WIDTH3 = 2*4; // Cache Emulator: 5 * 256
@@ -388,7 +388,7 @@ module uart_example (
   localparam NUM_NIBBLES2 = WIDTH2/4; // 64
   localparam NUM_NIBBLES3 = WIDTH3/4; // 2
   localparam LOG_NUM_NIBBLES = $clog2(WIDTH2); // log2(256) = 8
-  localparam LOG_DEPTH = $clog2(DEPTH1); // log2(4096) = 12
+  localparam LOG_DEPTH = $clog2(DEPTH1); // log2(1024) = 10
   
   /* MAX value here */
   localparam CNT_ROW_MAX0 = NUM_NIBBLES0 + 2; // + 2 (CR LF) = 10
@@ -399,11 +399,11 @@ module uart_example (
   localparam LOG_CNT_ROW_MAX = $clog2(CNT_ROW_MAX2); // clog2(66) = 7
 
   localparam CNT_MAX0 = 4 + DEPTH0 * CNT_ROW_MAX0 + 1; // 4 (header) + DEPTH * (NUM_NIBBLES + 2 (CR LF)) + EOF = 2565
-  localparam CNT_MAX1 = 4 + DEPTH1 * CNT_ROW_MAX1 + 1; // 4 (header) + DEPTH * (NUM_NIBBLES + 2 (CR LF)) + EOF = 40965
+  localparam CNT_MAX1 = 4 + DEPTH1 * CNT_ROW_MAX1 + 1; // 4 (header) + DEPTH * (NUM_NIBBLES + 2 (CR LF)) + EOF = 10245
   localparam CNT_MAX2 = 4 + DEPTH2 * CNT_ROW_MAX2 + 1; // 4 (header) + DEPTH * (NUM_NIBBLES + 2 (CR LF)) + EOF = 33797
   localparam CNT_MAX3 = 4 + DEPTH3 * CNT_ROW_MAX3 + 1; // 4 (header) + DEPTH * (NUM_NIBBLES + 2 (CR LF)) + EOF = 1029
   
-  localparam LOG_CNT_MAX = $clog2(CNT_MAX1); // clog2(40969) = 16
+  localparam LOG_CNT_MAX = $clog2(CNT_MAX2); // clog2(33797) = 16
   /************************* Derived Parameters ************************/
 
   reg [LOG_NUM_MEMS-1:0] mem_sel;
@@ -447,7 +447,7 @@ module uart_example (
     .finished_TM_FIO(fsm_done),
     // FileIO to ICache
     .FileIO_Wen_ICache((state == RECV) && (nibble_cnt == 0) && (mem_sel == 1)),
-    .FileIO_Addr_ICache(addr_cnt[11:0]),
+    .FileIO_Addr_ICache(addr_cnt[9:0]),
     .FileIO_Din_ICache(data_in_concatenated[31:0]),
     .FileIO_Dout_ICache(ICache_DATA_OUT),
 
@@ -463,7 +463,7 @@ module uart_example (
     .FIO_CACHE_MEM_ADDR(addr_cnt[7:0])
     );
 
-
+  // TODO: from left to right?
   assign mem_out =    (mem_sel == 1)? {ICache_DATA_OUT, {(WIDTH2-WIDTH1){1'b0}}}:
                       (mem_sel == 2)? MEM_DATA_OUT: 
                                       {EMU_DATA_OUT, {(WIDTH2-WIDTH3){1'b0}}};

@@ -106,7 +106,6 @@ assign PCplus4_ID0_SIMT = PCplus4_IF_ID0;
 assign PCplus4_ID1_SIMT = PCplus4_IF_ID1;
 assign DotS_ID0_SIMT = opcode_ID0[4];	//.S
 assign DotS_ID1_SIMT = opcode_ID1[4];
-// FIXME: the usage of opcode... dotS bit is totally ignored...
 assign Call_ID0_SIMT = (opcode_ID0 == 6'b000011);	//CALL
 assign Call_ID1_SIMT = (opcode_ID1 == 6'b000011);
 assign Ret_ID0_SIMT = (opcode_ID0 == 6'b000110);	//RET
