@@ -26,6 +26,7 @@
 - [x] Serialization program adding up 1024 numbers (asm & cuda)
 - [x] Initialize the RF using mem init file
 - [x] Create project and debug Operand Collector
+- [ ] Test Programs for corner cases in Operand Collector
 ### 2. Create Instruction Stream (in assembly) for Testing
 > Tridash, Dipayan
 - [x] Template content of Task Manager (SW warp ID, PC, Number of Registers, Active Mask)
@@ -33,11 +34,10 @@
 - [x] Memory Access, Active Mask and Instruction Replay
 - [x] Nreg_TM_RAU now changed to number of pairs of registers
 - [x] Shared Memory testing
-- [ ] Simulate Memory Unit
+- [x] Simulate Memory Unit
+- [x] Create a script to initialize Task Manager in hex (two versions, one for debug, one for FileIO)
 - [ ] Try simulating in Modelsim/NcSim
-- [ ] Create a script to initialize Task Manager in hex (two versions, one for debug, one for FileIO)
 - [ ] Confirm the actual exception and virtual memory support in AMD/Nvidia implementation
-- [ ] Figure out how cudaMalloc pointer is translated to actual GPU memory location
 ### 3. Verify Assembler and Reverse Assembler (much easier to verify together)
 > Eda, Yang
 - [x] Simple and basic ALU instruction stream</span>
@@ -50,6 +50,7 @@
 - [x] Fix casez in ALUop generation logic
 - [x] Covert real [cuda application](../cuda/mulv.cu) into our assembly
 - [x] CUDA simulator / (HPC platform)
+- [ ] Test Programs for corner cases in PC/IF stage
 ### 4. Integrate FileIO and reverse assembler
 > Spandan, Chang
 - [x] Inject reverse assembler (and PC) in each stage
@@ -61,5 +62,5 @@
 - [x] Verify FileIO reading/writing on board
 - [x] Create waveform configurations for each team and dipatch the projects
 - [x] Create a general overall introduction slides to our GPU design
-- [ ] Resolve issues in assembler and start simulate SIMT stack
+- [x] Resolve issues in assembler and start simulate SIMT stack
 ---
