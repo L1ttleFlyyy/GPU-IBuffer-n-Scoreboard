@@ -148,7 +148,7 @@ always@(*) begin
     end
 end
 
-assign AllocStall_RAU_IB = (state == ALLO)? HWWarp_onehot : 0;
+assign AllocStall_RAU_IB = (state == ALLO || state == DEALLO)? 8'hff : 0;
 wire [2:0] LUT_RF_Row = next_empty_ptr[3:1];
 wire LUT_RF_Bank  = next_empty_ptr[0];
 

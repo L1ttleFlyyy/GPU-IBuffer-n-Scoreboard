@@ -357,7 +357,7 @@ module gpu_top_checking#(
     .StartingPC_TM_PC(StartingPC_TM_PC),
 
     //interface with Issue Unit
-    .Exit_IU_SIMT(Exit_IB_RAU_TM),
+    .Exit_IB_RAU_TM(Exit_IB_RAU_TM),
     .WarpID_IU_TM(Exit_WarpID_IB_RAU_TM),
 
     //interface with Register File Allocation Unit

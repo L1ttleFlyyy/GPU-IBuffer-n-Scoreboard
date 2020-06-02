@@ -14,7 +14,7 @@ output reg [2:0] WarpID_TM_PC,
 output reg [31:0] StartingPC_TM_PC,
 
 //interface with Issue Unit
-input Exit_IU_SIMT,
+input Exit_IB_RAU_TM,
 input [2:0] WarpID_IU_TM,
 
 //interface with Register File Allocation Unit
@@ -88,7 +88,7 @@ assign tasks_empty = (tasks_wptr[7:0] == tasks_rptr[7:0]) ? ~(tasks_rptr[8] ^ ta
 assign tasks_full = (tasks_wptr[7:0] == tasks_rptr[7:0]) ? (tasks_rptr[8] ^ tasks_wptr[8]) : 1'b0;
 
 assign assign_warp_raw1 = (~free_Warp_empty) & (~tasks_empty);
-assign assign_warp_raw2 = can_reg_alloc & Alloc_BusyBar_RAU_TM ;
+assign assign_warp_raw2 = can_reg_alloc & Alloc_BusyBar_RAU_TM & !Exit_IB_RAU_TM;
 assign assign_warp_raw = assign_warp_raw1 & assign_warp_raw2;
 
 
@@ -174,7 +174,7 @@ always @ (posedge clk or negedge rst) begin
 				// alloc_TM_RAU<=0;
 			end
 
-			if(Exit_IU_SIMT) begin
+			if(Exit_IB_RAU_TM) begin
 				free_registers <= free_registers + freed_reg;
 				tasks[active_Warp[WarpID_IU_TM]][28]<=0;
 				free_Warp[free_Warp_wptr[2:0]]<=WarpID_IU_TM;

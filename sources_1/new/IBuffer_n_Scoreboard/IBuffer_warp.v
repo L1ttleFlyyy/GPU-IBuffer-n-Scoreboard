@@ -261,7 +261,7 @@ module IBuffer_warp#(
         RP_Req = 1'b0;
         IRP_Req = 1'b0;
         if (RP == IRP | !Valid_array[IRP_ind]) begin
-            RP_Req = Valid_array[RP_ind] & !Exit_array[RP_ind] & !Full_Scb_IB & !Dependent_Scb_IB & !Full_OC_IB & !AllocStall_RAU_IB;
+            RP_Req = Valid_array[RP_ind] & !Exit_array[RP_ind] & !Full_Scb_IB & !Dependent_Scb_IB & !Full_OC_IB;
         end else begin // RP != IRP && IRPValid
             // give priority to the Replay Instruction
             if (Replay_array[IRP_ind]) begin
@@ -305,6 +305,6 @@ module IBuffer_warp#(
     assign Replay_Complete_IB_Scb = PAM_IRP_next == 0;
     
     // signal to RAU/IU
-    assign Exit_Req_IB_IU = Valid_array[RP_ind]? Exit_array[RP_ind] & Empty_Scb_IB : 0;
+    assign Exit_Req_IB_IU = Valid_array[RP_ind]? Exit_array[RP_ind] & Empty_Scb_IB & !AllocStall_RAU_IB : 0;
 
 endmodule
