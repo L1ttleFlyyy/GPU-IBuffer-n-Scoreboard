@@ -98,12 +98,12 @@ generate
 		assign UpdatePC_Qual3_ID1_PC[i] = (Call_ID1_SIMT || Jmp_ID1_SIMT) && Valid_3_IF_ID1[i];
 	end
 endgenerate
-assign TargetAddr_ID0_PC = {6'b0, tar_addr_ID0};
-assign TargetAddr_ID1_PC = {6'b0, tar_addr_ID1};
+assign TargetAddr_ID0_PC = {4'b0, tar_addr_ID0, 2'b0};
+assign TargetAddr_ID1_PC = {4'b0, tar_addr_ID1, 2'b0};
 
 //To SMIT
-assign PCplus4_ID0_SIMT = PCplus4_IF_ID0;
-assign PCplus4_ID1_SIMT = PCplus4_IF_ID1;
+assign PCplus4_ID0_SIMT = PCplus4_IF_ID0 + 4;
+assign PCplus4_ID1_SIMT = PCplus4_IF_ID1 + 4;
 assign DotS_ID0_SIMT = opcode_ID0[4];	//.S
 assign DotS_ID1_SIMT = opcode_ID1[4];
 assign Call_ID0_SIMT = (opcode_ID0 == 6'b000011);	//CALL

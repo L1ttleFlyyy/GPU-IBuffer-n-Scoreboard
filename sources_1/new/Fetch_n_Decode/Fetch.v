@@ -71,7 +71,7 @@ for (i = 0; i < 8; i = i + 1) begin : valid_reg_g2
 			Valid_3_IF_ID0[i] <= 0;
 		end
 		else begin
-			Valid_2_IF_ID0[i] <= Valid_Q1_1[i] && Flush_raw[i] && PC_Valid[i];
+			Valid_2_IF_ID0[i] <= Valid_Q1_1[i] && PC_Valid[i];
 			Valid_3_IF_ID0[i] <= Valid_2_IF_ID0[i] && Flush_raw[i] && PC_Valid[i];
 		end
 	end 
@@ -84,7 +84,7 @@ for (i = 0; i < 8; i = i + 1) begin : valid_reg_g3
 			Valid_3_IF_ID1[i] <= 0;
 		end
 		else begin
-			Valid_2_IF_ID1[i] <= Valid_Q2_1[i] && Flush_raw[i] && PC_Valid[i];
+			Valid_2_IF_ID1[i] <= Valid_Q2_1[i] && PC_Valid[i];
 			Valid_3_IF_ID1[i] <= Valid_2_IF_ID1[i] && Flush_raw[i] && PC_Valid[i];
 		end
 	end 
