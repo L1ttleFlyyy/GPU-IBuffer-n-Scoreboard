@@ -149,15 +149,15 @@ module ALU (
 						endcase
 					end
 					else if (BEQ_reg == 1) begin // beq
-						TargetAddr_ALU_PC_Flattened[i*32+31:i*32] = {{16{1'b0}},Imme_reg};
-						if (Src1_Data_reg[i*32+31:i*32] == Src2_Data_reg[i*32+31:i*32])
+						TargetAddr_ALU_PC_Flattened[i*32+31:i*32] = {14'b0,Imme_reg,2'b0};
+						if (ActiveMask_reg[i] && Src1_Data_reg[i*32+31:i*32] == Src2_Data_reg[i*32+31:i*32])
 							BrOutcome_ALU_SIMT[i] = 1;
 						else 
 							BrOutcome_ALU_SIMT[i] = 0;
 					end
 					else if (BLT_reg == 1) begin // blt
-						TargetAddr_ALU_PC_Flattened[i*32+31:i*32] = {{16{1'b0}},Imme_reg};
-						if (Src1_Data_reg[i*32+31:i*32] < Src2_Data_reg[i*32+31:i*32])
+						TargetAddr_ALU_PC_Flattened[i*32+31:i*32] = {14'b0,Imme_reg,2'b0};
+						if (ActiveMask_reg[i] && Src1_Data_reg[i*32+31:i*32] < Src2_Data_reg[i*32+31:i*32])
 							BrOutcome_ALU_SIMT[i] = 1;
 						else 
 							BrOutcome_ALU_SIMT[i] = 0;

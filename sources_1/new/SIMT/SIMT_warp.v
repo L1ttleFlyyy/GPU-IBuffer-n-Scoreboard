@@ -111,14 +111,14 @@ assign AM_Warp_SIMT_IB = ActiveMask;
 
 assign DropInstr_SIMT_IB = (Stall_SIMT | 
                               Call_ID_SIMT | Jmp_ID_SIMT | Ret_ID_SIMT |
-                              (TOS_SYNC_Token & (DotS_ID_SIMT & ~(CondBr_ID_SIMT))));
+                              (~TOS_SYNC_Token & (DotS_ID_SIMT & ~(CondBr_ID_SIMT))));
 //////-----------Stall Signal Generation--------------/////
 assign CondBr_status_Not_rx = ~CondBr_Ex_SIMT;
 assign Stall_SIMT = Waiting_Status_CondBr & CondBr_status_Not_rx;
 
 //////-----------PC Qual 1--------------/////
 assign updatePC_raw = | CondOutcome_Ex_SIMT;
-assign UpdatePC_Qual1_SIMT_PC = updatePC_raw & Stall_SIMT & CondBr_Ex_SIMT;
+assign UpdatePC_Qual1_SIMT_PC = updatePC_raw & Waiting_Status_CondBr & CondBr_Ex_SIMT;
 //////-----------PC Qual 2--------------/////
 //assign pop_stack_raw = Ret_ID_SIMT | (DotS_ID_SIMT & ~(Call_ID_SIMT | CondBr_ID_SIMT));
 //assign pop_stack_qual = pop_stack_raw & ~Stall_SIMT;
