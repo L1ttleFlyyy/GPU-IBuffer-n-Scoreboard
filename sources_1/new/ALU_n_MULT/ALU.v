@@ -136,7 +136,7 @@ module ALU (
 							4'b0000: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] + (Imme_Valid_reg ? 
 											{{16{Imme_reg[15]}},Imme_reg[15:0]} : Src2_Data_reg[i*32+31:i*32]); //add & imme add
 							4'b0001: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] - Src2_Data_reg[i*32+31:i*32]; //sub
-							4'b0010: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i+15:i] * Src2_Data_reg[i+15:i]; //mult
+							4'b0010: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+15:i*32] * Src2_Data_reg[i*32+15:i*32]; //mult
 							4'b0011: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] & (Imme_Valid_reg ? 
 											{{16{Imme_reg[15]}},Imme_reg} : Src2_Data_reg[i*32+31:i*32]); //and & imme and
 							4'b0100: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] | (Imme_Valid_reg ? 
