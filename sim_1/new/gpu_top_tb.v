@@ -71,7 +71,7 @@ initial
 initial                             //MEM_INIT
     begin
     $readmemh("TM_init.txt", temp_TM);
-    $readmemh("ICache_init_Mem_access3.txt", temp_ICache);
+    $readmemh("ICache_init_thread_div.txt", temp_ICache);
     $readmemh("MEM_init.txt", temp_MEM);
     $readmemh("EMU_init.txt", temp_EMU);
     end
