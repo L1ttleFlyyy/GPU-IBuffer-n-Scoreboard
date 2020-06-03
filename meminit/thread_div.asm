@@ -74,5 +74,7 @@ Merge0123:
 Merge01234567:
 			NOOP.S 						; Synchronization point
 
-			SW $5, 30($0)				; store z
+			ADDI $3, $0, 4				;
+			MULT $3, $8, $3				; get memory location (0 4 8 C ...)
+			SW $5, 0($3)				; store z
 			EXIT

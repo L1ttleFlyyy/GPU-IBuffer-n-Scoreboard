@@ -127,6 +127,8 @@ module gpu_top_checking#(
 	wire Src2_Valid_ID1_IB;
 	wire Imme_Valid_ID0_IB;
 	wire Imme_Valid_ID1_IB;
+	wire NOOP_ID0_IB;
+	wire NOOP_ID1_IB;
 	wire [31:0] Instr_ID0_IB;
 	wire [31:0] Instr_ID1_IB;
 	//To both SMIT&I-buffer
@@ -419,6 +421,8 @@ module gpu_top_checking#(
 	.Dst_ID1_IB(Dst_ID1_IB),
 	.Imme_ID0_IB(Imme_ID0_IB), 
 	.Imme_ID1_IB(Imme_ID1_IB),
+	.NOOP_ID0_IB(NOOP_ID0_IB),
+	.NOOP_ID1_IB(NOOP_ID1_IB),
 	.RegWrite_ID0_IB(RegWrite_ID0_IB),
 	.RegWrite_ID1_IB(RegWrite_ID1_IB),
 	.MemWrite_ID0_IB(MemWrite_ID0_IB),
@@ -514,6 +518,7 @@ module gpu_top_checking#(
     .ALUop_ID0_IB(ALUop_ID0_IB),
     .Imme_ID0_IB(Imme_ID0_IB),
     .Imme_Valid_ID0_IB(Imme_Valid_ID0_IB),
+	.NOOP_ID0_IB(NOOP_ID0_IB),
     .RegWrite_ID0_IB(RegWrite_ID0_IB),
     .MemWrite_ID0_IB(MemWrite_ID0_IB),
     .MemRead_ID0_IB(MemRead_ID0_IB),
@@ -532,6 +537,7 @@ module gpu_top_checking#(
     .ALUop_ID1_IB(ALUop_ID1_IB),
     .Imme_ID1_IB(Imme_ID1_IB),
     .Imme_Valid_ID1_IB(Imme_Valid_ID1_IB),
+	.NOOP_ID1_IB(NOOP_ID1_IB),
     .RegWrite_ID1_IB(RegWrite_ID1_IB),
     .MemWrite_ID1_IB(MemWrite_ID1_IB),
     .MemRead_ID1_IB(MemRead_ID1_IB),
