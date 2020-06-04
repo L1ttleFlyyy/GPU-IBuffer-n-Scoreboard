@@ -129,7 +129,7 @@ assign Dst_ID1_IB = (MemRead_ID1_IB || Imme_Valid_ID1_IB) ? rt_ID1 : rd_ID1;
 assign Imme_ID0_IB = imme_ID0; 
 assign Imme_ID1_IB = imme_ID1; 
 assign NOOP_ID0_IB = (opcode_ID0 == 6'b000001 || opcode_ID0 == 6'b010001);
-assign NOOP_ID1_IB = (opcode_ID0 == 6'b000001 || opcode_ID0 == 6'b010001);
+assign NOOP_ID1_IB = (opcode_ID1 == 6'b000001 || opcode_ID1 == 6'b010001);
 assign RegWrite_ID0_IB = (opcode_ID0 == 6'b000000 || opcode_ID0 == 6'b010000 	//Integer Instr
 						|| opcode_ID0 == 6'b001000 || opcode_ID0 == 6'b011000 	//ADDI
 						|| opcode_ID0 == 6'b001100 || opcode_ID0 == 6'b011100 	//ANDI
