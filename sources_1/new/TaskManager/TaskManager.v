@@ -164,7 +164,7 @@ always @ (posedge clk or negedge rst) begin
 				Update_TM_SIMT<=1;
 				free_Warp_rptr<=free_Warp_rptr+1;
 				tasks_rptr<=tasks_rptr+1;
-				free_registers<= free_registers - reg_would_alloc * 2;
+				free_registers<= free_registers - reg_would_alloc;
 				active_Warp[free_Warp[free_Warp_rptr[2:0]]]<=tasks_rptr[7:0];
 				active_tasks<=active_tasks+1;
 			end
@@ -246,8 +246,8 @@ always @(*) begin
 			can_reg_alloc = 0;
 		end
 
-		freed_reg = {2'b0,tasks[active_Warp[WarpID_IU_TM]][2:0]};
-		reg_would_alloc = {2'b0,tasks[tasks_rptr[7:0]][2:0]};
+		freed_reg = {1'b0,tasks[active_Warp[WarpID_IU_TM]][2:0],1'b0};
+		reg_would_alloc = {1'b0,tasks[tasks_rptr[7:0]][2:0],1'b0};
 /*
 		if(tasks[tasks_rptr[7:0]][0]) begin
 			reg_would_alloc[3:0] = {1'b0,tasks[tasks_rptr[7:0]][2:0]} + 1;
