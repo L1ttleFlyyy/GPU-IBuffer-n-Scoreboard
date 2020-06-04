@@ -68,27 +68,32 @@ initial
         #20 rst_tb = 1;
     end
 
+integer fd_TM;
+reg [31:0] temp_reg;
+
 initial                             //MEM_INIT
     begin
     $readmemh("TM_init.txt", temp_TM);
-    $readmemh("ICache_init_thread_div.txt", temp_ICache);
+    $readmemh("ICache_init_Mem_access3.txt", temp_ICache);
     $readmemh("MEM_init.txt", temp_MEM);
     $readmemh("EMU_init.txt", temp_EMU);
     end
 
 initial
     begin:  TM_INIT
+        fd_TM = $fopen("TM_init.txt", "r");
         @ (posedge clk_tb);
         clear_FIO_TM_tb = 0;
         wait(rst_tb);
-        for(i_TM = 0; i_TM < tm_depth; i_TM = i_TM+1)
-        begin
+        while(!$feof(fd_TM)) begin
+            $fscanf(fd_TM, "%x\n", temp_reg);
             @ (posedge clk_tb);
             Write_Enable_FIO_TM_tb = 1;
-            Write_Data_FIO_TM_tb = temp_TM[i_TM][28:0];
+            Write_Data_FIO_TM_tb = temp_reg[28:0];
         end
         @ (posedge clk_tb);
         Write_Enable_FIO_TM_tb = 0;
+        $fclose(fd_TM);
     end
 
 initial
@@ -143,7 +148,7 @@ initial
         wait (finished_TM_FIO_tb);
         $display("Execution finished, now dumping data");
         outfile = $fopen("MEM_dump.txt", "w");
-        for(i_MEM = 0; i_MEM <= 16; i_MEM = i_MEM + 1) begin
+        for(i_MEM = 0; i_MEM <= 32; i_MEM = i_MEM + 1) begin
             @(posedge clk_tb)
             FIO_ADDR_tb = i_MEM;
             if (i_MEM > 0) begin
