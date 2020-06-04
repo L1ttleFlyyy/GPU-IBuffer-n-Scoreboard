@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module Decode (
-	//From IF 
+	//From/to IF 
 	input [31:0] PCplus4_IF_ID0,
 	input [31:0] PCplus4_IF_ID1,
 	input [31:0] Instr_in_IF_ID0,
@@ -105,8 +105,8 @@ assign TargetAddr_ID0_PC = {4'b0, tar_addr_ID0, 2'b0};
 assign TargetAddr_ID1_PC = {4'b0, tar_addr_ID1, 2'b0};
 
 //To SMIT
-assign PCplus4_ID0_SIMT = PCplus4_IF_ID0 + 4;
-assign PCplus4_ID1_SIMT = PCplus4_IF_ID1 + 4;
+assign PCplus4_ID0_SIMT = PCplus4_IF_ID0;
+assign PCplus4_ID1_SIMT = PCplus4_IF_ID1;
 assign DotS_ID0_SIMT = opcode_ID0[4];	//.S
 assign DotS_ID1_SIMT = opcode_ID1[4];
 assign Call_ID0_SIMT = (opcode_ID0 == 6'b000011);	//CALL
@@ -125,7 +125,7 @@ assign Src1_ID0_IB = rs_ID0;
 assign Src1_ID1_IB = rs_ID1;
 assign Src2_ID0_IB = rt_ID0;
 assign Src2_ID1_IB = rt_ID1;
-assign Dst_ID0_IB = (MemRead_ID0_IB || Imme_Valid_ID0_IB) ? rt_ID0 : rd_ID0; // FIXME: for LW and I-type, Dst should be rt_ID0;
+assign Dst_ID0_IB = (MemRead_ID0_IB || Imme_Valid_ID0_IB) ? rt_ID0 : rd_ID0;
 assign Dst_ID1_IB = (MemRead_ID1_IB || Imme_Valid_ID1_IB) ? rt_ID1 : rd_ID1;
 assign Imme_ID0_IB = imme_ID0; 
 assign Imme_ID1_IB = imme_ID1; 

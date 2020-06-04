@@ -35,7 +35,7 @@ reg [31:0] PC_reg;
 reg [31:0] PC_next;
 wire UpdatePC_Qual3_ID_PC;
 
-assign PC_out_IF_PC = PC_next;
+assign PC_out_IF_PC = PC_reg;
 assign UpdatePC_Qual3_ID_PC = UpdatePC_Qual3_ID0_PC || UpdatePC_Qual3_ID1_PC;
 
 //Update_PC
@@ -44,7 +44,7 @@ always @(*) begin
 	if (!rst_n)
 		PC_next = 32'b0;
 	else if (UpdatePC_TM_PC)
-		PC_next = StartingPC_TM_PC - 4;
+		PC_next = StartingPC_TM_PC;
 	else if (valid_1_IF_PC && valid_2_IF_PC && valid_3_IF_PC && Stall_SIMT_PC)
 		PC_next = PC_reg - 4;
 	else if (!UpdatePC_Qual1_SIMT_PC && !UpdatePC_Qual2_SIMT_PC && UpdatePC_Qual3_ID_PC)

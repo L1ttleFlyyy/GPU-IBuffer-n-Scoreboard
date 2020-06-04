@@ -51,8 +51,8 @@ always@(posedge clk) begin
 		PC_plus4_IF_ID1 <= 32'b0;
 	end
 	else begin
-		PC_temp_Q1 <= PC_out1;
-		PC_temp_Q2 <= PC_out2;
+		PC_temp_Q1 <= PC_out1 + 4;
+		PC_temp_Q2 <= PC_out2 + 4;
 		PC_plus4_IF_ID0 <= PC_temp_Q1;
 		PC_plus4_IF_ID1 <= PC_temp_Q2;
 	end		
@@ -71,7 +71,7 @@ for (i = 0; i < 8; i = i + 1) begin : valid_reg_g2
 			Valid_3_IF_ID0[i] <= 0;
 		end
 		else begin
-			Valid_2_IF_ID0[i] <= Valid_Q1_1[i] && PC_Valid[i];
+			Valid_2_IF_ID0[i] <= Valid_Q1_1[i] && Flush_raw[i] && PC_Valid[i];
 			Valid_3_IF_ID0[i] <= Valid_2_IF_ID0[i] && Flush_raw[i] && PC_Valid[i];
 		end
 	end 
@@ -84,7 +84,7 @@ for (i = 0; i < 8; i = i + 1) begin : valid_reg_g3
 			Valid_3_IF_ID1[i] <= 0;
 		end
 		else begin
-			Valid_2_IF_ID1[i] <= Valid_Q2_1[i] && PC_Valid[i];
+			Valid_2_IF_ID1[i] <= Valid_Q2_1[i] && Flush_raw[i] && PC_Valid[i];
 			Valid_3_IF_ID1[i] <= Valid_2_IF_ID1[i] && Flush_raw[i] && PC_Valid[i];
 		end
 	end 
