@@ -158,7 +158,7 @@ module IBuffer_warp#(
 
     reg [3:0] Valid_array_next;
     // pointer management
-    assign WP_EN = !DropInstr_SIMT_IB & (Valid_ID0_IB_SIMT | Valid_ID1_IB_SIMT);
+    assign WP_EN = !DropInstr_SIMT_IB & ((Valid_ID0_IB_SIMT & !NOOP_ID0_IB) | (Valid_ID1_IB_SIMT & !NOOP_ID1_IB));
     assign WP_next = WP_EN? (WP+1'b1):WP;
     assign RP_EN = RP_Grt | Exit_Grt_IU_IB;
     assign RP_next = RP_EN? (RP+1'b1):RP;
