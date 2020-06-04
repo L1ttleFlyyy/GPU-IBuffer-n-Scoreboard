@@ -90,14 +90,15 @@ wire [15:0] imme_ID1 = Instr_in_IF_ID1[15:0];
 wire [25:0] tar_addr_ID1 = Instr_in_IF_ID1[25:0];
 
 //To PC
+// assign Exiting_ID_IF = (Exit_ID0_IB? Valid_ID0_IB_SIMT:8'b0) | (Exit_ID1_IB? Valid_ID1_IB_SIMT:8'b0);
 assign Valid_3_ID0_PC = Valid_3_IF_ID0;
 assign Valid_3_ID1_PC = Valid_3_IF_ID1;
 //Qual_3
 genvar i;
 generate
 	for (i = 0; i < 8; i = i+1) begin: g1
-		assign UpdatePC_Qual3_ID0_PC[i] = (Call_ID0_SIMT || Jmp_ID0_SIMT) && Valid_3_IF_ID0[i];
-		assign UpdatePC_Qual3_ID1_PC[i] = (Call_ID1_SIMT || Jmp_ID1_SIMT) && Valid_3_IF_ID1[i];
+		assign UpdatePC_Qual3_ID0_PC[i] = (Exit_ID0_IB || Call_ID0_SIMT || Jmp_ID0_SIMT) && Valid_3_IF_ID0[i];
+		assign UpdatePC_Qual3_ID1_PC[i] = (Exit_ID1_IB || Call_ID1_SIMT || Jmp_ID1_SIMT) && Valid_3_IF_ID1[i];
 	end
 endgenerate
 assign TargetAddr_ID0_PC = {4'b0, tar_addr_ID0, 2'b0};

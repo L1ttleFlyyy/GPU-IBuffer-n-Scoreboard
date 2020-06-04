@@ -34,7 +34,7 @@ wire [7:0] Flush_raw;
 wire [7:0] Valid_Q1_1, Valid_Q2_1;
 wire [31:0] PC_out1, PC_out2;
 
-assign UpdatePC_Qual3_SIMT_IF = UpdatePC_Qual3_ID0_IF || UpdatePC_Qual3_ID1_IF;
+assign UpdatePC_Qual3_SIMT_IF = UpdatePC_Qual3_ID0_IF | UpdatePC_Qual3_ID1_IF;
 
 mux_8_1 mux1 (PC0_PC_IF, PC1_PC_IF, PC2_PC_IF, PC3_PC_IF, PC4_PC_IF, PC5_PC_IF, PC6_PC_IF, PC7_PC_IF, GRT_raw_1_RR_IF, PC_out1);
 mux_8_1 mux2 (PC0_PC_IF, PC1_PC_IF, PC2_PC_IF, PC3_PC_IF, PC4_PC_IF, PC5_PC_IF, PC6_PC_IF, PC7_PC_IF, GRT_raw_2_RR_IF, PC_out2);
