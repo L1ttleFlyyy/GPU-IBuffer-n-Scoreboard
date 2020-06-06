@@ -26,7 +26,7 @@
 - [x] Serialization program adding up 1024 numbers (asm & cuda)
 - [x] Initialize the RF using mem init file
 - [x] Create project and debug Operand Collector
-- [ ] Test Programs for corner cases in Operand Collector
+- [x] Test Programs for corner cases in Operand Collector
 ### 2. Create Instruction Stream (in assembly) for Testing
 > Tridash, Dipayan
 - [x] Template content of Task Manager (SW warp ID, PC, Number of Registers, Active Mask)
@@ -50,7 +50,7 @@
 - [x] Fix casez in ALUop generation logic
 - [x] Covert real [cuda application](../cuda/mulv.cu) into our assembly
 - [x] CUDA simulator / (HPC platform)
-- [ ] Test Programs for corner cases in PC/IF stage
+- [x] Test Programs for corner cases in PC/IF stage
 ### 4. Integrate FileIO and reverse assembler
 > Spandan, Chang
 - [x] Inject reverse assembler (and PC) in each stage
@@ -63,4 +63,6 @@
 - [x] Create waveform configurations for each team and dipatch the projects
 - [x] Create a general overall introduction slides to our GPU design
 - [x] Resolve issues in assembler and start simulate SIMT stack
+- [] Implementation and Deployment on FPGA Board and test with FileIO
+- [] Overall instruction to initialize I-Cache, Task Manager and Memory Unit in both simulation and implementation on FPGA
 ---
