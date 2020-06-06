@@ -106,10 +106,10 @@ wire OC_0_bk3 = oc_0_banksel == 2'b11 & (bk_3_ocid == {ocid[1:0], 1'b0}) && bk_3
 
 assign OC_0_WE = OC_0_bk0 || OC_0_bk1 || OC_0_bk2 || OC_0_bk3;
 
-assign OC_1_WE = ((oc_1_banksel == 2'b00 & (bk_0_ocid == {ocid[1:0], 1'b1}) && bk_0_vld) | (OC_0_WE & same_OC_0))|| 
-				 ((oc_1_banksel == 2'b01 & (bk_1_ocid == {ocid[1:0], 1'b1}) && bk_1_vld) | (OC_0_WE & same_OC_1))|| 
-				 ((oc_1_banksel == 2'b10 & (bk_2_ocid == {ocid[1:0], 1'b1}) && bk_2_vld) | (OC_0_WE & same_OC_2))|| 
-				 ((oc_1_banksel == 2'b11 & (bk_3_ocid == {ocid[1:0], 1'b1}) && bk_3_vld) | (OC_0_WE & same_OC_3));
+assign OC_1_WE = ((oc_1_banksel == 2'b00 & (bk_0_ocid == {ocid[1:0], 1'b1}) && bk_0_vld) | (OC_0_bk0 & same_OC_0))|| 
+				 ((oc_1_banksel == 2'b01 & (bk_1_ocid == {ocid[1:0], 1'b1}) && bk_1_vld) | (OC_0_bk1 & same_OC_1))|| 
+				 ((oc_1_banksel == 2'b10 & (bk_2_ocid == {ocid[1:0], 1'b1}) && bk_2_vld) | (OC_0_bk2 & same_OC_2))|| 
+				 ((oc_1_banksel == 2'b11 & (bk_3_ocid == {ocid[1:0], 1'b1}) && bk_3_vld) | (OC_0_bk3 & same_OC_3));
 
 
 
