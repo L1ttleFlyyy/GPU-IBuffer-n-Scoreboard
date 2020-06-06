@@ -50,7 +50,7 @@ reg [15:0] i_MEM;
 reg [15:0] i_EMU;
 reg [15:0] i_TM;
 
-integer outfile;
+integer outfile, drawing;
 
 
 initial
@@ -74,7 +74,8 @@ reg [31:0] temp_reg;
 initial                             //MEM_INIT
     begin
     $readmemh("TM_init.txt", temp_TM);
-    $readmemh("ICache_init_Mem_access3.txt", temp_ICache);
+    $readmemh("ICache_init_Circle_Drawing.txt", temp_ICache);
+    // $readmemh("ICache_init_thread_div.txt", temp_ICache);
     $readmemh("MEM_init.txt", temp_MEM);
     $readmemh("EMU_init.txt", temp_EMU);
     end
@@ -148,6 +149,7 @@ initial
         wait (finished_TM_FIO_tb);
         $display("Execution finished, now dumping data");
         outfile = $fopen("MEM_dump.txt", "w");
+        drawing = $fopen("MEM_draw.txt", "w");
         for(i_MEM = 0; i_MEM <= 32; i_MEM = i_MEM + 1) begin
             @(posedge clk_tb)
             FIO_ADDR_tb = i_MEM;
@@ -157,7 +159,21 @@ initial
                     FIO_READ_DATA_tb[127:96], FIO_READ_DATA_tb[95:64],
                     FIO_READ_DATA_tb[63:32], FIO_READ_DATA_tb[31:0]);
             end
+            if (i_MEM > 0) begin
+                if (i_MEM % 2) begin // odd warpID
+                    $fwrite(drawing,"%x %x %x %x %x %x %x %x ", FIO_READ_DATA_tb[31:0], FIO_READ_DATA_tb[63:32], 
+                        FIO_READ_DATA_tb[95:64], FIO_READ_DATA_tb[127:96], 
+                        FIO_READ_DATA_tb[159:128], FIO_READ_DATA_tb[191:160], 
+                        FIO_READ_DATA_tb[223:192], FIO_READ_DATA_tb[255:224]);
+                end else begin // even warpID
+                    $fwrite(drawing,"%x %x %x %x %x %x %x %x\n", FIO_READ_DATA_tb[31:0], FIO_READ_DATA_tb[63:32], 
+                        FIO_READ_DATA_tb[95:64], FIO_READ_DATA_tb[127:96], 
+                        FIO_READ_DATA_tb[159:128], FIO_READ_DATA_tb[191:160], 
+                        FIO_READ_DATA_tb[223:192], FIO_READ_DATA_tb[255:224]);
+                end
+            end
         end
+        $fclose(drawing);
         $fclose(outfile);
         $display("Dump finished");
         $finish;
