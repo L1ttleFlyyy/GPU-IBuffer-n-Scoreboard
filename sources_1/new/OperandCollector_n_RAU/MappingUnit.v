@@ -40,7 +40,6 @@ module Mapping(
     input wire [2:0] HWWarp_IB_RAU, //with valid?
 
     //Write
-    input wire RegWrite_CDB_RAU,
     input wire [2:0] WriteAddr_CDB_RAU,
     input wire [2:0] HWWarp_CDB_RAU,
     input wire [255:0] Data_CDB_RAU,

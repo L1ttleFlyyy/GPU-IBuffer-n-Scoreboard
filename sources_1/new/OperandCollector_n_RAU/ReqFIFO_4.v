@@ -88,10 +88,10 @@ wire RF_Read_Valid_1 = Valid_RAU_OC?((Src1_Phy_Bank_ID ==  2'b01)&(Src1_Valid)) 
 wire RF_Read_Valid_2 = Valid_RAU_OC?((Src1_Phy_Bank_ID ==  2'b10)&(Src1_Valid)) | ((Src2_Phy_Bank_ID == 2'b10) & (Src2_Valid)) : 0;
 wire RF_Read_Valid_3 = Valid_RAU_OC?((Src1_Phy_Bank_ID ==  2'b11)&(Src1_Valid)) | ((Src2_Phy_Bank_ID == 2'b11) & (Src2_Valid)) : 0;
 
-wire RF_Write_Valid_0 = (WriteBank === 2'b00) & (WriteValid);
-wire RF_Write_Valid_1 = (WriteBank === 2'b01) & (WriteValid);
-wire RF_Write_Valid_2 = (WriteBank === 2'b10) & (WriteValid);
-wire RF_Write_Valid_3 = (WriteBank === 2'b11) & (WriteValid);
+wire RF_Write_Valid_0 = (WriteBank == 2'b00) & (WriteValid);
+wire RF_Write_Valid_1 = (WriteBank == 2'b01) & (WriteValid);
+wire RF_Write_Valid_2 = (WriteBank == 2'b10) & (WriteValid);
+wire RF_Write_Valid_3 = (WriteBank == 2'b11) & (WriteValid);
 
 wire Src1_Valid_0 = ((Src1_Phy_Bank_ID ==  2'b00)&(Src1_Valid));
 wire Src1_Valid_1 = ((Src1_Phy_Bank_ID ==  2'b01)&(Src1_Valid));

@@ -19,10 +19,6 @@ input [2:0] bk_0_ocid,
 input [2:0] bk_1_ocid,
 input [2:0] bk_2_ocid,
 input [2:0] bk_3_ocid,
-input  bk_0_bz,
-input  bk_1_bz,
-input  bk_2_bz,
-input  bk_3_bz,
 input bk_0_vld,
 input bk_1_vld,
 input bk_2_vld,
@@ -103,22 +99,17 @@ wire OC_1_WE;
 
 assign RDY = valid && ~(oc_0_valid && ~oc_0_rdy) && ~(oc_1_valid && ~oc_1_rdy);
 
-wire OC_0_bk0 = oc_0_banksel == 2'b00 & (bk_0_ocid == {ocid[1:0], 1'b0}) &&  !bk_0_bz && bk_0_vld;
-wire OC_0_bk1 = oc_0_banksel == 2'b01 & (bk_1_ocid == {ocid[1:0], 1'b0}) &&  !bk_1_bz && bk_1_vld;
-wire OC_0_bk2 = oc_0_banksel == 2'b10 & (bk_2_ocid == {ocid[1:0], 1'b0}) &&  !bk_2_bz && bk_2_vld;
-wire OC_0_bk3 = oc_0_banksel == 2'b11 & (bk_3_ocid == {ocid[1:0], 1'b0}) &&  !bk_3_bz && bk_3_vld;
-
-// assign OC_0_WE = ((bk_0_ocid == {ocid[1:0], 1'b0}) &&  !bk_0_bz && bk_0_vld)|| 
-// 				 ((bk_1_ocid == {ocid[1:0], 1'b0}) &&  !bk_1_bz && bk_1_vld)|| 
-// 				 ((bk_2_ocid == {ocid[1:0], 1'b0}) &&  !bk_2_bz && bk_2_vld)|| 
-// 				 ((bk_3_ocid == {ocid[1:0], 1'b0}) &&  !bk_3_bz && bk_3_vld);
+wire OC_0_bk0 = oc_0_banksel == 2'b00 & (bk_0_ocid == {ocid[1:0], 1'b0}) && bk_0_vld;
+wire OC_0_bk1 = oc_0_banksel == 2'b01 & (bk_1_ocid == {ocid[1:0], 1'b0}) && bk_1_vld;
+wire OC_0_bk2 = oc_0_banksel == 2'b10 & (bk_2_ocid == {ocid[1:0], 1'b0}) && bk_2_vld;
+wire OC_0_bk3 = oc_0_banksel == 2'b11 & (bk_3_ocid == {ocid[1:0], 1'b0}) && bk_3_vld;
 
 assign OC_0_WE = OC_0_bk0 || OC_0_bk1 || OC_0_bk2 || OC_0_bk3;
 
-assign OC_1_WE = ((oc_1_banksel == 2'b00 & (bk_0_ocid == {ocid[1:0], 1'b1}) &&  !bk_0_bz && bk_0_vld) | (OC_0_WE & (same_OC_0 === 1'b1)))|| 
-				 ((oc_1_banksel == 2'b01 & (bk_1_ocid == {ocid[1:0], 1'b1}) &&  !bk_1_bz && bk_1_vld) | (OC_0_WE & (same_OC_1 === 1'b1)))|| 
-				 ((oc_1_banksel == 2'b10 & (bk_2_ocid == {ocid[1:0], 1'b1}) &&  !bk_2_bz && bk_2_vld) | (OC_0_WE & (same_OC_2 === 1'b1)))|| 
-				 ((oc_1_banksel == 2'b11 & (bk_3_ocid == {ocid[1:0], 1'b1}) &&  !bk_3_bz && bk_3_vld) | (OC_0_WE & (same_OC_3 === 1'b1)));
+assign OC_1_WE = ((oc_1_banksel == 2'b00 & (bk_0_ocid == {ocid[1:0], 1'b1}) && bk_0_vld) | (OC_0_WE & same_OC_0))|| 
+				 ((oc_1_banksel == 2'b01 & (bk_1_ocid == {ocid[1:0], 1'b1}) && bk_1_vld) | (OC_0_WE & same_OC_1))|| 
+				 ((oc_1_banksel == 2'b10 & (bk_2_ocid == {ocid[1:0], 1'b1}) && bk_2_vld) | (OC_0_WE & same_OC_2))|| 
+				 ((oc_1_banksel == 2'b11 & (bk_3_ocid == {ocid[1:0], 1'b1}) && bk_3_vld) | (OC_0_WE & same_OC_3));
 
 
 

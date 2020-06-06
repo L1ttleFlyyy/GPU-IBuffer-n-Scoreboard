@@ -37,11 +37,6 @@ module RegisterFile(
     output reg same_OC_2,
     output reg same_OC_3,
 
-    output reg RF_WR_OC_0,
-    output reg RF_WR_OC_1,
-    output reg RF_WR_OC_2,
-    output reg RF_WR_OC_3,
-
 
     output reg [3:0] ocid_0,
     output reg [3:0] ocid_1,
@@ -62,10 +57,6 @@ begin
     ocid_1 <= ocid_out_1;
     ocid_2 <= ocid_out_2;
     ocid_3 <= ocid_out_3;
-    RF_WR_OC_0 <= RF_WR_0;
-    RF_WR_OC_1 <= RF_WR_1;
-    RF_WR_OC_2 <= RF_WR_2;
-    RF_WR_OC_3 <= RF_WR_3;
     same_OC_0 <= same_0;
     same_OC_1 <= same_1;
     same_OC_2 <= same_2;

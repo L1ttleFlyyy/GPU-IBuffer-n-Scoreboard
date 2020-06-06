@@ -33,7 +33,8 @@ module  ReqFIFO (
 
 
 //定义fifo
-reg [6:0] ReqFIFO [7:0];//TODO: Depth
+wire rp_en;
+reg [6:0] ReqFIFO [7:0];
 reg [4:0] Rp, Wp, Wp_p1;//2 read req
 wire [3:0] depth = Wp - Rp;
 wire Full = (depth == 4'b1000);
@@ -73,7 +74,7 @@ begin
             end
         end
         
-    if (depth != 0 & !RF_Write_Valid) begin
+    if (rp_en) begin
         Rp <= Rp + 1;
     end
 
@@ -81,9 +82,9 @@ begin
 
 end
 
-
+assign rp_en = (depth != 0) && !RF_Write_Valid;
 assign RF_Addr = RF_Write_Valid ? WriteRow: ReqFIFO[Rp_ind][2:0];
-assign ocid_out = {(depth!=0) ,ReqFIFO[Rp_ind][5:3]};//写assign还是在里面
+assign ocid_out = {rp_en, ReqFIFO[Rp_ind][5:3]};//写assign还是在里面
 assign RF_WR = RF_Write_Valid;
 assign same = (ReqFIFO[Rp_ind][6]);
 

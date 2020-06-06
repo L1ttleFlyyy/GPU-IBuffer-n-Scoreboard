@@ -196,10 +196,6 @@ wire same_OC_0;
 wire same_OC_1;
 wire same_OC_2;
 wire same_OC_3;
-wire RF_WR_OC_0;
-wire RF_WR_OC_1;
-wire RF_WR_OC_2;
-wire RF_WR_OC_3;
 
 
 wire [255:0] oc_0_data_0;
@@ -308,7 +304,6 @@ Mapping MappingUnit(
     .HWWarp_IB_RAU(WarpID_IB_OC), //with valid?
 
     //Write
-    .RegWrite_CDB_RAU(RegWrite_CDB_RAU),
     .WriteAddr_CDB_RAU(WriteAddr_CDB_RAU),
     .HWWarp_CDB_RAU(HWWarp_CDB_RAU),
     .Data_CDB_RAU(Data_CDB_RAU),
@@ -459,12 +454,7 @@ RegisterFile RegisterFile(
     .same_OC_0(same_OC_0),
     .same_OC_1(same_OC_1),
     .same_OC_2(same_OC_2),
-    .same_OC_3(same_OC_3),
-
-    .RF_WR_OC_0(RF_WR_OC_0),
-    .RF_WR_OC_1(RF_WR_OC_1),
-    .RF_WR_OC_2(RF_WR_OC_2),
-    .RF_WR_OC_3(RF_WR_OC_3)
+    .same_OC_3(same_OC_3)
 );
 
 OC_collector_4 OC_collector_4(
@@ -512,11 +502,6 @@ OC_collector_4 OC_collector_4(
     .ocid_1(ocid_1),
     .ocid_2(ocid_2),
     .ocid_3(ocid_3),
-
-    .RF_WR_0(RF_WR_OC_0),
-    .RF_WR_1(RF_WR_OC_1),
-    .RF_WR_2(RF_WR_OC_2),
-    .RF_WR_3(RF_WR_OC_3),
 
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
