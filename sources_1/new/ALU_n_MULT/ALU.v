@@ -124,8 +124,14 @@ module ALU (
 	assign WarpID_ALU_SIMT = WarpID_reg;
 	
 	genvar i;
+	wire signed [15:0] signed_Src1 [0:7];
+	wire signed [15:0] signed_Src2 [0:7];
+	wire signed [31:0] signed_Mult [0:7];
 	generate
 		for (i = 0; i < 8; i = i + 1) begin : alu
+			assign signed_Src1[i] = Src1_Data_reg[i*32+15:i*32];
+			assign signed_Src2[i] = Src2_Data_reg[i*32+15:i*32];
+			assign signed_Mult[i] = signed_Src1[i] * signed_Src2[i];
 			always@(*) begin
 				Dst_Data_ALU_CDB[i*32+31:i*32] = 32'b0;
 				BrOutcome_ALU_SIMT[i] = 1'b0;
@@ -136,28 +142,28 @@ module ALU (
 							4'b0000: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] + (Imme_Valid_reg ? 
 											{{16{Imme_reg[15]}},Imme_reg[15:0]} : Src2_Data_reg[i*32+31:i*32]); //add & imme add
 							4'b0001: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] - Src2_Data_reg[i*32+31:i*32]; //sub
-							4'b0010: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+15:i*32] * Src2_Data_reg[i*32+15:i*32]; //mult
+							4'b0010: Dst_Data_ALU_CDB[i*32+31:i*32] = signed_Mult[i]; //mult
 							4'b0011: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] & (Imme_Valid_reg ? 
 											{{16{Imme_reg[15]}},Imme_reg} : Src2_Data_reg[i*32+31:i*32]); //and & imme and
 							4'b0100: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] | (Imme_Valid_reg ? 
-											{{16{Imme_reg[15]}},Imme_reg} : Src2_Data_reg[i*32+31:i*32]); //or & imme and
+											{{16{Imme_reg[15]}},Imme_reg} : Src2_Data_reg[i*32+31:i*32]); //or & imme or
 							4'b0101: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] ^ (Imme_Valid_reg ? 
 											{{16{Imme_reg[15]}},Imme_reg} : Src2_Data_reg[i*32+31:i*32]); //xor & imme xor
-							4'b0110: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] >>> Src2_Data_reg[i*32+4:i*32]; //shr
-							4'b0111: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] <<< Src2_Data_reg[i*32+4:i*32]; //shl
+							4'b0110: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] >> Src2_Data_reg[i*32+4:i*32]; //shr
+							4'b0111: Dst_Data_ALU_CDB[i*32+31:i*32] = Src1_Data_reg[i*32+31:i*32] << Src2_Data_reg[i*32+4:i*32]; //shl
 							default: Dst_Data_ALU_CDB[i*32+31:i*32] = 32'b0;
 						endcase
 					end
 					else if (BEQ_reg == 1) begin // beq
 						TargetAddr_ALU_PC_Flattened[i*32+31:i*32] = {14'b0,Imme_reg,2'b0};
-						if (ActiveMask_reg[i] && Src1_Data_reg[i*32+31:i*32] == Src2_Data_reg[i*32+31:i*32])
+						if (ActiveMask_reg[i] && (Src1_Data_reg[i*32+31:i*32] == Src2_Data_reg[i*32+31:i*32]))
 							BrOutcome_ALU_SIMT[i] = 1;
 						else 
 							BrOutcome_ALU_SIMT[i] = 0;
 					end
 					else if (BLT_reg == 1) begin // blt
 						TargetAddr_ALU_PC_Flattened[i*32+31:i*32] = {14'b0,Imme_reg,2'b0};
-						if (ActiveMask_reg[i] && Src1_Data_reg[i*32+31:i*32] < Src2_Data_reg[i*32+31:i*32])
+						if (ActiveMask_reg[i] && (signed_Src1[i] < signed_Src2[i]))
 							BrOutcome_ALU_SIMT[i] = 1;
 						else 
 							BrOutcome_ALU_SIMT[i] = 0;
