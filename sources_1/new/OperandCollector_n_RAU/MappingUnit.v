@@ -69,7 +69,6 @@ module Mapping(
 
     output wire [2:0] WriteRow,
     output wire [1:0] WriteBank,
-    output wire WriteValid,
 
     //every
     output wire Valid_RAU_OC ,//use
@@ -131,19 +130,19 @@ reg [7:0] HWWarp_onehot;
 integer i;
 always@(*) begin
     next_empty_ptr = 0;
-    for (i = 15; i >= 0; i = i-1) begin: next_empty
-        if (~MT[i]) begin
-            next_empty_ptr = i[3:0];
+    for (i = 0; i < 16; i = i + 1) begin: next_empty
+        if (!MT[15-i]) begin
+            next_empty_ptr = 15-i;
         end
     end
 end
 
-
+integer j;
 always@(*) begin
     HWWarp_onehot = 0;
-    for (i = 0; i < 8; i = i+1) begin: decode3_8
-        if (i == HWWarp) begin
-            HWWarp_onehot = 1 << i;
+    for (j = 0; j < 8; j = j + 1) begin: decode3_8
+        if (j == HWWarp) begin
+            HWWarp_onehot = 1 << j;
         end
     end
 end
@@ -215,12 +214,10 @@ begin
         end
 
         ALLO: begin // regular and special
-            LUT_Addr <= LUT_Addr + 1;//for loop statement//不能用<=??associative？
+            LUT_Addr <= LUT_Addr + 1;
             Nreq <= Nreq - 1;
             if (Nreq != 0) begin
                 LUT[LUT_Addr] <= {1'b1, LUT_RF_Row, LUT_RF_Bank};
-                //Available_RAU_TM <= Available_RAU_TM - 2;
-                //for (integer i = 0; i<)
                 MT[next_empty_ptr] <= 1;
             end
         end
@@ -230,28 +227,21 @@ begin
             if (LUT[HWWarp * 4][4] == 1'b1) begin
                 MT[LUT[HWWarp * 4][3:0]] <= 1'b0;	//MT corresponding bit reset
                 LUT[HWWarp * 4][4] <= 1'b0; //LUT valid bit reset
-                //Available_RAU_TM <= Available_RAU_TM + 2;
-                
             end
 
             if (LUT[HWWarp * 4 + 1][4] == 1'b1) begin
                 MT[LUT[HWWarp * 4 + 1][3:0]] <= 1'b0;
                 LUT[HWWarp * 4 + 1][4] <= 1'b0;
-                //Available_RAU_TM <= Available_RAU_TM + 4;
-                
             end
 
             if (LUT[HWWarp * 4 + 2][4] == 1'b1) begin
                 MT[LUT[HWWarp * 4 + 2][3:0]] <= 1'b0;
                 LUT[HWWarp * 4 + 2][4] <= 1'b0;
-                //Available_RAU_TM <= Available_RAU_TM + 6;
-                
             end
             
             if (LUT[HWWarp * 4 + 3][4] == 1'b1) begin
                 MT[LUT[HWWarp * 4 + 3][3:0]] <= 1'b0;			
                 LUT[HWWarp * 4 + 3][4] <= 1'b0;
-                //Available_RAU_TM <= Available_RAU_TM + 8; // later one will mask the previous ones
             end
         end
     endcase
@@ -261,17 +251,16 @@ end
 
 
 
-assign WriteValid = RegWrite_CDB_RAU;
-assign WriteRow = LUT[{(HWWarp_CDB_RAU[2:0]) , (WriteAddr_CDB_RAU[2:1])}][3:1];
-assign WriteBank = {LUT[(HWWarp_CDB_RAU)*4 + (WriteAddr_CDB_RAU[2:1])][0], WriteAddr_CDB_RAU[0]} ;
+assign WriteRow = LUT[{HWWarp_CDB_RAU, WriteAddr_CDB_RAU[2:1]}][3:1];
+assign WriteBank = {LUT[{HWWarp_CDB_RAU, WriteAddr_CDB_RAU[2:1]}][0], WriteAddr_CDB_RAU[0]} ;
 
 assign Src1_Valid = Src1_Valid_IB_RAU;
-assign Src1_Phy_Row_ID = LUT[{(HWWarp_IB_RAU[2:0]) , Src1_IB_RAU[2:1]}][3:1];
-assign Src1_Phy_Bank_ID = {LUT[{(HWWarp_IB_RAU[2:0]) , Src1_IB_RAU[2:1]}][0], Src1_IB_RAU[0]};
+assign Src1_Phy_Row_ID = LUT[{HWWarp_IB_RAU, Src1_IB_RAU[2:1]}][3:1];
+assign Src1_Phy_Bank_ID = {LUT[{HWWarp_IB_RAU, Src1_IB_RAU[2:1]}][0], Src1_IB_RAU[0]};
 
 assign Src2_Valid = Src2_Valid_IB_RAU;
-assign Src2_Phy_Row_ID = LUT[{(HWWarp_IB_RAU[2:0]) , Src2_IB_RAU[2:1]}][3:1];
-assign Src2_Phy_Bank_ID = {LUT[{(HWWarp_IB_RAU[2:0]) , Src2_IB_RAU[2:1]}][0], Src2_IB_RAU[0]};
+assign Src2_Phy_Row_ID = LUT[{HWWarp_IB_RAU, Src2_IB_RAU[2:1]}][3:1];
+assign Src2_Phy_Bank_ID = {LUT[{HWWarp_IB_RAU, Src2_IB_RAU[2:1]}][0], Src2_IB_RAU[0]};
 
 //same bank or not?
 assign ReqFIFO_2op_EN = (Src1_Phy_Bank_ID == Src2_Phy_Bank_ID) & (Src1_Valid & Src2_Valid);

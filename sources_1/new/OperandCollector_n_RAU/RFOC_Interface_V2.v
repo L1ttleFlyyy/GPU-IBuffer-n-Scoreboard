@@ -88,7 +88,6 @@ module RFOC(
 );
 
 
-wire WriteValid;
 wire [2:0] WriteRow;
 wire [1:0] WriteBank;
 wire Src1_Valid;
@@ -338,7 +337,6 @@ Mapping MappingUnit(
 
     .WriteRow(WriteRow),
     .WriteBank(WriteBank),
-    .WriteValid(WriteValid),
 
     //every
     .Valid_RAU_OC(Valid_RAU_OC) ,//use
@@ -375,7 +373,7 @@ ReqFIFO_4 ReqFIFO_4(
     .clk(clk),
 
     .Valid_RAU_OC(Valid_RAU_OC),
-    .WriteValid(WriteValid),
+    .WriteValid(RegWrite_CDB_RAU),
 
     .WriteBank(WriteBank),
     .WriteRow(WriteRow),

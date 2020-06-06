@@ -145,10 +145,10 @@ module OC_collector_4(
 
 );
 
-wire bank_0_valiud = ocid_0[3];
-wire bank_1_valiud = ocid_1[3];
-wire bank_2_valiud = ocid_2[3];
-wire bank_3_valiud = ocid_3[3];
+wire bank_0_valid = ocid_0[3];
+wire bank_1_valid = ocid_1[3];
+wire bank_2_valid = ocid_2[3];
+wire bank_3_valid = ocid_3[3];
 
 wire [1:0]WE_0 = Valid_RAU_OC?{((Src2_OCID_RAU_OC[2:1] == 2'b00) & Src2_Valid) , ((Src1_OCID_RAU_OC[2:1] == 2'b00) & Src1_Valid)}:2'b00;
 wire [1:0]WE_1 = Valid_RAU_OC?{((Src2_OCID_RAU_OC[2:1] == 2'b01) & Src2_Valid) , ((Src1_OCID_RAU_OC[2:1] == 2'b01) & Src1_Valid)}:2'b00;
@@ -200,10 +200,10 @@ OC_collector_unit#(
     .bk_1_bz(RF_WR_1),
     .bk_2_bz(RF_WR_2),
     .bk_3_bz(RF_WR_3),
-    .bk_0_vld(bank_0_valiud),
-    .bk_1_vld(bank_1_valiud),
-    .bk_2_vld(bank_2_valiud),
-    .bk_3_vld(bank_3_valiud),
+    .bk_0_vld(bank_0_valid),
+    .bk_1_vld(bank_1_valid),
+    .bk_2_vld(bank_2_valid),
+    .bk_3_vld(bank_3_valid),
 
     .WE(WE_0),
     .RE(RE_0), 
@@ -275,10 +275,10 @@ OC_collector_unit#(
     .bk_1_bz(RF_WR_1),
     .bk_2_bz(RF_WR_2),
     .bk_3_bz(RF_WR_3),
-    .bk_0_vld(bank_0_valiud),
-    .bk_1_vld(bank_1_valiud),
-    .bk_2_vld(bank_2_valiud),
-    .bk_3_vld(bank_3_valiud),
+    .bk_0_vld(bank_0_valid),
+    .bk_1_vld(bank_1_valid),
+    .bk_2_vld(bank_2_valid),
+    .bk_3_vld(bank_3_valid),
 
     .WE(WE_1),
     .RE(RE_1), 
@@ -353,10 +353,10 @@ OC_collector_unit#(
     .bk_1_bz(RF_WR_1),
     .bk_2_bz(RF_WR_2),
     .bk_3_bz(RF_WR_3),
-    .bk_0_vld(bank_0_valiud),
-    .bk_1_vld(bank_1_valiud),
-    .bk_2_vld(bank_2_valiud),
-    .bk_3_vld(bank_3_valiud),
+    .bk_0_vld(bank_0_valid),
+    .bk_1_vld(bank_1_valid),
+    .bk_2_vld(bank_2_valid),
+    .bk_3_vld(bank_3_valid),
 
     .WE(WE_2),
     .RE(RE_2), 
@@ -430,10 +430,10 @@ OC_collector_unit#(
     .bk_1_bz(RF_WR_1),
     .bk_2_bz(RF_WR_2),
     .bk_3_bz(RF_WR_3),
-    .bk_0_vld(bank_0_valiud),
-    .bk_1_vld(bank_1_valiud),
-    .bk_2_vld(bank_2_valiud),
-    .bk_3_vld(bank_3_valiud),
+    .bk_0_vld(bank_0_valid),
+    .bk_1_vld(bank_1_valid),
+    .bk_2_vld(bank_2_valid),
+    .bk_3_vld(bank_3_valid),
 
     .WE(WE_3),
     .RE(RE_3), 

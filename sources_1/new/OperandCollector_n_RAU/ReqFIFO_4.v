@@ -108,7 +108,7 @@ ReqFIFO Req0(
     .clk(clk),
 
     .ReqFIFO_2op_EN(ReqFIFO_2op_EN_0),
-    .Scr1_Valid(Src1_Valid_0),
+    .Src1_Valid(Src1_Valid_0),
     .Src2_Valid(Src2_Valid_0),
     .Src1_Phy_Row_ID(Src1_Phy_Row_ID_0), 
     .Src2_Phy_Row_ID(Src2_Phy_Row_ID_0),
@@ -133,7 +133,7 @@ ReqFIFO Req1(
     .clk(clk),
 
     .ReqFIFO_2op_EN(ReqFIFO_2op_EN_1),
-    .Scr1_Valid(Src1_Valid_1),
+    .Src1_Valid(Src1_Valid_1),
     .Src2_Valid(Src2_Valid_1),
     .Src1_Phy_Row_ID(Src1_Phy_Row_ID_1), 
     .Src2_Phy_Row_ID(Src2_Phy_Row_ID_1),
@@ -158,7 +158,7 @@ ReqFIFO Req2(
     .clk(clk),
 
     .ReqFIFO_2op_EN(ReqFIFO_2op_EN_2),
-    .Scr1_Valid(Src1_Valid_2),
+    .Src1_Valid(Src1_Valid_2),
     .Src2_Valid(Src2_Valid_2),
     .Src1_Phy_Row_ID(Src1_Phy_Row_ID_2), 
     .Src2_Phy_Row_ID(Src2_Phy_Row_ID_2),
@@ -183,7 +183,7 @@ ReqFIFO Req3(
     .clk(clk),
 
     .ReqFIFO_2op_EN(ReqFIFO_2op_EN_3),
-    .Scr1_Valid(Src1_Valid_3),
+    .Src1_Valid(Src1_Valid_3),
     .Src2_Valid(Src2_Valid_3),
     .Src1_Phy_Row_ID(Src1_Phy_Row_ID_3), 
     .Src2_Phy_Row_ID(Src2_Phy_Row_ID_3),
