@@ -42,7 +42,6 @@ module IBuffer_warp#(
     input [3:0] ALUop_ID0_IB,
     input [15:0] Imme_ID0_IB,
     input Imme_Valid_ID0_IB,
-	input NOOP_ID0_IB,
     input RegWrite_ID0_IB,
     input MemWrite_ID0_IB,
     input MemRead_ID0_IB,
@@ -61,7 +60,6 @@ module IBuffer_warp#(
     input [3:0] ALUop_ID1_IB,
     input [15:0] Imme_ID1_IB,
     input Imme_Valid_ID1_IB,
-	input NOOP_ID1_IB,
     input RegWrite_ID1_IB,
     input MemWrite_ID1_IB,
     input MemRead_ID1_IB,
@@ -158,7 +156,7 @@ module IBuffer_warp#(
 
     reg [3:0] Valid_array_next;
     // pointer management
-    assign WP_EN = !DropInstr_SIMT_IB & ((Valid_ID0_IB_SIMT & !NOOP_ID0_IB) | (Valid_ID1_IB_SIMT & !NOOP_ID1_IB));
+    assign WP_EN = !DropInstr_SIMT_IB & (Valid_ID0_IB_SIMT | Valid_ID1_IB_SIMT);
     assign WP_next = WP_EN? (WP+1'b1):WP;
     assign RP_EN = RP_Grt | Exit_Grt_IU_IB;
     assign RP_next = RP_EN? (RP+1'b1):RP;
@@ -218,7 +216,7 @@ module IBuffer_warp#(
         if (RP_Grt) begin
             ScbID_array[RP_ind] <= ScbID_Scb_IB;
         end
-        if (Valid_ID0_IB_SIMT & !DropInstr_SIMT_IB & !NOOP_ID0_IB) begin
+        if (Valid_ID0_IB_SIMT & !DropInstr_SIMT_IB) begin
             PAM_array[WP_ind] <= ActiveMask_SIMT_IB;
             Instr_array[WP_ind] <= Instr_ID0_IB;
             Src1_Valid_array[WP_ind] <= Src1_Valid_ID0_IB;
@@ -237,7 +235,7 @@ module IBuffer_warp#(
             BLT_array[WP_ind] <= BLT_ID0_IB_SIMT;
             Exit_array[WP_ind] <= Exit_ID0_IB;
         end
-        if (Valid_ID1_IB_SIMT & !DropInstr_SIMT_IB & !NOOP_ID1_IB) begin
+        if (Valid_ID1_IB_SIMT & !DropInstr_SIMT_IB) begin
             PAM_array[WP_ind] <= ActiveMask_SIMT_IB;
             Instr_array[WP_ind] <= Instr_ID1_IB;
             Src1_Valid_array[WP_ind] <= Src1_Valid_ID1_IB;

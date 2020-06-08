@@ -145,10 +145,10 @@ wire bank_1_valid = ocid_1[3];
 wire bank_2_valid = ocid_2[3];
 wire bank_3_valid = ocid_3[3];
 
-wire [1:0]WE_0 = Valid_RAU_OC?{((Src2_OCID_RAU_OC[2:1] == 2'b00) & Src2_Valid) , ((Src1_OCID_RAU_OC[2:1] == 2'b00) & Src1_Valid)}:2'b00;
-wire [1:0]WE_1 = Valid_RAU_OC?{((Src2_OCID_RAU_OC[2:1] == 2'b01) & Src2_Valid) , ((Src1_OCID_RAU_OC[2:1] == 2'b01) & Src1_Valid)}:2'b00;
-wire [1:0]WE_2 = Valid_RAU_OC?{((Src2_OCID_RAU_OC[2:1] == 2'b10) & Src2_Valid) , ((Src1_OCID_RAU_OC[2:1] == 2'b10) & Src1_Valid)}:2'b00;
-wire [1:0]WE_3 = Valid_RAU_OC?{((Src2_OCID_RAU_OC[2:1] == 2'b11) & Src2_Valid) , ((Src1_OCID_RAU_OC[2:1] == 2'b11) & Src1_Valid)}:2'b00;
+wire [1:0]WE_0 = Valid_RAU_OC?{(Src2_OCID_RAU_OC[2:1] == 2'b00), (Src1_OCID_RAU_OC[2:1] == 2'b00)}:2'b00;
+wire [1:0]WE_1 = Valid_RAU_OC?{(Src2_OCID_RAU_OC[2:1] == 2'b01), (Src1_OCID_RAU_OC[2:1] == 2'b01)}:2'b00;
+wire [1:0]WE_2 = Valid_RAU_OC?{(Src2_OCID_RAU_OC[2:1] == 2'b10), (Src1_OCID_RAU_OC[2:1] == 2'b10)}:2'b00;
+wire [1:0]WE_3 = Valid_RAU_OC?{(Src2_OCID_RAU_OC[2:1] == 2'b11), (Src1_OCID_RAU_OC[2:1] == 2'b11)}:2'b00;
 
 wire [1:0] SPEslot_RAU_OC_0 = {(Src2_OCID_RAU_OC[2:1] == 2'b00) & Src2_Valid & SPEslot_RAU_OC[1] , (Src1_OCID_RAU_OC[2:1] == 2'b00) & Src1_Valid & SPEslot_RAU_OC[0]};
 wire [1:0] SPEslot_RAU_OC_1 = {(Src2_OCID_RAU_OC[2:1] == 2'b01) & Src2_Valid & SPEslot_RAU_OC[1] , (Src1_OCID_RAU_OC[2:1] == 2'b01) & Src1_Valid & SPEslot_RAU_OC[0]};
@@ -198,6 +198,8 @@ OC_collector_unit#(
 
     .WE(WE_0),
     .RE(RE_0), 
+    .Src1_Valid(Src1_Valid),
+    .Src2_Valid(Src2_Valid),
 
     .WarpID_RAU_OC(WarpID_RAU_OC),
     .Valid_RAU_OC(Valid_RAU_OC) ,//use
@@ -269,6 +271,8 @@ OC_collector_unit#(
 
     .WE(WE_1),
     .RE(RE_1), 
+    .Src1_Valid(Src1_Valid),
+    .Src2_Valid(Src2_Valid),
 
 
     .WarpID_RAU_OC(WarpID_RAU_OC),
@@ -343,6 +347,8 @@ OC_collector_unit#(
 
     .WE(WE_2),
     .RE(RE_2), 
+    .Src1_Valid(Src1_Valid),
+    .Src2_Valid(Src2_Valid),
 
 
     .WarpID_RAU_OC(WarpID_RAU_OC),
@@ -416,6 +422,8 @@ OC_collector_unit#(
 
     .WE(WE_3),
     .RE(RE_3), 
+    .Src1_Valid(Src1_Valid),
+    .Src2_Valid(Src2_Valid),
 
 
     .WarpID_RAU_OC(WarpID_RAU_OC),

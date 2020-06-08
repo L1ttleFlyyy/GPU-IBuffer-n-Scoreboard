@@ -59,6 +59,8 @@ input wire [255:0] SPEvalue_RAU_OC,
 input wire [1:0] SPEv2slot_RAU_OC,
 input wire [255:0] SPEv2value_RAU_OC,
 
+input wire Src1_Valid,
+input wire Src2_Valid,
 
 output RDY, 
 output reg valid,
@@ -97,7 +99,7 @@ reg [255:0] oc_1_data_in;
 wire OC_0_WE;
 wire OC_1_WE;
 
-assign RDY = valid && ~(oc_0_valid && ~oc_0_rdy) && ~(oc_1_valid && ~oc_1_rdy);
+assign RDY = valid && (~oc_0_valid || oc_0_rdy) && (~oc_1_valid || oc_1_rdy);
 
 wire OC_0_bk0 = oc_0_banksel == 2'b00 & (bk_0_ocid == {ocid[1:0], 1'b0}) && bk_0_vld;
 wire OC_0_bk1 = oc_0_banksel == 2'b01 & (bk_1_ocid == {ocid[1:0], 1'b0}) && bk_1_vld;
@@ -177,10 +179,14 @@ begin
 				begin
 					oc_0_valid <= 1;
 					oc_0_banksel <= Src1_Phy_Bank_ID;
-					if (SPEslot_RAU_OC[0]) begin
+					if (!Src1_Valid) begin 
+						oc_0_rdy <= 1;
+						oc_0_data <= 0;
+						oc_0_valid <= 0;
+					end else if (SPEslot_RAU_OC[0]) begin
 						oc_0_data <= SPEvalue_RAU_OC;
 						oc_0_rdy <= 1;
-						oc_0_valid <= 0;
+						oc_0_valid <= 0; // clearing valid bit is necessary because the data will be corrupted by RF otherwise
 					end else if (SPEv2slot_RAU_OC[0]) begin
 						oc_0_data <= SPEv2value_RAU_OC;
 						oc_0_rdy <= 1;
@@ -191,7 +197,11 @@ begin
 				begin
 					oc_1_valid <= 1;
 					oc_1_banksel <= Src2_Phy_Bank_ID;
-					if (SPEslot_RAU_OC[1]) begin
+					if (!Src2_Valid) begin 
+						oc_1_rdy <= 1;
+						oc_1_data <= 0;
+						oc_1_valid <= 0;
+					end else if (SPEslot_RAU_OC[1]) begin
 						oc_1_data = SPEvalue_RAU_OC;
 						oc_1_rdy <= 1;
 						oc_1_valid <= 0;
