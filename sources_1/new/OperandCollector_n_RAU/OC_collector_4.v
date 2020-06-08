@@ -22,8 +22,8 @@ module OC_collector_4(
     input wire [7:0] ActiveMask_RAU_OC ,//pass
     input wire [4:0] Dst_RAU_OC,
 
-    input [2:0] Src1_OCID_RAU_OC,
-    input [2:0] Src2_OCID_RAU_OC,
+    input [2:1] Src1_OCID_RAU_OC,
+    input [2:1] Src2_OCID_RAU_OC,
 
     input wire [255:0] DataOut_0,
     input wire [255:0] DataOut_1,

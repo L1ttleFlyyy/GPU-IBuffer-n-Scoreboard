@@ -506,8 +506,8 @@ OC_collector_4 OC_collector_4(
     .Src1_Phy_Bank_ID(Src1_Phy_Bank_ID),
     .Src2_Phy_Bank_ID(Src2_Phy_Bank_ID),
 
-    .Src1_OCID_RAU_OC(Src1_OCID_RAU_OC),
-    .Src2_OCID_RAU_OC(Src2_OCID_RAU_OC),
+    .Src1_OCID_RAU_OC(Src1_OCID_RAU_OC[2:1]),
+    .Src2_OCID_RAU_OC(Src2_OCID_RAU_OC[2:1]),
 
     .oc_0_data_0(oc_0_data_0),
     .oc_1_data_0(oc_1_data_0),
