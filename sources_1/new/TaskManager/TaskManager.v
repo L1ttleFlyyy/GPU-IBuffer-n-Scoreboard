@@ -25,8 +25,8 @@ output [2:0] HWWarpID_TM_RAU,
 output [7:0] SWWarpID_TM_RAU,
 
 //interface with FileIO module
-input Write_Enable_FIO_TM,
-input [28:0] Write_Data_FIO_TM,
+input Wen_FIO_TM,
+input [28:0] Din_FIO_TM,
 input start_FIO_TM,
 input clear_FIO_TM,
 // output busy, 
@@ -34,12 +34,12 @@ output reg finished_TM_FIO
 );
 
 // Tasks list Template example
-// Write_Data_FIO_TM[28:0]
-// Write_Data_FIO_TM[28] -> Valid=1
-// Write_Data_FIO_TM[27:20] -> Software Warp ID (8bits)
-// Write_Data_FIO_TM[19:11] -> PC bits
-// Write_Data_FIO_TM[10:3] -> Active Mask
-// Write_Data_FIO_TM[2:0] -> Number of Registers
+// Din_FIO_TM[28:0]
+// Din_FIO_TM[28] -> Valid=1
+// Din_FIO_TM[27:20] -> Software Warp ID (8bits)
+// Din_FIO_TM[19:11] -> PC bits
+// Din_FIO_TM[10:3] -> Active Mask
+// Din_FIO_TM[2:0] -> Number of Registers
 //-------------------------------
 //			bits -> actual req -> Now mapped as pairs of registers.
 // #registers : 0-> 0,
@@ -144,8 +144,8 @@ always @ (posedge clk or negedge rst) begin
 				// busy<=1;
 			end
 			else begin
-				if(Write_Enable_FIO_TM && Write_Data_FIO_TM[28]) begin
-					tasks[tasks_wptr[7:0]]<=Write_Data_FIO_TM;
+				if(Wen_FIO_TM && Din_FIO_TM[28]) begin
+					tasks[tasks_wptr[7:0]]<=Din_FIO_TM;
 					tasks_wptr<=tasks_wptr+1;
 				end
 			end

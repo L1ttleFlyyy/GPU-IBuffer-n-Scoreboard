@@ -35,28 +35,28 @@ module gpu_top_checking#(
     
     // FileIO to TM
     
-    input Write_Enable_FIO_TM,
-    input [28:0] Write_Data_FIO_TM,
+    input Wen_FIO_TM,
+    input [28:0] Din_FIO_TM,
     input start_FIO_TM,
     input clear_FIO_TM,
     output finished_TM_FIO,
 
     // FileIO to ICache
-	input FileIO_Wen_ICache,
-	input [9:0] FileIO_Addr_ICache,
-	input [31:0] FileIO_Din_ICache,
-	output [31:0] FileIO_Dout_ICache,
+	input Wen_FIO_ICache,
+	input [9:0] Addr_FIO_ICache,
+	input [31:0] Din_FIO_ICache,
+	output [31:0] Dout_FIO_ICache,
 
     // FileIO to MEM
-	input FIO_MEMWRITE,
-	input [addr_width-1:0] FIO_ADDR,
-	input [255:0] FIO_WRITE_DATA,
-    output [255:0] FIO_READ_DATA,
+	input Wen_FIO_MEM,
+	input [addr_width-1:0] Addr_FIO_MEM,
+	input [255:0] Din_FIO_MEM,
+    output [255:0] Dout_FIO_MEM,
 	
-	input FIO_CACHE_LAT_WRITE,
+	input Wen_FIO_CLE,
 	output [4:0] FIO_CACHE_LAT_READ,
-	input [4:0] FIO_CACHE_LAT_VALUE,
-	input [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR
+	input [4:0] Din_FIO_CLE,
+	input [mem_addr_width-1:0] Addr_FIO_CLE
 
     );
 
@@ -366,8 +366,8 @@ module gpu_top_checking#(
     .SWWarpID_TM_RAU(SWWarpID_TM_RAU),
     .Nreg_TM_RAU(Nreg_TM_RAU),
     .Alloc_BusyBar_RAU_TM(Alloc_BusyBar_RAU_TM),
-    .Write_Enable_FIO_TM(Write_Enable_FIO_TM),
-    .Write_Data_FIO_TM(Write_Data_FIO_TM),
+    .Wen_FIO_TM(Wen_FIO_TM),
+    .Din_FIO_TM(Din_FIO_TM),
     .start_FIO_TM(start_FIO_TM),
     .clear_FIO_TM(clear_FIO_TM),
     .finished_TM_FIO(finished_TM_FIO)
@@ -377,10 +377,10 @@ module gpu_top_checking#(
 	.clk(clk), 
 	.rst_n(rst),
 	// FileIO
-	.FileIO_Wen_ICache(FileIO_Wen_ICache),
-	.FileIO_Addr_ICache(FileIO_Addr_ICache),
-	.FileIO_Din_ICache(FileIO_Din_ICache),
-	.FileIO_Dout_ICache(FileIO_Dout_ICache),
+	.Wen_FIO_ICache(Wen_FIO_ICache),
+	.Addr_FIO_ICache(Addr_FIO_ICache),
+	.Din_FIO_ICache(Din_FIO_ICache),
+	.Dout_FIO_ICache(Dout_FIO_ICache),
 	//From TM
 	.WarpID_TM_PC(WarpID_TM_PC),
 	.UpdatePC_TM_PC(UpdatePC_TM_PC),
@@ -789,15 +789,15 @@ module gpu_top_checking#(
     .Instr_OC_MEM(Instr_OC_MEM),
 	
 	
-	.FIO_MEMWRITE(FIO_MEMWRITE),
-	.FIO_ADDR(FIO_ADDR),
-	.FIO_WRITE_DATA(FIO_WRITE_DATA),
-    .FIO_READ_DATA(FIO_READ_DATA),
+	.Wen_FIO_MEM(Wen_FIO_MEM),
+	.Addr_FIO_MEM(Addr_FIO_MEM),
+	.Din_FIO_MEM(Din_FIO_MEM),
+    .Dout_FIO_MEM(Dout_FIO_MEM),
 	
-	.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE),
+	.Wen_FIO_CLE(Wen_FIO_CLE),
 	.FIO_CACHE_LAT_READ(FIO_CACHE_LAT_READ),
-	.FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE),
-	.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR),
+	.Din_FIO_CLE(Din_FIO_CLE),
+	.Addr_FIO_CLE(Addr_FIO_CLE),
 	
     .WarpID_MEM_CDB(WarpID_MEM_CDB),
     .Instr_MEM_CDB(Instr_MEM_CDB),

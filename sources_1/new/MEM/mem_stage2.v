@@ -17,10 +17,10 @@ module mem_stage2
 	input [26:0] addr_sel, mshr_neg_feedback_addr,
 	input [31:0] Instr,
 	
-	input FIO_CACHE_LAT_WRITE,
+	input Wen_FIO_CLE,
 	output [4:0] FIO_CACHE_LAT_READ,
-	input [4:0] FIO_CACHE_LAT_VALUE,
-	input [addr_width-1:0] FIO_CACHE_MEM_ADDR,
+	input [4:0] Din_FIO_CLE,
+	input [addr_width-1:0] Addr_FIO_CLE,
 	
 	output reg addr_valid_o,
 	output MemRead_o, MemWrite_o, hit_missbar_o, miss_wait_o,
@@ -68,9 +68,9 @@ module mem_stage2
 							cle_inst (.addr(addr_sel), .addr_valid(cache_addr_valid), .latency(miss_latency), .hit_missbar(hit_missbar), 
 									.addr_response(mshr_neg_feedback_addr), .addr_response_valid(mshr_neg_feedback_valid), .clk(clk), 
 									.resetb(resetb), .miss_wait(miss_wait),
-									.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE), .FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE), 
+									.Wen_FIO_CLE(Wen_FIO_CLE), .Din_FIO_CLE(Din_FIO_CLE), 
 									.FIO_CACHE_LAT_READ(FIO_CACHE_LAT_READ),
-									.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR));
+									.Addr_FIO_CLE(Addr_FIO_CLE));
 	
 	
 	

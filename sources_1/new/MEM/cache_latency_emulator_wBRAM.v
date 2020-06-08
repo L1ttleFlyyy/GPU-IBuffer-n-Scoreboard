@@ -1,5 +1,5 @@
 
-module cache_latency_emulator(addr, addr_valid, addr_response, addr_response_valid, clk, resetb, FIO_CACHE_LAT_WRITE, FIO_CACHE_LAT_READ, FIO_CACHE_LAT_VALUE, FIO_CACHE_MEM_ADDR,
+module cache_latency_emulator(addr, addr_valid, addr_response, addr_response_valid, clk, resetb, Wen_FIO_CLE, FIO_CACHE_LAT_READ, Din_FIO_CLE, Addr_FIO_CLE,
 latency, hit_missbar, miss_wait);
 	parameter mem_size = 256;
 	parameter cache_size = 32;
@@ -12,10 +12,10 @@ latency, hit_missbar, miss_wait);
 	input addr_valid;
 	input [26:0] addr, addr_response;
 	
-	input FIO_CACHE_LAT_WRITE;
-	input [4:0] FIO_CACHE_LAT_VALUE;
+	input Wen_FIO_CLE;
+	input [4:0] Din_FIO_CLE;
 	output [4:0] FIO_CACHE_LAT_READ;
-	input [addr_width-1:0] FIO_CACHE_MEM_ADDR;
+	input [addr_width-1:0] Addr_FIO_CLE;
 	
 	
 	output [4:0] latency;
@@ -42,7 +42,7 @@ latency, hit_missbar, miss_wait);
 	
 	Inferable_BRAM #(.OREG(0), .DATA(5), .ADDR(addr_width))
 					latency_RAM (.a_clk(clk), .a_wr(0), .a_addr(addr[addr_width-1:0]), .a_din(0), .a_dout(latency), 
-								 .b_clk(clk), .b_wr(FIO_CACHE_LAT_WRITE), .b_addr(FIO_CACHE_MEM_ADDR), .b_din(FIO_CACHE_LAT_VALUE), .b_dout(FIO_CACHE_LAT_READ));
+								 .b_clk(clk), .b_wr(Wen_FIO_CLE), .b_addr(Addr_FIO_CLE), .b_din(Din_FIO_CLE), .b_dout(FIO_CACHE_LAT_READ));
 	
 	
 	

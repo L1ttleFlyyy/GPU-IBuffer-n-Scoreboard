@@ -21,10 +21,10 @@ module mem_stage3
 	input [4:0] miss_latency,
 	input [31:0] Instr,
 	
-	input FIO_MEMWRITE,
-	input [255:0] FIO_WRITE_DATA,
-	input [addr_width-1:0] FIO_ADDR,
-	output [255:0] FIO_READ_DATA,
+	input Wen_FIO_MEM,
+	input [255:0] Din_FIO_MEM,
+	input [addr_width-1:0] Addr_FIO_MEM,
+	output [255:0] Dout_FIO_MEM,
 	
 	
 	
@@ -85,43 +85,43 @@ module mem_stage3
 	
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache0 (.a_clk(clk), .a_wr(MemWrite && mem_write_mask[0]), .a_addr(mem_addr[addr_width-1:0]), .a_din(write_data[31:0]), .a_dout(read_data[0]), 
-								 .b_clk(clk), .b_wr(FIO_MEMWRITE), .b_addr(FIO_ADDR), 
-								 .b_din(FIO_WRITE_DATA[31:0]), .b_dout(FIO_READ_DATA[31:0]));
+								 .b_clk(clk), .b_wr(Wen_FIO_MEM), .b_addr(Addr_FIO_MEM), 
+								 .b_din(Din_FIO_MEM[31:0]), .b_dout(Dout_FIO_MEM[31:0]));
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache1 (.a_clk(clk), .a_wr(MemWrite && mem_write_mask[1]), .a_addr(mem_addr[addr_width-1:0]), .a_din(write_data[63:32]), .a_dout(read_data[1]), 
-								 .b_clk(clk), .b_wr(FIO_MEMWRITE), .b_addr(FIO_ADDR), 
-								 .b_din(FIO_WRITE_DATA[63:32]), .b_dout(FIO_READ_DATA[63:32]));
+								 .b_clk(clk), .b_wr(Wen_FIO_MEM), .b_addr(Addr_FIO_MEM), 
+								 .b_din(Din_FIO_MEM[63:32]), .b_dout(Dout_FIO_MEM[63:32]));
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache2 (.a_clk(clk), .a_wr(MemWrite && mem_write_mask[2]), .a_addr(mem_addr[addr_width-1:0]), .a_din(write_data[95:64]), .a_dout(read_data[2]), 
-								 .b_clk(clk), .b_wr(FIO_MEMWRITE), .b_addr(FIO_ADDR), 
-								 .b_din(FIO_WRITE_DATA[95:64]), .b_dout(FIO_READ_DATA[95:64]));
+								 .b_clk(clk), .b_wr(Wen_FIO_MEM), .b_addr(Addr_FIO_MEM), 
+								 .b_din(Din_FIO_MEM[95:64]), .b_dout(Dout_FIO_MEM[95:64]));
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache3 (.a_clk(clk), .a_wr(MemWrite && mem_write_mask[3]), .a_addr(mem_addr[addr_width-1:0]), .a_din(write_data[127:96]), .a_dout(read_data[3]), 
-								 .b_clk(clk), .b_wr(FIO_MEMWRITE), .b_addr(FIO_ADDR), 
-								 .b_din(FIO_WRITE_DATA[127:96]), .b_dout(FIO_READ_DATA[127:96]));
+								 .b_clk(clk), .b_wr(Wen_FIO_MEM), .b_addr(Addr_FIO_MEM), 
+								 .b_din(Din_FIO_MEM[127:96]), .b_dout(Dout_FIO_MEM[127:96]));
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache4 (.a_clk(clk), .a_wr(MemWrite && mem_write_mask[4]), .a_addr(mem_addr[addr_width-1:0]), .a_din(write_data[159:128]), .a_dout(read_data[4]), 
-								 .b_clk(clk), .b_wr(FIO_MEMWRITE), .b_addr(FIO_ADDR), 
-								 .b_din(FIO_WRITE_DATA[159:128]), .b_dout(FIO_READ_DATA[159:128]));
+								 .b_clk(clk), .b_wr(Wen_FIO_MEM), .b_addr(Addr_FIO_MEM), 
+								 .b_din(Din_FIO_MEM[159:128]), .b_dout(Dout_FIO_MEM[159:128]));
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache5 (.a_clk(clk), .a_wr(MemWrite && mem_write_mask[5]), .a_addr(mem_addr[addr_width-1:0]), .a_din(write_data[191:160]), .a_dout(read_data[5]), 
-								 .b_clk(clk), .b_wr(FIO_MEMWRITE), .b_addr(FIO_ADDR), 
-								 .b_din(FIO_WRITE_DATA[191:160]), .b_dout(FIO_READ_DATA[191:160]));
+								 .b_clk(clk), .b_wr(Wen_FIO_MEM), .b_addr(Addr_FIO_MEM), 
+								 .b_din(Din_FIO_MEM[191:160]), .b_dout(Dout_FIO_MEM[191:160]));
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache6 (.a_clk(clk), .a_wr(MemWrite && mem_write_mask[6]), .a_addr(mem_addr[addr_width-1:0]), .a_din(write_data[223:192]), .a_dout(read_data[6]), 
-								 .b_clk(clk), .b_wr(FIO_MEMWRITE), .b_addr(FIO_ADDR), 
-								 .b_din(FIO_WRITE_DATA[223:192]), .b_dout(FIO_READ_DATA[223:192]));
+								 .b_clk(clk), .b_wr(Wen_FIO_MEM), .b_addr(Addr_FIO_MEM), 
+								 .b_din(Din_FIO_MEM[223:192]), .b_dout(Dout_FIO_MEM[223:192]));
 								 
 	Inferable_BRAM #(.OREG(0), .DATA(32), .ADDR(addr_width))
 					D_cache7 (.a_clk(clk), .a_wr(MemWrite && mem_write_mask[7]), .a_addr(mem_addr[addr_width-1:0]), .a_din(write_data[255:224]), .a_dout(read_data[7]), 
-								 .b_clk(clk), .b_wr(FIO_MEMWRITE), .b_addr(FIO_ADDR), 
-								 .b_din(FIO_WRITE_DATA[255:224]), .b_dout(FIO_READ_DATA[255:224]));
+								 .b_clk(clk), .b_wr(Wen_FIO_MEM), .b_addr(Addr_FIO_MEM), 
+								 .b_din(Din_FIO_MEM[255:224]), .b_dout(Dout_FIO_MEM[255:224]));
 	
 	
 	

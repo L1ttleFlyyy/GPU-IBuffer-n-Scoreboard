@@ -21,15 +21,15 @@ module mem_unit
 	input [31:0] Instr_OC_MEM,
 	
 	
-	input FIO_MEMWRITE,
-	input [addr_width-1:0] FIO_ADDR,
-	input [255:0] FIO_WRITE_DATA,
-	output [255:0] FIO_READ_DATA,
+	input Wen_FIO_MEM,
+	input [addr_width-1:0] Addr_FIO_MEM,
+	input [255:0] Din_FIO_MEM,
+	output [255:0] Dout_FIO_MEM,
 	
-	input FIO_CACHE_LAT_WRITE,
-	input [4:0] FIO_CACHE_LAT_VALUE,
+	input Wen_FIO_CLE,
+	input [4:0] Din_FIO_CLE,
 	output [4:0] FIO_CACHE_LAT_READ,
-	input [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR,
+	input [mem_addr_width-1:0] Addr_FIO_CLE,
 	
 	output [2:0] WarpID_MEM_CDB,
 	output [31:0] Instr_MEM_CDB,
@@ -126,8 +126,8 @@ module mem_unit
 							.reg_addr(stage12_reg_addr),
 							.addr_sel(stage12_addr_sel), .mshr_neg_feedback_addr(stage32_neg_feedback_addr), .Instr(stage12_Instr), 
 							
-							.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE), .FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE),
-							.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR), .FIO_CACHE_LAT_READ(FIO_CACHE_LAT_READ),
+							.Wen_FIO_CLE(Wen_FIO_CLE), .Din_FIO_CLE(Din_FIO_CLE),
+							.Addr_FIO_CLE(Addr_FIO_CLE), .FIO_CACHE_LAT_READ(FIO_CACHE_LAT_READ),
 							
 							
 							.MemRead_o(stage23_MemRead), .MemWrite_o(stage23_MemWrite), .hit_missbar_o(stage23_hit_missbar), 
@@ -160,10 +160,10 @@ module mem_unit
 							.thread_mask(stage23_thread_mask),
 							.miss_latency(stage23_miss_latency), .Instr(stage23_Instr), 
 							
-							.FIO_MEMWRITE(FIO_MEMWRITE),
-							.FIO_ADDR(FIO_ADDR),
-							.FIO_WRITE_DATA(FIO_WRITE_DATA),
-							.FIO_READ_DATA(FIO_READ_DATA),
+							.Wen_FIO_MEM(Wen_FIO_MEM),
+							.Addr_FIO_MEM(Addr_FIO_MEM),
+							.Din_FIO_MEM(Din_FIO_MEM),
+							.Dout_FIO_MEM(Dout_FIO_MEM),
 							
 							
 							.reg_write_o(stage34_reg_write), .write_fb_valid_o(stage34_write_fb_valid),

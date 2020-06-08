@@ -433,40 +433,40 @@ module uart_example (
   // wire [WIDTH0-1:0] TM_DATA_OUT;
   wire [WIDTH1-1:0] ICache_DATA_OUT;
   wire [WIDTH2-1:0] MEM_DATA_OUT;
-	wire [WIDTH3-1:0] EMU_DATA_OUT;
-  assign EMU_DATA_OUT[7:5] = 0;
+	wire [WIDTH3-1:0] CLE_DATA_OUT;
+  assign CLE_DATA_OUT[7:5] = 0;
 
   gpu_top_checking gpu_top (
     .clk(clk_sys),
     .rst(~rst_clk),
     // FileIO to TM
-    .Write_Enable_FIO_TM((state == RECV) && (nibble_cnt == 0) && (mem_sel == 0)),
-    .Write_Data_FIO_TM(data_in_concatenated[28:0]),
+    .Wen_FIO_TM((state == RECV) && (nibble_cnt == 0) && (mem_sel == 0)),
+    .Din_FIO_TM(data_in_concatenated[28:0]),
     .start_FIO_TM(btnl_scen),
     .clear_FIO_TM(1'b0),
     .finished_TM_FIO(fsm_done),
     // FileIO to ICache
-    .FileIO_Wen_ICache((state == RECV) && (nibble_cnt == 0) && (mem_sel == 1)),
-    .FileIO_Addr_ICache(addr_cnt[9:0]),
-    .FileIO_Din_ICache(data_in_concatenated[31:0]),
-    .FileIO_Dout_ICache(ICache_DATA_OUT),
+    .Wen_FIO_ICache((state == RECV) && (nibble_cnt == 0) && (mem_sel == 1)),
+    .Addr_FIO_ICache(addr_cnt[9:0]),
+    .Din_FIO_ICache(data_in_concatenated[31:0]),
+    .Dout_FIO_ICache(ICache_DATA_OUT),
 
     // FileIO to MEM
-    .FIO_MEMWRITE((state == RECV) && (nibble_cnt == 0) && (mem_sel == 2)),
-    .FIO_ADDR(addr_cnt[8:0]),
-    .FIO_WRITE_DATA(data_in_concatenated[255:0]),
-    .FIO_READ_DATA(MEM_DATA_OUT),
+    .Wen_FIO_MEM((state == RECV) && (nibble_cnt == 0) && (mem_sel == 2)),
+    .Addr_FIO_MEM(addr_cnt[8:0]),
+    .Din_FIO_MEM(data_in_concatenated[255:0]),
+    .Dout_FIO_MEM(MEM_DATA_OUT),
 	
-    .FIO_CACHE_LAT_WRITE((state == RECV) && (nibble_cnt == 0) && (mem_sel == 3)),
-    .FIO_CACHE_LAT_VALUE(data_in_concatenated[4:0]),
-    .FIO_CACHE_LAT_READ(EMU_DATA_OUT[4:0]),
-    .FIO_CACHE_MEM_ADDR(addr_cnt[7:0])
+    .Wen_FIO_CLE((state == RECV) && (nibble_cnt == 0) && (mem_sel == 3)),
+    .Din_FIO_CLE(data_in_concatenated[4:0]),
+    .FIO_CACHE_LAT_READ(CLE_DATA_OUT[4:0]),
+    .Addr_FIO_CLE(addr_cnt[7:0])
     );
 
   // TODO: from left to right?
   assign mem_out =    (mem_sel == 1)? {ICache_DATA_OUT, {(WIDTH2-WIDTH1){1'b0}}}:
                       (mem_sel == 2)? MEM_DATA_OUT: 
-                                      {EMU_DATA_OUT, {(WIDTH2-WIDTH3){1'b0}}};
+                                      {CLE_DATA_OUT, {(WIDTH2-WIDTH3){1'b0}}};
   wire [3:0] nibble_mux;
   assign nibble_mux[3] = mem_out[WIDTH2-1-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
   assign nibble_mux[2] = mem_out[WIDTH2-2-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];

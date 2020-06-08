@@ -13,13 +13,13 @@ module Mem_Unit_tb;
 	reg [4:0] reg_addr_OC_MEM_tb;
 	
 	
-	reg FIO_MEMWRITE_tb;
-	reg [8:0] FIO_ADDR_tb;
-	reg [255:0] FIO_WRITE_DATA_tb;
+	reg Wen_FIO_MEM_tb;
+	reg [8:0] Addr_FIO_MEM_tb;
+	reg [255:0] Din_FIO_MEM_tb;
 	
-	reg FIO_CACHE_LAT_WRITE_tb;
-	reg [4:0] FIO_CACHE_LAT_VALUE_tb;
-	reg [7:0] FIO_CACHE_MEM_ADDR_tb;
+	reg Wen_FIO_CLE_tb;
+	reg [4:0] Din_FIO_CLE_tb;
+	reg [7:0] Addr_FIO_CLE_tb;
 	
 	wire neg_feedback_valid_o_MEM_Scb_tb, pos_feedback_valid_o_MEM_Scb_tb, cdb_regwrite_MEM_CDB_tb;
 	wire [2:0] neg_feedback_warpID_o_MEM_Scb_tb, pos_feedback_warpID_o_MEM_Scb_tb;
@@ -47,13 +47,13 @@ module Mem_Unit_tb;
 	.reg_addr_OC_MEM(reg_addr_OC_MEM_tb),
 	
 	
-	.FIO_MEMWRITE(FIO_MEMWRITE_tb),
-	.FIO_ADDR(FIO_ADDR_tb),
-	.FIO_WRITE_DATA(FIO_WRITE_DATA_tb),
+	.Wen_FIO_MEM(Wen_FIO_MEM_tb),
+	.Addr_FIO_MEM(Addr_FIO_MEM_tb),
+	.Din_FIO_MEM(Din_FIO_MEM_tb),
 	
-	.FIO_CACHE_LAT_WRITE(FIO_CACHE_LAT_WRITE_tb),
-	.FIO_CACHE_LAT_VALUE(FIO_CACHE_LAT_VALUE_tb),
-	.FIO_CACHE_MEM_ADDR(FIO_CACHE_MEM_ADDR_tb),
+	.Wen_FIO_CLE(Wen_FIO_CLE_tb),
+	.Din_FIO_CLE(Din_FIO_CLE_tb),
+	.Addr_FIO_CLE(Addr_FIO_CLE_tb),
 	
 	.neg_feedback_valid_o_MEM_Scb(neg_feedback_valid_o_MEM_Scb_tb), 
 	.pos_feedback_valid_o_MEM_Scb(pos_feedback_valid_o_MEM_Scb_tb), 
@@ -75,8 +75,8 @@ module Mem_Unit_tb;
 		clk_tb = 1;
 		rst_tb = 0;
 		Instr_valid_OC_MEM_tb = 0;
-		FIO_MEMWRITE_tb = 0;
-		FIO_CACHE_LAT_WRITE_tb = 0;
+		Wen_FIO_MEM_tb = 0;
+		Wen_FIO_CLE_tb = 0;
 		
 		#80
 		
@@ -87,18 +87,18 @@ module Mem_Unit_tb;
 		/*for(i=0; i<256; i=i+1)
 		begin
 			#40
-			FIO_CACHE_LAT_WRITE_tb			=	1;
-			FIO_CACHE_LAT_VALUE_tb			=	(i+1)%32;
-			FIO_CACHE_MEM_ADDR_tb			=	i;
+			Wen_FIO_CLE_tb			=	1;
+			Din_FIO_CLE_tb			=	(i+1)%32;
+			Addr_FIO_CLE_tb			=	i;
 			
 		end*/
 		
 		/*for(i=0; i<512; i=i+1)
 		begin
 			#40
-			FIO_MEMWRITE_tb			=	1;
-			FIO_WRITE_DATA_tb		=	(i+1)%32;
-			FIO_ADDR_tb			=	i;
+			Wen_FIO_MEM_tb			=	1;
+			Din_FIO_MEM_tb		=	(i+1)%32;
+			Addr_FIO_MEM_tb			=	i;
 			
 		end*/
 		
@@ -115,12 +115,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	0;
 		offset_OC_MEM_tb				=	16'h0000;
 		reg_addr_OC_MEM_tb				=	0;
-		FIO_MEMWRITE_tb				=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb			=	0;
-		FIO_CACHE_LAT_VALUE_tb			=	0;
-		FIO_CACHE_MEM_ADDR_tb			=	0;
+		Wen_FIO_MEM_tb				=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb			=	0;
+		Din_FIO_CLE_tb			=	0;
+		Addr_FIO_CLE_tb			=	0;
 		
 		#40
 		
@@ -135,9 +135,9 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	
 		offset_OC_MEM_tb				=	
 		reg_addr_OC_MEM_tb				=	
-		FIO_MEMWRITE_tb				=	
-		FIO_ADDR_tb					=	
-		FIO_WRITE_DATA_tb				=	*/
+		Wen_FIO_MEM_tb				=	
+		Addr_FIO_MEM_tb					=	
+		Din_FIO_MEM_tb				=	*/
 		
 		#40
 		
@@ -152,12 +152,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	256'h00000000FFFFFFFF00000000FFFFFFFF44444444AAAAAAAA44444444AAAAAAAA;
 		offset_OC_MEM_tb				=	16'h0000;
 		reg_addr_OC_MEM_tb				=	0;
-		FIO_MEMWRITE_tb					=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb				=	0;
-		FIO_CACHE_LAT_VALUE_tb				=	0;
-		FIO_CACHE_MEM_ADDR_tb				=	0;
+		Wen_FIO_MEM_tb					=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb				=	0;
+		Din_FIO_CLE_tb				=	0;
+		Addr_FIO_CLE_tb				=	0;
 		
 		#40
 		
@@ -176,12 +176,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	256'h00000000FFFFFFFF00000000FFFFFFFF44444444AAAAAAAA44444444AAAAAAAA;
 		offset_OC_MEM_tb				=	0;
 		reg_addr_OC_MEM_tb				=	0;
-		FIO_MEMWRITE_tb					=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb				=	0;
-		FIO_CACHE_LAT_VALUE_tb				=	0;
-		FIO_CACHE_MEM_ADDR_tb				=	0;
+		Wen_FIO_MEM_tb					=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb				=	0;
+		Din_FIO_CLE_tb				=	0;
+		Addr_FIO_CLE_tb				=	0;
 		
 		#40
 		
@@ -200,12 +200,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	256'h00000000FFFFFFFF00000000FFFFFFFF44444444AAAAAAAA44444444AAAAAAAA;
 		offset_OC_MEM_tb				=	0;
 		reg_addr_OC_MEM_tb				=	0;
-		FIO_MEMWRITE_tb					=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb				=	0;
-		FIO_CACHE_LAT_VALUE_tb				=	0;
-		FIO_CACHE_MEM_ADDR_tb				=	0;
+		Wen_FIO_MEM_tb					=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb				=	0;
+		Din_FIO_CLE_tb				=	0;
+		Addr_FIO_CLE_tb				=	0;
 		
 		#40
 		
@@ -224,12 +224,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	256'h00000000FFFFFFFF00000000FFFFFFFF44444444AAAAAAAA44444444AAAAAAAA;
 		offset_OC_MEM_tb				=	0;
 		reg_addr_OC_MEM_tb				=	0;
-		FIO_MEMWRITE_tb					=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb				=	0;
-		FIO_CACHE_LAT_VALUE_tb				=	0;
-		FIO_CACHE_MEM_ADDR_tb				=	0;
+		Wen_FIO_MEM_tb					=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb				=	0;
+		Din_FIO_CLE_tb				=	0;
+		Addr_FIO_CLE_tb				=	0;
 		
 		#40
 		
@@ -248,12 +248,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	0;
 		offset_OC_MEM_tb				=	0;
 		reg_addr_OC_MEM_tb				=	5'b00011;
-		FIO_MEMWRITE_tb					=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb				=	0;
-		FIO_CACHE_LAT_VALUE_tb				=	0;
-		FIO_CACHE_MEM_ADDR_tb				=	0;
+		Wen_FIO_MEM_tb					=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb				=	0;
+		Din_FIO_CLE_tb				=	0;
+		Addr_FIO_CLE_tb				=	0;
 		
 		#40
 		
@@ -268,12 +268,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	0;
 		offset_OC_MEM_tb				=	0;
 		reg_addr_OC_MEM_tb				=	5'b00011;
-		FIO_MEMWRITE_tb					=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb				=	0;
-		FIO_CACHE_LAT_VALUE_tb				=	0;
-		FIO_CACHE_MEM_ADDR_tb				=	0;	
+		Wen_FIO_MEM_tb					=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb				=	0;
+		Din_FIO_CLE_tb				=	0;
+		Addr_FIO_CLE_tb				=	0;	
 		
 		#40
 		
@@ -296,12 +296,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	256'h00000000FFFFFFFF00000000FFFFFFFF44444444AAAAAAAA44444444AAAAAAAA;
 		offset_OC_MEM_tb				=	16'h0000;
 		reg_addr_OC_MEM_tb				=	0;
-		FIO_MEMWRITE_tb					=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb				=	0;
-		FIO_CACHE_LAT_VALUE_tb				=	0;
-		FIO_CACHE_MEM_ADDR_tb				=	0;
+		Wen_FIO_MEM_tb					=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb				=	0;
+		Din_FIO_CLE_tb				=	0;
+		Addr_FIO_CLE_tb				=	0;
 		
 		#40
 		
@@ -320,12 +320,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	256'h00000000FFFFFFFF00000000FFFFFFFF44444444AAAAAAAA44444444AAAAAAAA;
 		offset_OC_MEM_tb				=	0;
 		reg_addr_OC_MEM_tb				=	0;
-		FIO_MEMWRITE_tb					=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb				=	0;
-		FIO_CACHE_LAT_VALUE_tb				=	0;
-		FIO_CACHE_MEM_ADDR_tb				=	0;
+		Wen_FIO_MEM_tb					=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb				=	0;
+		Din_FIO_CLE_tb				=	0;
+		Addr_FIO_CLE_tb				=	0;
 		
 		#40
 		
@@ -344,12 +344,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	0;
 		offset_OC_MEM_tb				=	0;
 		reg_addr_OC_MEM_tb				=	5'b00011;
-		FIO_MEMWRITE_tb					=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb				=	0;
-		FIO_CACHE_LAT_VALUE_tb				=	0;
-		FIO_CACHE_MEM_ADDR_tb				=	0;
+		Wen_FIO_MEM_tb					=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb				=	0;
+		Din_FIO_CLE_tb				=	0;
+		Addr_FIO_CLE_tb				=	0;
 		
 		#40
 		
@@ -364,12 +364,12 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	0;
 		offset_OC_MEM_tb				=	0;
 		reg_addr_OC_MEM_tb				=	5'b00011;
-		FIO_MEMWRITE_tb					=	0;
-		FIO_ADDR_tb					=	0;
-		FIO_WRITE_DATA_tb				=	0;
-		FIO_CACHE_LAT_WRITE_tb				=	0;
-		FIO_CACHE_LAT_VALUE_tb				=	0;
-		FIO_CACHE_MEM_ADDR_tb				=	0;	
+		Wen_FIO_MEM_tb					=	0;
+		Addr_FIO_MEM_tb					=	0;
+		Din_FIO_MEM_tb				=	0;
+		Wen_FIO_CLE_tb				=	0;
+		Din_FIO_CLE_tb				=	0;
+		Addr_FIO_CLE_tb				=	0;	
 		
 		#40
 		
@@ -390,9 +390,9 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	
 		offset_OC_MEM_tb				=	
 		reg_addr_OC_MEM_tb				=	
-		FIO_MEMWRITE_tb				=	
-		FIO_ADDR_tb					=	
-		FIO_WRITE_DATA_tb				=	
+		Wen_FIO_MEM_tb				=	
+		Addr_FIO_MEM_tb					=	
+		Din_FIO_MEM_tb				=	
 		
 		#40
 		
@@ -407,9 +407,9 @@ module Mem_Unit_tb;
 		rt_data_OC_MEM_tb				=	
 		offset_OC_MEM_tb				=	
 		reg_addr_OC_MEM_tb				=	
-		FIO_MEMWRITE_tb				=	
-		FIO_ADDR_tb					=	
-		FIO_WRITE_DATA_tb				=	*/
+		Wen_FIO_MEM_tb				=	
+		Addr_FIO_MEM_tb					=	
+		Din_FIO_MEM_tb				=	*/
 		
 		#40
 		
