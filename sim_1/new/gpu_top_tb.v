@@ -40,15 +40,17 @@ reg FIO_CACHE_LAT_WRITE_tb;
 reg [4:0] FIO_CACHE_LAT_VALUE_tb;
 reg [mem_addr_width-1:0] FIO_CACHE_MEM_ADDR_tb;          //default
 
-reg [31:0] temp_ICache [0:icache_depth-1];
-reg [255:0] temp_MEM [0:mem_total_depth-1];
-reg [7:0] temp_EMU [0:emu_depth-1];
-reg [31:0] temp_TM [0:tm_depth-1];
+integer fd_TM, fd_ICache, fd_MEM, fd_EMU;
+
+reg [31:0] temp_TM;
+reg [31:0] temp_ICache;
+reg [255:0] temp_MEM;
+reg [7:0] temp_EMU;
  
+reg [15:0] i_TM;
 reg [15:0] i_ICache;
 reg [15:0] i_MEM;
 reg [15:0] i_EMU;
-reg [15:0] i_TM;
 
 integer outfile, drawing;
 
@@ -68,78 +70,79 @@ initial
         #20 rst_tb = 1;
     end
 
-integer fd_TM;
-reg [31:0] temp_reg;
-
-initial                             //MEM_INIT
-    begin
-    $readmemh("TM_init.txt", temp_TM);
-    $readmemh("ICache_init_Circle_Drawing.txt", temp_ICache);
-    // $readmemh("ICache_init_thread_div.txt", temp_ICache);
-    $readmemh("MEM_init.txt", temp_MEM);
-    $readmemh("EMU_init.txt", temp_EMU);
-    end
-
 initial
-    begin:  TM_INIT
+    begin:  TM_init
         fd_TM = $fopen("TM_init.txt", "r");
-        @ (posedge clk_tb);
+        start_FIO_TM_tb = 0;
         clear_FIO_TM_tb = 0;
         wait(rst_tb);
+        @ (posedge clk_tb);
         while(!$feof(fd_TM)) begin
-            $fscanf(fd_TM, "%x\n", temp_reg);
+            $fscanf(fd_TM, "%x\n", temp_TM);
             @ (posedge clk_tb);
             Write_Enable_FIO_TM_tb = 1;
-            Write_Data_FIO_TM_tb = temp_reg[28:0];
+            Write_Data_FIO_TM_tb = temp_TM[28:0];
         end
         @ (posedge clk_tb);
         Write_Enable_FIO_TM_tb = 0;
         $fclose(fd_TM);
-    end
-
-initial
-    begin:  I_CACHE_INIT
-        wait(rst_tb);
-        start_FIO_TM_tb = 0;
-        FileIO_Wen_ICache_tb = 1;
-        for(i_ICache = 0; i_ICache < icache_depth; i_ICache = i_ICache+1)
-            begin
-                @ (posedge clk_tb);
-                FileIO_Addr_ICache_tb = i_ICache;
-                FileIO_Din_ICache_tb = temp_ICache[i_ICache];
-            end
-        @ (posedge clk_tb);
-        FileIO_Wen_ICache_tb = 0;
+        wait(!FileIO_Wen_ICache_tb);
         start_FIO_TM_tb = 1;
     end
 
 initial
-    begin:  MEM_INIT
+    begin:  I_CACHE_INIT
+        fd_ICache = $fopen("ICache_init_thread_div.txt", "r");
+        // fd_ICache = $fopen("ICache_init_Circle_Drawing.txt", "r");
+        FileIO_Wen_ICache_tb = 0;
         wait(rst_tb);
-        FIO_MEMWRITE_tb = 1;
-        for(i_MEM = 0; i_MEM < mem_total_depth; i_MEM = i_MEM+1)
-            begin
-                @ (posedge clk_tb);
-                FIO_ADDR_tb = i_MEM;
-                FIO_WRITE_DATA_tb = temp_MEM[i_MEM];
-            end
         @ (posedge clk_tb);
+        FileIO_Addr_ICache_tb = 0;
+        FileIO_Wen_ICache_tb = 1;
+        while(!$feof(fd_ICache)) begin
+            $fscanf(fd_ICache, "%x\n", temp_ICache);
+            FileIO_Din_ICache_tb = temp_ICache;
+            @ (posedge clk_tb);
+            FileIO_Addr_ICache_tb = FileIO_Addr_ICache_tb + 1;
+        end
+        FileIO_Wen_ICache_tb = 0;
+        $fclose(fd_ICache);
+    end
+
+initial
+    begin:  MEM_INIT
+        fd_MEM = $fopen("MEM_init.txt", "r");
         FIO_MEMWRITE_tb = 0;
+        wait(rst_tb);
+        @ (posedge clk_tb);
+        FIO_ADDR_tb = 0;
+        FIO_MEMWRITE_tb = 1;
+        while(!$feof(fd_MEM)) begin
+            $fscanf(fd_MEM, "%x\n", temp_MEM);
+            FIO_WRITE_DATA_tb = temp_MEM;
+            @ (posedge clk_tb);
+            FIO_ADDR_tb = FIO_ADDR_tb + 1;
+        end
+        FIO_MEMWRITE_tb = 0;
+        $fclose(fd_MEM);
     end
 
 initial
     begin:  EMU_INIT
-        wait(rst_tb);
-        FIO_CACHE_LAT_WRITE_tb = 1;
-        for(i_EMU = 0; i_EMU < emu_depth; i_EMU = i_EMU+1)
-            begin
-                @ (posedge clk_tb);
-                FIO_CACHE_MEM_ADDR_tb = i_EMU;
-                FIO_CACHE_LAT_VALUE_tb = temp_EMU[i_EMU][4:0];
-            end
-        @ (posedge clk_tb);
+        fd_EMU = $fopen("EMU_init.txt", "r");
         FIO_CACHE_LAT_WRITE_tb = 0;
-        
+        wait(rst_tb);
+        @ (posedge clk_tb);
+        FIO_CACHE_MEM_ADDR_tb = 0;
+        FIO_CACHE_LAT_WRITE_tb = 1;
+        while(!$feof(fd_EMU)) begin
+            $fscanf(fd_EMU, "%x\n", temp_EMU);
+            FIO_CACHE_LAT_VALUE_tb = temp_EMU;
+            @ (posedge clk_tb);
+            FIO_CACHE_MEM_ADDR_tb = FIO_CACHE_MEM_ADDR_tb + 1;
+        end
+        FIO_CACHE_LAT_WRITE_tb = 0;
+        $fclose(fd_EMU);
     end
 
 initial
