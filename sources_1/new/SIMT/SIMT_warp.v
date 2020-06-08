@@ -106,7 +106,7 @@ assign push_SIMT_raw_sim = push_SIMT_raw;
 
 
 assign Stall_SIMT_PC = Stall_SIMT;
-assign AM_Warp_SIMT_IB = ActiveMask;
+assign AM_Warp_SIMT_IB = pop_stack_qual ? stack[TOSP][7:0] : ActiveMask;
 //////-------------------------/////
 
 assign DropInstr_SIMT_IB = (Stall_SIMT | 

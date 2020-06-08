@@ -19,9 +19,8 @@ ADDI $3, $0, 0; data reset to 0
 BLT.S $0, $2, MERGE; 0 < (x-7)^2 + (y-7)^2 - r^2 (outside the circle)
 ADDI $3, $0, 1; Inside the circle
 
-MERGE: 
-NOOP.S
-ADDI $2, $0, 2 ; if we combine the two lines into ADDI.S, there will be a bug in PAM for ADDI
+MERGE:
+ADDI.S $2, $0, 2 ; if we combine the two lines into ADDI.S, there will be a bug in PAM for ADDI
 SHL $1, $1, $2; mem location = thrID * 4
 SW $3, 0($1); store into corresponding location
 EXIT
