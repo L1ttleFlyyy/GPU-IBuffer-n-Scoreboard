@@ -25,14 +25,6 @@ assign RegWrite_CDB_RAU = RegWrite_ALU_CDB | RegWrite_MEM_CDB;
 
 always @ (*)
 begin
-
-    // synthesis translate_off
-    if (RegWrite_ALU_CDB && RegWrite_MEM_CDB) begin
-        $display("CDB conflict detected!!!! This should never happen! check scheduler/ALU/MEM design");
-        $finish;
-    end
-    // synthesis translate_on
-
     if (RegWrite_ALU_CDB == 1)
     begin
         WriteAddr_CDB_RAU = Dst_ALU_CDB;

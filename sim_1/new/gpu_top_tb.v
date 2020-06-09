@@ -92,8 +92,9 @@ initial
 
 initial
     begin:  I_CACHE_INIT
+        fd_ICache = $fopen("ICache_init_Mem_access3.txt", "r");
         // fd_ICache = $fopen("ICache_init_thread_div.txt", "r");
-        fd_ICache = $fopen("ICache_init_Circle_Drawing.txt", "r");
+        // fd_ICache = $fopen("ICache_init_Circle_Drawing.txt", "r");
         Wen_FIO_ICache_tb = 0;
         wait(rst_tb);
         @ (posedge clk_tb);

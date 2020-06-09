@@ -814,6 +814,15 @@ module gpu_top_checking#(
 	.cdb_reg_addr_MEM_CDB(Dst_MEM_CDB)
     );
 
+    // synthesis translate_off
+    always@(posedge clk)
+        if (RegWrite_ALU_CDB && RegWrite_MEM_CDB) begin
+            $display("CDB conflict detected!!!! This should never happen! check scheduler/ALU/MEM design");
+            #20;
+            $finish;
+        end
+    // synthesis translate_on
+
     CDB cdb1(
     .WarpID_ALU_CDB(WarpID_ALU_CDB), 
     .RegWrite_ALU_CDB(RegWrite_ALU_CDB),
