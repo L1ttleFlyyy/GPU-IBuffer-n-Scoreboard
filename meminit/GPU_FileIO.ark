@@ -1,6 +1,6 @@
 # GPU with BRAM
 TO_FPGA 00 00 TM_init.txt
-TO_FPGA 01 00 ICache_init.txt
+TO_FPGA 01 00 ICache_init_Circle_Drawing.txt
 TO_FPGA 02 00 MEM_init.txt
 TO_FPGA 03 00 CLE_init.txt
 SET_PREFIX outfile_

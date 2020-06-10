@@ -544,10 +544,11 @@ module uart_example (
         end
     COMP:            // Enter the div state: start running the sub state machine for division
     begin
-        // if (fsm_done) state <= SEND;
+      if (fsm_done) begin
         state <= SEND;
         cnt_send <= 0;
         mem_sel <= 1;
+        end
     end
     SEND: 
         if (~send_fifo_full)
