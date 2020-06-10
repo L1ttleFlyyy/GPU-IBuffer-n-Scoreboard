@@ -175,7 +175,6 @@ wire valid_1;
 wire valid_2;
 wire valid_3;
 
-assign Full_OC_IB = valid_0 & valid_1 & valid_2 & valid_3;
 wire oc_0_empty = ~valid_0;
 wire oc_1_empty = ~valid_1;
 wire oc_2_empty = ~valid_2;
@@ -262,29 +261,89 @@ wire [1:0] ScbID_OC_Ex_3 ;//pass
 wire [7:0] ActiveMask_OC_Ex_3;//pass
 wire [4:0] Dst_OC_Ex_3;
 
+// Note: An input register is added for Mapping Unit (Register Allocation Unit)
+// to resolve timing violation
+reg Valid_reg;
+reg [2:0] WarpID_reg;
+reg [31:0] Instr_reg;
+reg [4:0] Src1_reg;
+reg Src1_Valid_reg;
+reg [4:0] Src2_reg;
+reg Src2_Valid_reg;
+reg [4:0] Dst_reg;
+reg [15:0] Imme_reg;
+reg Imme_Valid_reg;
+reg [3:0] ALUop_reg;
+reg RegWrite_reg;
+reg MemWrite_reg;
+reg MemRead_reg;
+reg Shared_Globalbar_reg;
+reg BEQ_reg;
+reg BLT_reg;
+reg [1:0] ScbID_reg;
+reg [7:0] ActiveMask_reg;
+
+assign Full_OC_IB = ((valid_0 + valid_1 + valid_2 + valid_3 + Valid_reg) >= 4);
+always@ (posedge clk, negedge rst) begin
+    if (!rst) begin
+        Valid_reg <= 0;
+    end else begin
+        Valid_reg <= Valid_IB_OC;
+        // synthesis translate_off
+            if (Valid_reg && valid_0 && valid_1 && valid_2 && valid_3) begin
+                $display("Operand Collector runs overfull!!! this should never happen!!!");
+                #20;
+                $finish;
+            end
+        // synthesis translate_on
+    end
+end
+
+always@ (posedge clk) begin
+    WarpID_reg <= WarpID_IB_OC;
+    Instr_reg <= Instr_IB_OC;
+    Src1_reg <= Src1_IB_OC;
+    Src1_Valid_reg <= Src1_Valid_IB_OC;
+    Src2_reg <= Src2_IB_OC;
+    Src2_Valid_reg <= Src2_Valid_IB_OC;
+    Dst_reg <= Dst_IB_OC;
+    Imme_reg <= Imme_IB_OC;
+    Imme_Valid_reg <= Imme_Valid_IB_OC;
+    ALUop_reg <= ALUop_IB_OC;
+    RegWrite_reg <= RegWrite_IB_OC;
+    MemWrite_reg <= MemWrite_IB_OC;
+    MemRead_reg <= MemRead_IB_OC;
+    Shared_Globalbar_reg <= Shared_Globalbar_IB_OC;
+    BEQ_reg <= BEQ_IB_OC;
+    BLT_reg <= BLT_IB_OC;
+    ScbID_reg <= ScbID_IB_OC;
+    ActiveMask_reg <= ActiveMask_IB_OC;
+end
+
 Mapping MappingUnit(
     .rst(rst),
     .clk(clk),
 
-    //every
-    .Valid_IB_RAU(Valid_IB_OC),//use
-    .Instr_IB_RAU(Instr_IB_OC),//pass
-    .Src1_IB_RAU(Src1_IB_OC),//use; MSB->SpecialReg
-    .Src1_Valid_IB_RAU(Src1_Valid_IB_OC),//?????
-    .Src2_IB_RAU(Src2_IB_OC),//use; MSB->SpecialReg
-    .Src2_Valid_IB_RAU(Src2_Valid_IB_OC),//?????
-    .RegWrite_IB_OC(RegWrite_IB_OC),
-    .Dst_IB_OC(Dst_IB_OC),
-    .Imme_IB_RAU(Imme_IB_OC),//use
-    .Imme_Valid_IB_RAU(Imme_Valid_IB_OC),//?????
-    .ALUop_IB_RAU(ALUop_IB_OC),//?????
-    .MemWrite_IB_RAU(MemWrite_IB_OC),//judge 1 src
-    .MemRead_IB_RAU(MemRead_IB_OC),//judge 1 src
-    .Shared_Globalbar_IB_RAU(Shared_Globalbar_IB_OC),//pass
-    .BEQ_IB_RAU(BEQ_IB_OC),//pass
-    .BLT_IB_RAU(BLT_IB_OC),//pass
-    .ScbID_IB_RAU(ScbID_IB_OC),//pass
-    .ActiveMask_IB_RAU(ActiveMask_IB_OC),//pass
+    //Read 
+    .HWWarp_IB_RAU(WarpID_reg), //with valid?
+    .Valid_IB_RAU(Valid_reg),//use
+    .Instr_IB_RAU(Instr_reg),//pass
+    .Src1_IB_RAU(Src1_reg),//use; MSB->SpecialReg
+    .Src1_Valid_IB_RAU(Src1_Valid_reg),//?????
+    .Src2_IB_RAU(Src2_reg),//use; MSB->SpecialReg
+    .Src2_Valid_IB_RAU(Src2_Valid_reg),//?????
+    .RegWrite_IB_OC(RegWrite_reg),
+    .Dst_IB_OC(Dst_reg),
+    .Imme_IB_RAU(Imme_reg),//use
+    .Imme_Valid_IB_RAU(Imme_Valid_reg),//?????
+    .ALUop_IB_RAU(ALUop_reg),//?????
+    .MemWrite_IB_RAU(MemWrite_reg),//judge 1 src
+    .MemRead_IB_RAU(MemRead_reg),//judge 1 src
+    .Shared_Globalbar_IB_RAU(Shared_Globalbar_reg),//pass
+    .BEQ_IB_RAU(BEQ_reg),//pass
+    .BLT_IB_RAU(BLT_reg),//pass
+    .ScbID_IB_RAU(ScbID_reg),//pass
+    .ActiveMask_IB_RAU(ActiveMask_reg),//pass
 
     //Allo or exit
     //Exit
@@ -299,9 +358,6 @@ Mapping MappingUnit(
 
     //output reg [4:0] Available_RAU_TM,
     .AllocStall_RAU_IB(AllocStall_RAU_IB),//IF?
-
-    //Read 
-    .HWWarp_IB_RAU(WarpID_IB_OC), //with valid?
 
     //Write
     .WriteAddr_CDB_RAU(WriteAddr_CDB_RAU),
