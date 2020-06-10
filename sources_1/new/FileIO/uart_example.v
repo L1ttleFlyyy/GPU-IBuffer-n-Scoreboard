@@ -436,28 +436,30 @@ module uart_example (
 	wire [WIDTH3-1:0] CLE_DATA_OUT;
   assign CLE_DATA_OUT[7:5] = 0;
 
+  wire Wen_FIO = (state == RECV) && (nibble_cnt == 0) && receive_data_rdy && (~char_to_digit[4]);
+
   gpu_top_checking gpu_top (
     .clk(clk_sys),
     .rst(~rst_clk),
     // FileIO to TM
-    .Wen_FIO_TM((state == RECV) && (nibble_cnt == 0) && (mem_sel == 0)),
+    .Wen_FIO_TM(Wen_FIO && (mem_sel == 0)),
     .Din_FIO_TM(data_in_concatenated[28:0]),
     .start_FIO_TM(btnl_scen),
     .clear_FIO_TM(1'b0),
     .finished_TM_FIO(fsm_done),
     // FileIO to ICache
-    .Wen_FIO_ICache((state == RECV) && (nibble_cnt == 0) && (mem_sel == 1)),
+    .Wen_FIO_ICache(Wen_FIO && (mem_sel == 1)),
     .Addr_FIO_ICache(addr_cnt[9:0]),
     .Din_FIO_ICache(data_in_concatenated[31:0]),
     .Dout_FIO_ICache(ICache_DATA_OUT),
 
     // FileIO to MEM
-    .Wen_FIO_MEM((state == RECV) && (nibble_cnt == 0) && (mem_sel == 2)),
+    .Wen_FIO_MEM(Wen_FIO && (mem_sel == 2)),
     .Addr_FIO_MEM(addr_cnt[8:0]),
     .Din_FIO_MEM(data_in_concatenated[255:0]),
     .Dout_FIO_MEM(MEM_DATA_OUT),
 	
-    .Wen_FIO_CLE((state == RECV) && (nibble_cnt == 0) && (mem_sel == 3)),
+    .Wen_FIO_CLE(Wen_FIO && (mem_sel == 3)),
     .Din_FIO_CLE(data_in_concatenated[4:0]),
     .FIO_CACHE_LAT_READ(CLE_DATA_OUT[4:0]),
     .Addr_FIO_CLE(addr_cnt[7:0])
