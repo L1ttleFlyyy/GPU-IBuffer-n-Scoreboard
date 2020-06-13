@@ -9,11 +9,8 @@ ADDI $4, $0, 16; termination value
 
 LOOP:
 BEQ.S $1, $4, OUT
-NOOP; # seems to be a bug here: if all the threads choose the untaken path,
-NOOP; # the two instructions right below the BEQ will be droped by SIMT
 ADD $3, $2, $3;
-ADDI $1, $1, 1;
-NOOP.S;
+ADDI.S $1, $1, 1;
 J LOOP
 
 OUT:
