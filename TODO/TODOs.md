@@ -36,6 +36,8 @@
 - [x] Shared Memory testing
 - [x] Simulate Memory Unit
 - [x] Create a script to initialize Task Manager in hex (two versions, one for debug, one for FileIO)
+- [ ] Create an example simulation project to show students the entire workflow from initializing memory, run scripts to generate binary code and finally parse the memory dumped file into a human-readable form
+- [ ] Add one section in the tutorial for Task manager initialization
 - [ ] Try simulating in Modelsim/NcSim
 - [ ] Confirm the actual exception and virtual memory support in AMD/Nvidia implementation
 ### 3. Verify Assembler and Reverse Assembler (much easier to verify together)
@@ -51,6 +53,8 @@
 - [x] Covert real [cuda application](../cuda/mulv.cu) into our assembly
 - [x] CUDA simulator / (HPC platform)
 - [x] Test Programs for corner cases in PC/IF stage
+- [x] Overall instruction to initialize I-Cache, Task Manager and Memory Unit in both simulation and implementation on FPGA
+- [ ] Work with the mentors to parse the raw data for memory unit
 ### 4. Integrate FileIO and reverse assembler
 > Spandan, Chang
 - [x] Inject reverse assembler (and PC) in each stage
@@ -63,6 +67,7 @@
 - [x] Create waveform configurations for each team and dipatch the projects
 - [x] Create a general overall introduction slides to our GPU design
 - [x] Resolve issues in assembler and start simulate SIMT stack
-- [] Implementation and Deployment on FPGA Board and test with FileIO
-- [] Overall instruction to initialize I-Cache, Task Manager and Memory Unit in both simulation and implementation on FPGA
+- [x] Implementation and Deployment on FPGA Board and test with FileIO
+- [ ] Add one section in the tutorial to illustrate how to write a loop program in our ISA
+- [ ] Add one slide to illustrate the timing issue in the critical path from IBuffer to Operand Collector and how we fixed it
 ---
