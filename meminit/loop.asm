@@ -5,12 +5,13 @@ ADD $2, $8, $2; global thrID
 
 ADDI $1, $0, 0; loop counter
 ADDI $3, $0, 0; result register
-ADDI $4, $0, 16; termination value
+ADDI $4, $2, 0; termination value (thrID)
 
 LOOP:
-BEQ.S $1, $4, OUT
+BEQ.S $1, $4, OUT; while (i < 16) sum = sum + $2
 ADD $3, $2, $3;
-ADDI.S $1, $1, 1;
+ADDI $1, $1, 1;
+NOOP.S; # These two lines (ADD and NOOP) can be merged into ADD.S only if there is no thread divergence
 J LOOP
 
 OUT:
