@@ -1,4 +1,4 @@
-`timescale 1ns/1ps
+`timescale 1ns / 100ps
 module tb_two_grants_rotating_priority_resolver ();
 reg clk, rst_n;
 reg [7:0] REQ_IBuffer_PC, Stall_SIMT_PC, Stall_IBuffer_PC;

@@ -29,7 +29,7 @@
 //    None
 //
 
-`timescale 1ns/1ps
+`timescale 1ns / 100ps
 
 
 module uart_baud_gen (

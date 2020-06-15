@@ -20,7 +20,7 @@
 //  Multicycle and False Paths
 //     None
 
-`timescale 1ns/1ps
+`timescale 1ns / 100ps
 
 
 module rst_gen (

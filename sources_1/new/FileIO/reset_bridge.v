@@ -29,7 +29,7 @@
 //    and rst_dst flip-flops to allow for meta-stability settling time
 //
 
-`timescale 1ns/1ps
+`timescale 1ns / 100ps
 
 
 module reset_bridge (

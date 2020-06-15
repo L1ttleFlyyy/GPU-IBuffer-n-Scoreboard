@@ -1,11 +1,11 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 100ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
 // Create Date: 02/19/2020 03:02:28 PM
 // Design Name: 
-// Module Name: gpu_top_checking
+// Module Name: gpu_top
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module gpu_top_checking#(
+module gpu_top#(
     parameter NUM_WARPS = 8,
     parameter NUM_THREADS = 8,
     parameter LOGNUM_WARPS = $clog2(NUM_WARPS),

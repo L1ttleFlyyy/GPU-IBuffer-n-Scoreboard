@@ -1,4 +1,4 @@
-`timescale 1ns/100ps
+`timescale 1ns / 100ps
 
 module testbench;
 
@@ -187,7 +187,7 @@ initial
     end
 
 
-gpu_top_checking #(
+gpu_top #(
 	.mem_size(mem_depth),
 	.shmem_size(shmem_depth),
     .cache_size(64)

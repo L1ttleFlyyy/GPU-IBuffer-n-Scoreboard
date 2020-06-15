@@ -29,7 +29,7 @@
 //     frequency).
 //
 
-`timescale 1ns/1ps
+`timescale 1ns / 100ps
 
 module uart_tx (
   input        clk_tx,          // Clock input

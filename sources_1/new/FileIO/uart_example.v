@@ -19,7 +19,7 @@
 //  Notes       :
 //
 
-`timescale 1ns/1ps
+`timescale 1ns / 100ps
 
 
 module uart_example (
@@ -438,7 +438,7 @@ module uart_example (
 
   wire Wen_FIO = (state == RECV) && (nibble_cnt == 0) && receive_data_rdy && (~char_to_digit[4]);
 
-  gpu_top_checking gpu_top (
+  gpu_top gpu_top1 (
     .clk(clk_sys),
     .rst(~rst_clk),
     // FileIO to TM
