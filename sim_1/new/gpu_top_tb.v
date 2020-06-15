@@ -72,7 +72,7 @@ initial
 
 initial
     begin:  TM_init
-        fd_TM = $fopen("TM_init.txt", "r");
+        fd_TM = $fopen("TM_names.txt", "r");
         start_FIO_TM_tb = 0;
         clear_FIO_TM_tb = 0;
         wait(rst_tb);
@@ -96,7 +96,8 @@ initial
         // fd_ICache = $fopen("ICache_init_thread_div.txt", "r");
         // fd_ICache = $fopen("ICache_init_Circle_Drawing.txt", "r");
         // fd_ICache = $fopen("ICache_init_loop.txt", "r");
-        fd_ICache = $fopen("ICache_init_matrix_mult.txt", "r");
+        // fd_ICache = $fopen("ICache_init_matrix_mult.txt", "r");
+        fd_ICache = $fopen("ICache_names.txt", "r");
         Wen_FIO_ICache_tb = 0;
         wait(rst_tb);
         @ (posedge clk_tb);
@@ -156,7 +157,7 @@ initial
         $display("Execution finished, now dumping data");
         outfile = $fopen("MEM_dump.txt", "w");
         drawing = $fopen("MEM_draw.txt", "w");
-        for(i_MEM = 0; i_MEM <= 96; i_MEM = i_MEM + 1) begin
+        for(i_MEM = 0; i_MEM <= 256; i_MEM = i_MEM + 1) begin
             @(posedge clk_tb)
             Addr_FIO_MEM_tb = i_MEM;
             if (i_MEM > 0) begin
