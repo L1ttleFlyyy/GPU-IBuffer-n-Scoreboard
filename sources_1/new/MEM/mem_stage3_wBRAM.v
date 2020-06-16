@@ -132,7 +132,7 @@ module mem_stage3
 	
 	
 	
-	always@(posedge clk, negedge resetb)
+	always@(posedge clk)
 	begin
 		if(!resetb)
 		begin

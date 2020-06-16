@@ -135,7 +135,7 @@ module mem_stage2
 		
 	end
 	
-	always@(posedge clk, negedge resetb)
+	always@(posedge clk)
 	begin
 		if(~resetb)
 		begin

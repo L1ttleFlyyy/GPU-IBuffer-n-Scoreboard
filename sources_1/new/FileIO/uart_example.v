@@ -350,18 +350,6 @@ module uart_example (
   wire [4:0]        char_to_digit = to_val(receive_fifo_dout[6:0]);      // the hex result of the received data
   wire              done = (state == DONE);
 
-  // for testing
-//   assign led_o[0] = rx_lost_data;
-//   assign led_o[1] = receive_sendbar;
-//   assign led_o[2] = send_fifo_full;
-//   assign led_o[0] = done;
-  assign led_o[15:4] = addr_cnt;
-  assign led_o[3:0] = state;
-//   assign led_o[9:8] = mem_sel;
-  //assign led_o[5:4] = reg_pointer;
-  //assign led_o[7:4] = state_temp;
-//   assign led_o[15:13] = nibble_cnt;
-
   // combinational logic
 
   assign receive_fifo_re = (state == WAIT_RECV || state == RECV) && receive_data_rdy;
@@ -427,7 +415,7 @@ module uart_example (
   reg [WIDTH2-1:0] data_temp;
   wire [WIDTH2-1:0] data_in_concatenated = {data_temp[WIDTH2-1:4], char_to_digit[3:0]};
 	wire [WIDTH2-1:0] mem_out;
-
+  reg clear_FIO_TM;
 	wire fsm_done;
 
   // wire [WIDTH0-1:0] TM_DATA_OUT;
@@ -438,9 +426,22 @@ module uart_example (
 
   wire Wen_FIO = (state == RECV) && (nibble_cnt == 0) && receive_data_rdy && (~char_to_digit[4]);
 
+  // for testing
+//   assign led_o[0] = rx_lost_data;
+//   assign led_o[1] = receive_sendbar;
+//   assign led_o[2] = send_fifo_full;
+//   assign led_o[0] = done;
+  assign led_o[13:4] = addr_cnt;
+  assign led_o[3:0] = state;
+//   assign led_o[9:8] = mem_sel;
+  //assign led_o[5:4] = reg_pointer;
+  //assign led_o[7:4] = state_temp;
+//   assign led_o[15:13] = nibble_cnt;
+  assign led_o[15] = rst_clk;
+
   gpu_top gpu_top1 (
     .clk(clk_sys),
-    .rst(~rst_clk),
+    .rst(~clear_FIO_TM),
     // FileIO to TM
     .Wen_FIO_TM(Wen_FIO && (mem_sel == 0)),
     .Din_FIO_TM(data_in_concatenated[28:0]),
@@ -499,6 +500,7 @@ module uart_example (
     if (rst_clk)
     begin
         state <= IDLE;
+        clear_FIO_TM <= 0;
         addr_cnt <= {LOG_DEPTH{1'bx}};
         cnt_send <= {LOG_CNT_MAX{1'bx}};
     end
@@ -512,6 +514,7 @@ module uart_example (
         end
         if (btnl_scen) state <= COMP;
         addr_cnt <= 0;
+        clear_FIO_TM <= 0;
     end
     WAIT_RECV:
         if (receive_data_rdy && receive_fifo_dout == SOT)       // ignore any non-SOT characters
@@ -562,7 +565,11 @@ module uart_example (
             end else begin
                 cnt_send <= cnt_send + 1;
             end
-            if ((mem_sel == 3) && (send_finish == 1'b1)) state <= IDLE;
+            if ((mem_sel == 3) && (send_finish == 1'b1)) 
+            begin 
+              state <= IDLE;
+              clear_FIO_TM <= 1;
+            end
 
             if (cnt_send < 4) begin // Sending header
                 cnt_send_row <= 0;
@@ -580,7 +587,10 @@ module uart_example (
         end
 	 WAIT_SEND_DONE:					// Wait for the entire sending process to finish;
 												// After that go back to the receive mode (IDLE state)
-			if (send_finish == 1'b1) state <= IDLE;
+			begin
+      if (send_finish == 1'b1) state <= IDLE;
+      clear_FIO_TM <= 1;
+      end
     endcase
   end
 endmodule

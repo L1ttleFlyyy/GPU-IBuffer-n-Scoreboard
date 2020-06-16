@@ -284,7 +284,7 @@ reg [1:0] ScbID_reg;
 reg [7:0] ActiveMask_reg;
 
 assign Full_OC_IB = ((valid_0 + valid_1 + valid_2 + valid_3 + Valid_reg) >= 4);
-always@ (posedge clk, negedge rst) begin
+always@ (posedge clk) begin
     if (!rst) begin
         Valid_reg <= 0;
     end else begin

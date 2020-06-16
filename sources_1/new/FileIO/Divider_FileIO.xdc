@@ -21,7 +21,7 @@ set_property PACKAGE_PIN E3 [get_ports clk_pin]
 # The conversion of 'IOSTANDARD' constraint on 'net' object 'clk_pin' has been applied to the port object 'clk_pin'.
 set_property IOSTANDARD LVCMOS33 [get_ports clk_pin]
 # //vlabfs.vlab.usc.edu/home$/smrthich/Downloads/divider_with_fileIO_chipscope_2015/uart_example/HDL/uart_example_version3/srcs/uart_example.ucf:15
-create_clock -name clk_pin -period 10.000 [get_ports clk_pin]
+create_clock -add -name sys_clk_pin -period 10.000 -waveform {0 5} [get_ports clk_pin]
 
 # The following cross clock domain false path constraints can be uncommented in order to mimic ucf constraints behavior (see message at the beginning of this file)
 # set_false_path -from [get_clocks clk_pin] -to [get_clocks U0/U_ICON/I_YES_BSCAN.U_BS/iDRCK_LOCAL]

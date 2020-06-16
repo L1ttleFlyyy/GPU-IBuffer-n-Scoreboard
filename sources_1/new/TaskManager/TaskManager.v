@@ -97,7 +97,7 @@ assign HWWarpID_TM_RAU = free_Warp[free_Warp_rptr[2:0]];
 assign Nreg_TM_RAU = tasks[tasks_rptr[7:0]][2:0];
 assign SWWarpID_TM_RAU = tasks[tasks_rptr[7:0]][27:20];
 
-always @ (posedge clk or negedge rst) begin
+always @ (posedge clk) begin
 	if(rst==0) begin
 		free_registers <= 6'b10_0000;	// Free registers represent the actual number of free registers.
 		active_tasks <= 0;

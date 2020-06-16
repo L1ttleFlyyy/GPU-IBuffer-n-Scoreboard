@@ -33,7 +33,7 @@ module rr_prioritizer #(
     reg [WIDTH-1: 0] MRG; // most recent grantee, one-hot encoded
     wire ALORP = |req; // at least one request is present
 
-    always@(posedge clk or negedge rst) begin
+    always@(posedge clk) begin
         if (!rst) begin
             MRG <= 1 << (WIDTH-1); // on initial, give highest priority to req[0]
         end else if (ALORP) begin

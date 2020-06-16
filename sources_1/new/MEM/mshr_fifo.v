@@ -38,7 +38,7 @@ module mshr_fifo(clk, resetb, cle_hit_missbar, scbID, warpID, cle_addr, cle_late
 	
 	assign neg_feedback_valid 	=	(fifo_latency[rp_ind]==5'b00001 && !empty);
 	integer i;
-	always@(posedge clk, negedge resetb)
+	always@(posedge clk)
 	begin
 		if(!resetb)
 		begin

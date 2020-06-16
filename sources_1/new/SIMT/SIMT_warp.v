@@ -140,7 +140,7 @@ assign pop_stack_qual = pop_stack_raw & ~Waiting_Status_CondBr;
 assign updateAM_Qual = updateAM_Qual1 | pop_stack_qual;
 
 assign waiting_wire = (Waiting_Status_CondBr)? CondBr_status_Not_rx : CondBr_ID_SIMT;
-always @(posedge clk or negedge rst) begin
+always @(posedge clk) begin
     if(rst==0) begin
           Waiting_Status_CondBr<=0;
           TOSP<=4'hf;

@@ -43,7 +43,7 @@ module Scheduler # (
     wire MEM_RegWrite_in = MEM_Grt_RegWrite != 0;
 
     reg [NUM_MEM_STAGES-2:0] MEM_RegWrite_SftReg;
-    always@ (posedge clk, negedge rst) begin
+    always@ (posedge clk) begin
         if (!rst) begin
             MEM_RegWrite_SftReg <= 0;
         end else begin

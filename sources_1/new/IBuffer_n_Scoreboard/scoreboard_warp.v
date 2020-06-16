@@ -76,7 +76,7 @@ module scoreboard_warp(
     assign ScbID_Scb_IB = next_Empty;
 
     // store a new instruction if granted by Issue unit
-    always@(posedge clk or negedge rst) begin
+    always@(posedge clk) begin
         if (!rst) begin
             Valid_array <= 0;
         end else begin

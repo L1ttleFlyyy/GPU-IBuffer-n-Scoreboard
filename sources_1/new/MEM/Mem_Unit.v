@@ -228,7 +228,7 @@ module mem_unit
 	end
 	
 	
-	always@(posedge clk, negedge rst)
+	always@(posedge clk)
 	begin
 		if(!rst)
 		begin

@@ -177,7 +177,7 @@ module IBuffer_warp#(
         if (Exit_Grt_IU_IB) Valid_array_next[RP_ind] = 1'b0;
     end
 
-    always@(posedge clk or negedge rst) begin
+    always@(posedge clk) begin
         if (!rst) begin
             WP <= 0;
             RP <= 0;

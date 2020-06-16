@@ -76,7 +76,7 @@ latency, hit_missbar, miss_wait);
 		end
 	end
 	
-	always@(posedge clk, negedge resetb)
+	always@(posedge clk)
 	begin
 		if(!resetb)
 		begin

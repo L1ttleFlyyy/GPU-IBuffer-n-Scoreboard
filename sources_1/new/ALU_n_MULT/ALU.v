@@ -77,7 +77,7 @@ module ALU (
     reg BLT_reg;
     reg [1:0] ScbID_reg; // for BEQ and BLT only, to clear Scb entry
 
-	always@(posedge clk, negedge rst) begin
+	always@(posedge clk) begin
 		if (!rst) begin
 			Valid_reg <= 0;
 			ActiveMask_reg <= {8{1'bx}};
