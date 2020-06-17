@@ -8,7 +8,7 @@ SUB $0, $0, $0; hard zero
 ADDI $1, $0, 3; temp register
 SHL $2, $16, $1; warpID * 8
 ADD $2, $8, $2; global thrID
-ADDI $3, $0, 1
+ADDI $3, $0, -1
 ADDI $1, $0, 2
 SHL $2, $2, $1; mem location = thrID * 4
 SW $3, 0($2); store thrID to corresponding location
