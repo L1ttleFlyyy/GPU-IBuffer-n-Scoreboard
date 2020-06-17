@@ -150,7 +150,7 @@ module mem_stage3
 			Instr_R 			<= {32{1'bx}};
 
 			write_fb_valid_o 	<=	1'bx;
-			warp_ID_o 			<= 	{3{1'bx}};;
+			warp_ID_o 			<= 	{3{1'bx}};
 			scb_ID_o 			<= 	{2{1'bx}};
 			reg_addr_o 			<= 	{5{1'bx}};
 			thread_mask_o 		<= 	{8{1'bx}};

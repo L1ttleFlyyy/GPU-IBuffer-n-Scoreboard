@@ -88,7 +88,7 @@ initial
         $fclose(fd_TM);
         wait(!Wen_FIO_ICache_tb);
         start_FIO_TM_tb = 1;
-        @ (posedge clk_tb);
+        #20;
         start_FIO_TM_tb = 0;
     end
 
