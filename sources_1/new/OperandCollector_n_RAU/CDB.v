@@ -1,3 +1,5 @@
+`timescale 1ns / 100ps
+
 module CDB(
     input wire [2:0] WarpID_ALU_CDB, 
     input wire RegWrite_ALU_CDB,

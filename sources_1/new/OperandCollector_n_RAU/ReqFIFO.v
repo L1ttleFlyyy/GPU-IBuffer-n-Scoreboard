@@ -1,3 +1,4 @@
+`timescale 1ns / 100ps
 //ReqFIFO:  O.C:    Warp;      ----fetching data request;
 //                  Logic Reg;
 //                  O.C ID;

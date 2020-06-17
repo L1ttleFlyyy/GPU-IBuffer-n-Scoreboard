@@ -1,3 +1,5 @@
+`timescale 1ns / 100ps
+
 module RFOC(
     input wire rst,
     input wire clk,

@@ -1,3 +1,5 @@
+`timescale 1ns / 100ps
+
 module Mapping(
     input wire rst,
     input wire clk,

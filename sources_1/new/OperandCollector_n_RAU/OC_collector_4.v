@@ -1,3 +1,5 @@
+`timescale 1ns / 100ps
+
 module OC_collector_4(
     input wire rst,
     input wire clk,

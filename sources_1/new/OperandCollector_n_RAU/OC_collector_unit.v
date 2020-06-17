@@ -1,3 +1,5 @@
+`timescale 1ns / 100ps
+
 module OC_collector_unit 
 #(
 parameter ocid = 0

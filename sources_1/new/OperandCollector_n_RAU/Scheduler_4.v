@@ -1,3 +1,5 @@
+`timescale 1ns / 100ps
+
 module scheduler_4(
     input wire clk,
     input wire rst,

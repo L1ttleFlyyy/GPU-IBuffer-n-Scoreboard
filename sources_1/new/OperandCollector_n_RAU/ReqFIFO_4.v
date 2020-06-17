@@ -1,4 +1,6 @@
 
+`timescale 1ns / 100ps
+
 module ReqFIFO_4(
     input rst,
     input clk,
