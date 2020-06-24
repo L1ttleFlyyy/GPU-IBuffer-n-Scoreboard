@@ -72,7 +72,7 @@ initial
 
 initial
     begin:  TM_init
-        fd_TM = $fopen("TM_names.txt", "r");
+        fd_TM = $fopen("TM_init.txt", "r");
         start_FIO_TM_tb = 0;
         clear_FIO_TM_tb = 0;
         wait(rst_tb);
@@ -96,10 +96,10 @@ initial
     begin:  I_CACHE_INIT
         // fd_ICache = $fopen("ICache_init_Mem_access3.txt", "r");
         // fd_ICache = $fopen("ICache_init_thread_div.txt", "r");
-        // fd_ICache = $fopen("ICache_init_Circle_Drawing.txt", "r");
+        fd_ICache = $fopen("ICache_init_Circle_Drawing.txt", "r");
         // fd_ICache = $fopen("ICache_init_loop.txt", "r");
         // fd_ICache = $fopen("ICache_init_matrix_mult.txt", "r");
-        fd_ICache = $fopen("ICache_names.txt", "r");
+        // fd_ICache = $fopen("ICache_names.txt", "r");
         Wen_FIO_ICache_tb = 0;
         wait(rst_tb);
         @ (posedge clk_tb);

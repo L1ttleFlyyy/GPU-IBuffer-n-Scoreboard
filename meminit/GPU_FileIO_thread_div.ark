@@ -1,0 +1,12 @@
+# GPU with BRAM
+TO_FPGA 00 00 TM_init.txt
+TO_FPGA 01 00 ICache_init_thread_div.txt
+TO_FPGA 02 00 MEM_init.txt
+TO_FPGA 03 00 CLE_init.txt
+SET_PREFIX outfile_
+SET_SURFIX .txt
+SET_RECV_CNT 0
+WAIT_RECV_CNT 3
+WAIT 
+
+END 

@@ -471,10 +471,10 @@ module uart_example (
                       (mem_sel == 2)? MEM_DATA_OUT: 
                                       {CLE_DATA_OUT, {(WIDTH2-WIDTH3){1'b0}}};
   wire [3:0] nibble_mux;
-  assign nibble_mux[3] = mem_out[WIDTH2-1-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
-  assign nibble_mux[2] = mem_out[WIDTH2-2-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
-  assign nibble_mux[1] = mem_out[WIDTH2-3-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
-  assign nibble_mux[0] = mem_out[WIDTH2-4-4*cnt_send_row[LOG_CNT_ROW_MAX-2:0]];
+  assign nibble_mux[3] = mem_out[WIDTH2-1-4*cnt_send_row];
+  assign nibble_mux[2] = mem_out[WIDTH2-2-4*cnt_send_row];
+  assign nibble_mux[1] = mem_out[WIDTH2-3-4*cnt_send_row];
+  assign nibble_mux[0] = mem_out[WIDTH2-4-4*cnt_send_row];
 
   // the logic for input to the send buffer. This is the entire character flow of sending a file, including controling characters
   always @ (*) //
@@ -539,7 +539,6 @@ module uart_example (
                                               NUM_NIBBLES0-1;
                 if (addr_cnt == addr_max_mux) begin
                     state <= IDLE;
-                    addr_cnt <= 0;
                 end else begin
                     addr_cnt <= addr_cnt + 1'b1;
                 end
@@ -582,7 +581,11 @@ module uart_example (
             end
 
             if (cnt_send_row == cnt_send_row_max_mux - 1) begin // address increment should be 1 clock ahead to accommodate for the IREG latency
-                addr_cnt <= addr_cnt + 1;
+                if (addr_cnt == addr_max_mux) begin
+                    addr_cnt <= 0;
+                end else begin
+                    addr_cnt <= addr_cnt + 1;
+                end
             end
         end
 	 WAIT_SEND_DONE:					// Wait for the entire sending process to finish;
