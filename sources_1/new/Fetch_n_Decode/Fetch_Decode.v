@@ -121,7 +121,6 @@ generate
 			.UpdatePC_Qual2_SIMT_PC(UpdatePC_Qual2_SIMT_PC[i]),
 			.TargetAddr_SIMT_PC(TargetAddr_SIMT_PC[i]),
 			.GRT_RR_PC(GRT[i]),
-			.valid_1_IF_PC(GRT[i]),
 			.valid_2_IF_PC(Valid_2_IF_ID0[i] | Valid_2_IF_ID1[i]),
 			.valid_3_IF_PC(Valid_3_IF_ID0[i] | Valid_3_IF_ID1[i]),
 			.Valid_3_ID1_PC(Valid_3_ID1_PC[i]),

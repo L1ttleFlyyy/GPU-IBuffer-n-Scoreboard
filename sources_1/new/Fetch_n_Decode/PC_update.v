@@ -19,7 +19,7 @@ module PC_update #(
 	//From RR(PC)
 	input GRT_RR_PC,
 	//From IF
-	input valid_1_IF_PC, valid_2_IF_PC, valid_3_IF_PC,
+	input valid_2_IF_PC, valid_3_IF_PC,
 	//From ID
 	input Valid_3_ID1_PC,
 	input UpdatePC_Qual3_ID0_PC,
